@@ -2,10 +2,10 @@
     {
         "name": "Pico",
         "compilers": {
-            "C": "${env:USERPROFILE}/.pico-sdk/toolchain/13_2_Rel1/bin/arm-none-eabi-gcc.exe",
-            "CXX": "${env:USERPROFILE}/.pico-sdk/toolchain/13_2_Rel1/bin/arm-none-eabi-gcc.exe"
+            "C": "${env:HOME}/.pico-sdk/toolchain/13_2_Rel1/bin/arm-none-eabi-gcc",
+            "CXX": "${env:HOME}/.pico-sdk/toolchain/13_2_Rel1/bin/arm-none-eabi-gcc"
         },
-        "toolchainFile": "${env:USERPROFILE}/.pico-sdk/sdk/1.5.1/cmake/preload/toolchains/pico_arm_gcc.cmake",
+        "toolchainFile": "${env:HOME}/.pico-sdk/sdk/1.5.1/cmake/preload/toolchains/pico_arm_gcc.cmake",
         "environmentVariables": {
             "PATH": "${command:raspberry-pi-pico.getEnvPath};${env:PATH}"
         },

@@ -1,8 +1,8 @@
-# Install script for directory: C:/Users/oscar/.pico-sdk/sdk/1.5.1/src/rp2_common/pico_stdio_usb
+# Install script for directory: /Users/oscardawe/.pico-sdk/sdk/1.5.1/src/rp2_common/pico_stdio_usb
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/bhr-embedded")
+  set(CMAKE_INSTALL_PREFIX "/usr/local")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -34,6 +34,6 @@ endif()
 
 # Set default install directory permissions.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "C:/Users/oscar/.pico-sdk/toolchain/13_2_Rel1/bin/arm-none-eabi-objdump.exe")
+  set(CMAKE_OBJDUMP "/Users/oscardawe/.pico-sdk/toolchain/13_2_Rel1/bin/arm-none-eabi-objdump")
 endif()
 

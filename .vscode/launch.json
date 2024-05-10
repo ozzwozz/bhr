@@ -3,7 +3,7 @@
     "configurations": [
         {
             "name": "Pico Debug (Cortex-Debug)",
-            "cwd": "${userHome}/.pico-sdk/openocd/v0.12.0-2/openocd/scripts",
+            "cwd": "${workspaceRoot}",
             "executable": "${command:raspberry-pi-pico.launchTargetPath}",
             "request": "launch",
             "type": "cortex-debug",

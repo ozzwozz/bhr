@@ -17,7 +17,7 @@
 rule ASM_COMPILER__bhr-embedded_unscanned_Debug
   depfile = $DEP_FILE
   deps = gcc
-  command = ${LAUNCHER}${CODE_CHECK}C:\Users\oscar\.pico-sdk\toolchain\13_2_Rel1\bin\arm-none-eabi-gcc.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
+  command = ${LAUNCHER}${CODE_CHECK}/Users/oscardawe/.pico-sdk/toolchain/13_2_Rel1/bin/arm-none-eabi-gcc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
   description = Building ASM object $out
 
 
@@ -27,7 +27,7 @@ rule ASM_COMPILER__bhr-embedded_unscanned_Debug
 rule C_COMPILER__bhr-embedded_unscanned_Debug
   depfile = $DEP_FILE
   deps = gcc
-  command = ${LAUNCHER}${CODE_CHECK}C:\PROGRA~2\ARMGNU~1\125863~1.3RE\bin\AR19DD~1.EXE $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  command = ${LAUNCHER}${CODE_CHECK}/Users/oscardawe/.pico-sdk/toolchain/13_2_Rel1/bin/arm-none-eabi-gcc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
   description = Building C object $out
 
 
@@ -37,7 +37,7 @@ rule C_COMPILER__bhr-embedded_unscanned_Debug
 rule CXX_COMPILER__bhr-embedded_unscanned_Debug
   depfile = $DEP_FILE
   deps = gcc
-  command = ${LAUNCHER}${CODE_CHECK}C:\PROGRA~2\ARMGNU~1\125863~1.3RE\bin\AR10B2~1.EXE $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
+  command = ${LAUNCHER}${CODE_CHECK}/Users/oscardawe/.pico-sdk/toolchain/13_2_Rel1/bin/arm-none-eabi-g++ $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out -c $in
   description = Building CXX object $out
 
 
@@ -45,10 +45,8 @@ rule CXX_COMPILER__bhr-embedded_unscanned_Debug
 # Rule for linking CXX executable.
 
 rule CXX_EXECUTABLE_LINKER__bhr-embedded_Debug
-  command = C:\Windows\system32\cmd.exe /C "$PRE_LINK && C:\PROGRA~2\ARMGNU~1\125863~1.3RE\bin\AR10B2~1.EXE $FLAGS -Wl,--build-id=none $LINK_FLAGS @$RSP_FILE -o $TARGET_FILE  && $POST_BUILD"
+  command = $PRE_LINK && /Users/oscardawe/.pico-sdk/toolchain/13_2_Rel1/bin/arm-none-eabi-g++ $FLAGS -Wl,--build-id=none $LINK_FLAGS $in -o $TARGET_FILE $LINK_PATH $LINK_LIBRARIES && $POST_BUILD
   description = Linking CXX executable $TARGET_FILE
-  rspfile = $RSP_FILE
-  rspfile_content = $in $LINK_PATH $LINK_LIBRARIES
   restat = $RESTAT
 
 
@@ -66,7 +64,7 @@ rule CUSTOM_COMMAND
 rule ASM_COMPILER__bs2_default_unscanned_Debug
   depfile = $DEP_FILE
   deps = gcc
-  command = ${LAUNCHER}${CODE_CHECK}C:\Users\oscar\.pico-sdk\toolchain\13_2_Rel1\bin\arm-none-eabi-gcc.exe $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
+  command = ${LAUNCHER}${CODE_CHECK}/Users/oscardawe/.pico-sdk/toolchain/13_2_Rel1/bin/arm-none-eabi-gcc $DEFINES $INCLUDES $FLAGS -MD -MT $out -MF $DEP_FILE -o $out   -c $in
   description = Building ASM object $out
 
 
@@ -74,7 +72,7 @@ rule ASM_COMPILER__bs2_default_unscanned_Debug
 # Rule for linking ASM executable.
 
 rule ASM_EXECUTABLE_LINKER__bs2_default_Debug
-  command = C:\Windows\system32\cmd.exe /C "$PRE_LINK && C:\Users\oscar\.pico-sdk\toolchain\13_2_Rel1\bin\arm-none-eabi-gcc.exe $FLAGS -Wl,--build-id=none $LINK_FLAGS $in -o $TARGET_FILE $LINK_PATH $LINK_LIBRARIES && $POST_BUILD"
+  command = $PRE_LINK && /Users/oscardawe/.pico-sdk/toolchain/13_2_Rel1/bin/arm-none-eabi-gcc $FLAGS -Wl,--build-id=none $LINK_FLAGS $in -o $TARGET_FILE $LINK_PATH $LINK_LIBRARIES && $POST_BUILD
   description = Linking ASM executable $TARGET_FILE
   restat = $RESTAT
 
@@ -83,7 +81,7 @@ rule ASM_EXECUTABLE_LINKER__bs2_default_Debug
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = C:\Users\oscar\.pico-sdk\cmake\v3.28.0-rc6\bin\cmake.exe --regenerate-during-build -SC:\Users\oscar\bhr-embedded -BC:\Users\oscar\bhr-embedded\build
+  command = /Users/oscardawe/.pico-sdk/cmake/v3.28.0-rc6/CMake.app/Contents/bin/cmake --regenerate-during-build -S/Users/oscardawe/Documents/bhr -B/Users/oscardawe/Documents/bhr/build
   description = Re-running CMake...
   generator = 1
 
@@ -92,7 +90,7 @@ rule RERUN_CMAKE
 # Rule for cleaning all built files.
 
 rule CLEAN
-  command = C:\Users\oscar\.pico-sdk\ninja\v1.11.1\ninja.exe $FILE_ARG -t clean $TARGETS
+  command = /Users/oscardawe/.pico-sdk/ninja/v1.11.1/ninja $FILE_ARG -t clean $TARGETS
   description = Cleaning all built files...
 
 
@@ -100,6 +98,6 @@ rule CLEAN
 # Rule for printing all primary targets available.
 
 rule HELP
-  command = C:\Users\oscar\.pico-sdk\ninja\v1.11.1\ninja.exe -t targets
+  command = /Users/oscardawe/.pico-sdk/ninja/v1.11.1/ninja -t targets
   description = All primary targets available:
 
