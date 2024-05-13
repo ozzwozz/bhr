@@ -14,9 +14,15 @@
 // Pins can be changed, see the GPIO function select table in the datasheet for information on GPIO assignments
 #define SPI_PORT spi0
 #define PIN_MISO 16
-#define PIN_CS   17
+#define PIN_CS_TEMP 17
 #define PIN_SCK  18
 #define PIN_MOSI 19
+
+
+#define EEPROM_ADDR 0x50
+
+#define CMD_READ_TEMP 0x00
+#define MAX31725_ADDR 0x48
 
 // I2C defines
 // This example will use I2C0 on GPIO8 (SDA) and GPIO9 (SCL) running at 400KHz.
@@ -79,21 +85,62 @@ float read_adc()
     return result;
 }
 
+/**
+ * @brief read the max31725 temperature and return the temperature in Celsius
+ * 
+ * @param spi
+ * @return float 
+ */
+float read_max31725_temp(i2c_inst_t *i2c)
+{
+    uint8_t rx_data[2];
+
+    // Send command and read 2 bytes of data
+    i2c_write_blocking(i2c, MAX31725_ADDR, CMD_READ_TEMP, 1, false);
+    i2c_read_blocking(i2c, MAX31725_ADDR, rx_data, 2, false);
+
+    int16_t temp_data = (rx_data[1] << 8) | rx_data [2];
+    float temp_degC (temp_data / 256.0);
+
+    return temp_degC;
+}
+
+void eeprom_read(i2c_inst_t *i2c, uint32_t address,  uint8_t *data, size_t len)
+{
+    uint8_t addr_buf[2] = {(address >> 8) & 0xFF, address & 0xFF};
+
+    i2c_write_blocking(i2c, EEPROM_ADDR, addr_buf, 2, true);
+    i2c_read_blocking(i2c, EEPROM_ADDR, data, len, false);
+}
+
+/**
+ * @brief read the lm50 temperature and return the temperature in Celsius
+ * 
+ * @param V 
+ * @return float 
+ */
+float lm50_V_to_degC(float V)
+{
+    // V(o) = 10mV/C * TempC + 500mV
+    // (V(o) - 500mV) / 10mV = Temp
+
+    float temp_degC = (V - 0.5) / 0.01;
+    return temp_degC;
+}
+
 int main()
 {
     stdio_init_all();
 
     // SPI initialisation. This example will use SPI at 1MHz.
-    spi_init(SPI_PORT, 1000*1000);
+    spi_init(SPI_PORT, 1'000'000);
     gpio_set_function(PIN_MISO, GPIO_FUNC_SPI);
-    gpio_set_function(PIN_CS,   GPIO_FUNC_SIO);
     gpio_set_function(PIN_SCK,  GPIO_FUNC_SPI);
     gpio_set_function(PIN_MOSI, GPIO_FUNC_SPI);
     
-    // Chip select is active-low, so we'll initialise it to a driven-high state
-    gpio_set_dir(PIN_CS, GPIO_OUT);
-    gpio_put(PIN_CS, 1);
-
+    gpio_init(PIN_CS_TEMP);
+    gpio_set_dir(PIN_CS_TEMP, GPIO_OUT);
+    
     // I2C Initialisation. Using it at 400Khz.
     i2c_init(I2C_PORT, 400*1000);
     
@@ -136,9 +183,6 @@ int main()
     // Now enable the UART to send interrupts - RX only
     uart_set_irq_enables(UART_ID, true, false);
 
-    // Send out a string, with CR/LF conversions
-    uart_puts(UART_ID, " Hello, UART!\n");
-
     // Timer code - This fires off the callback after 2000ms
     add_alarm_in_ms(2000, alarm_callback, NULL, false);
 
@@ -159,7 +203,22 @@ int main()
     uart_puts(UART_ID, to_send);
 
     while (true) {
-        uart_puts(UART_ID, "Hello, world!\n");
+        uart_puts(UART_ID, "Sat in main loop!\n");
+
+        uint8_t eeprom_data[10];
+        eeprom_read(i2c0, 0, eeprom_data, 10);
+
+        printf("EEPROM Data: ");
+        for (int i = 0; i < 10; i++)
+        {
+            printf("%02X ", eeprom_data[i]);
+        }
+        printf("\n");
+
+
+        float temperature = read_max31725_temp(i2c0);
+        printf("Temperature: %.2fC\n", temperature);
+
         sleep_ms(1000);
     }
 }
