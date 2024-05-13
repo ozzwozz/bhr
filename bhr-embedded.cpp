@@ -41,6 +41,14 @@
 #define UART_TX_PIN 0
 #define UART_RX_PIN 1
 
+#define ATTENUATOR_1 0X40
+#define ATTENUATOR_2 0X42
+#define ATTENUATOR_3 0X44
+#define ATTENUATOR_4 0X46
+#define ATTENUATOR_5 0X48
+
+#define ATTENUATOR_REG_OUT 0x01
+
 #include "blink.pio.h"
 
 static int chars_rxed = 0;
@@ -111,6 +119,12 @@ void eeprom_read(i2c_inst_t *i2c, uint32_t address,  uint8_t *data, size_t len)
 
     i2c_write_blocking(i2c, EEPROM_ADDR, addr_buf, 2, true);
     i2c_read_blocking(i2c, EEPROM_ADDR, data, len, false);
+}
+
+void pca9554_set_outputs(i2c_inst_t *i2c, uint8_t value)
+{
+    uint8_t data[2] = { ATTENUATOR_REG_OUT , value};
+    i2c_write_blocking(i2c, ATTENUATOR_1, data, 2, false);
 }
 
 /**
@@ -186,6 +200,8 @@ int main()
     // Timer code - This fires off the callback after 2000ms
     add_alarm_in_ms(2000, alarm_callback, NULL, false);
 
+    pca9554_set_outputs(i2c0, 0x00);
+
     // Watchdog restart code
     if (watchdog_caused_reboot()) {
         uart_puts(UART_ID, "Rebooted by Watchdog!\n");
@@ -215,6 +231,9 @@ int main()
         }
         printf("\n");
 
+        pca9554_set_outputs(i2c0, 0xFF);
+        sleep_ms(500);
+        pca9554_set_outputs(i2c0, 0x00);
 
         float temperature = read_max31725_temp(i2c0);
         printf("Temperature: %.2fC\n", temperature);
