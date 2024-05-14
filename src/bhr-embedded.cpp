@@ -57,14 +57,25 @@
 
 static int chars_rxed = 0;
 
-int64_t alarm_callback(alarm_id_t id, void *user_data) {
+int64_t alarm_callback(alarm_id_t id, void *user_data)
+{
     // Put your timeout handler code in here
     return 0;
 }
-//     // ADC initialisation
-//     adc_init();
-//     adc_gpio_init(26);
-//     adc_select_input(0);
+
+void ext_trig_irq_handler() {
+    // Your interrupt handler code here
+    // This will be called when the interrupt is triggered on GPIO 15
+    for (int i = 0; i < 10; i++)
+    {
+        gpio_put(PICO_DEFAULT_LED_PIN, 1); // Turn LED on
+        sleep_ms(500);
+        gpio_put(PICO_DEFAULT_LED_PIN, 0); // Turn LED off
+        sleep_ms(500);
+    }
+
+}
+
 int main()
 {
     stdio_init_all();
@@ -89,8 +100,17 @@ int main()
     // gpio_init(PIN_CS_TEMP);
     // gpio_set_dir(PIN_CS_TEMP, GPIO_OUT);
 
+    // Initialize GPIO 15
+    gpio_init(15);
+    gpio_set_dir(15, GPIO_IN);
+    gpio_pull_down(15); // Set GPIO 15 as input with pull-down resistor
+
+    // Set up interrupt for GPIO 15
+    gpio_set_irq_enabled_with_callback(15, GPIO_IRQ_EDGE_RISE, true, &ext_trig_irq_handler);
+
     // Watchdog restart code
-    if (watchdog_caused_reboot()) {
+    if (watchdog_caused_reboot())
+    {
         uart_puts(UART_ID, "Rebooted by Watchdog!\n");
         // Whatever action you may take if a watchdog caused a reboot
     }
