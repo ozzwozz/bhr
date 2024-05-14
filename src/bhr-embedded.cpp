@@ -62,19 +62,6 @@ int64_t alarm_callback(alarm_id_t id, void *user_data) {
     return 0;
 }
 
-//     // SPI initialisation. This example will use SPI at 1MHz.
-//     spi_init(SPI_PORT, 1'000'000);
-//     gpio_set_function(PIN_MISO, GPIO_FUNC_SPI);
-//     gpio_set_function(PIN_SCK,  GPIO_FUNC_SPI);
-//     gpio_set_function(PIN_MOSI, GPIO_FUNC_SPI);
-    
-//     gpio_init(PIN_CS_TEMP);
-//     gpio_set_dir(PIN_CS_TEMP, GPIO_OUT);
-
-//     // ADC initialisation
-//     adc_init();
-//     adc_gpio_init(26);
-//     adc_select_input(0);
 int main()
 {
     stdio_init_all();
@@ -89,6 +76,15 @@ int main()
     gpio_set_function(I2C_SCL, GPIO_FUNC_I2C);
     gpio_pull_up(I2C_SDA);
     gpio_pull_up(I2C_SCL);
+
+    // SPI initialisation. This example will use SPI at 1MHz.
+    spi_init(SPI_PORT, 1'000'000);
+    gpio_set_function(PIN_MISO, GPIO_FUNC_SPI);
+    gpio_set_function(PIN_SCK,  GPIO_FUNC_SPI);
+    gpio_set_function(PIN_MOSI, GPIO_FUNC_SPI);
+    
+    // gpio_init(PIN_CS_TEMP);
+    // gpio_set_dir(PIN_CS_TEMP, GPIO_OUT);
 
     // Watchdog restart code
     if (watchdog_caused_reboot()) {
