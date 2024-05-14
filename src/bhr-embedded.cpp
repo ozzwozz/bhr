@@ -61,7 +61,10 @@ int64_t alarm_callback(alarm_id_t id, void *user_data) {
     // Put your timeout handler code in here
     return 0;
 }
-
+//     // ADC initialisation
+//     adc_init();
+//     adc_gpio_init(26);
+//     adc_select_input(0);
 int main()
 {
     stdio_init_all();
@@ -103,8 +106,15 @@ int main()
     char* to_send = "System Clock Frequency is %d Hz\n", clock_get_hz(clk_sys);
     uart_puts(UART_ID, to_send);
 
+    // Configure onboard LED pin
+    const uint LED_PIN = PICO_DEFAULT_LED_PIN;
+    gpio_init(LED_PIN);
+    gpio_set_dir(LED_PIN, GPIO_OUT);
+
     while (true)
     {
+        gpio_put(LED_PIN, 1); // Turn LED on
+
         watchdog_update();
 
         float temperature = max31725.read_temperature();
@@ -134,6 +144,7 @@ int main()
             uart.read(&received_char, 1);
             printf("Recieved character from UART: %c\n", received_char);
         }
+        gpio_put(LED_PIN, 0); // Turn LED off
     }
 
     return 0;
