@@ -8,7 +8,12 @@
 #include "hardware/clocks.h"
 #include "hardware/gpio.h"
 #include "hardware/adc.h"
+
 #include "PCA9554.h"
+#include "MAX31725.h"
+#include "M24M02.h"
+#include "uart.h"
+#include "DS1682.h"
 
 // SPI Defines
 // We are going to use SPI 0, and allocate it to the following GPIO pins
@@ -49,10 +54,6 @@
 #define ATTENUATOR_5 0X48
 
 #define ATTENUATOR_REG_OUT 0x01
-
-#include "MAX31725.h"
-#include "M24M02.h"
-#include "uart.h"
 
 static int chars_rxed = 0;
 
