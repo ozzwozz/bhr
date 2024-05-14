@@ -11,31 +11,37 @@ SPIDevice::SPIDevice(spi_inst_t* spi_inst, uint cs_pin)
     deassertCS(); // Set CS pin high (inactive)
 }
 
-void SPIDevice::configure(uint baudrate) {
+void SPIDevice::configure(uint baudrate)
+{
     spi_set_baudrate(m_spi, baudrate);
 }
 
-void SPIDevice::assertCS() {
+void SPIDevice::assertCS()
+{
     gpio_put(m_cs_pin, 0);
 }
 
-void SPIDevice::deassertCS() {
+void SPIDevice::deassertCS()
+{
     gpio_put(m_cs_pin, 1);
 }
 
-void SPIDevice::write(const uint8_t *data, size_t len) {
+void SPIDevice::write(const uint8_t *data, size_t len)
+{
     assertCS();
     spi_write_blocking(m_spi, data, len);
     deassertCS();
 }
 
-void SPIDevice::read(uint8_t *data, size_t len) {
+void SPIDevice::read(uint8_t *data, size_t len)
+{
     assertCS();
     spi_read_blocking(m_spi, 0, data, len);
     deassertCS();
 }
 
-void SPIDevice::exchange(const uint8_t *tx_data, uint8_t *rx_data, size_t len) {
+void SPIDevice::exchange(const uint8_t *tx_data, uint8_t *rx_data, size_t len)
+{
     assertCS();
     spi_write_read_blocking(m_spi, tx_data, rx_data, len);
     deassertCS();

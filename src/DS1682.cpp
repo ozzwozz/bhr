@@ -24,11 +24,13 @@ uint32_t DS1682::getTime()
     uint8_t buffer[4]; // 4 bytes needed for timestamp data
     buffer[0] = 0x00; // Register address for reading time
 
-    if (!I2CDevice::write(buffer, 1)) {
+    if (!I2CDevice::write(buffer, 1))
+    {
         timestamp = 0; // Error in writing register address
     }
 
-    if (!I2CDevice::read(buffer, sizeof(buffer))) {
+    if (!I2CDevice::read(buffer, sizeof(buffer)))
+    {
         timestamp = 0; // Error in reading time data
     }
 
@@ -43,11 +45,13 @@ uint32_t DS1682::getUniqueID()
     uint8_t buffer[8]; // 8 bytes needed for unique ID data
     buffer[0] = 0x08; // Register address for reading unique ID
 
-    if (!I2CDevice::write(buffer, 1)) {
+    if (!I2CDevice::write(buffer, 1))
+    {
         uniqueID = 0; // Error in writing register address
     }
 
-    if (!I2CDevice::read(buffer, sizeof(buffer))) {
+    if (!I2CDevice::read(buffer, sizeof(buffer)))
+    {
         uniqueID = 0; // Error in reading unique ID data
     }
 
