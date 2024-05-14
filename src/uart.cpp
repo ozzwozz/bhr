@@ -1,4 +1,6 @@
 #include "uart.h"
+#include <string.h>
+#include <stdio.h>
 
 UART::UART(uart_inst_t *uart, uint baud_rate, uint rx_pin, uint tx_pin) : m_uart(uart)
 {
@@ -23,34 +25,23 @@ UART::UART(uart_inst_t *uart, uint baud_rate, uint rx_pin, uint tx_pin) : m_uart
 
 void UART::write(const char *data)
 {
-    while (*data != '\0')
-    {
-        uart_putc(m_uart, *data++);
-    }
+    uart_write_blocking(m_uart, reinterpret_cast<const uint8_t*>(data), strlen(data));
 }
 
 void UART::write(const char *data, size_t len)
 {
-    for (size_t i = 0; i < len; ++i)
-    {
-        uart_putc(m_uart, data[i]);
-    }
+    uart_write_blocking(m_uart, reinterpret_cast<const uint8_t*>(data), len);
 }
 
-int UART::read(char *data, size_t len)
+bool UART::read(char *data, size_t len)
 {
-    int count = 0;
-    while (len--)
+    size_t bytes_read = 0;
+    while (!rx_buffer_.empty() && bytes_read < len)
     {
-        int c = uart_getc(m_uart);
-        if (c == PICO_ERROR_TIMEOUT)
-        {
-            break;
-        }
-        *data++ = static_cast<char>(c);
-        ++count;
+        data[bytes_read++] = rx_buffer_.front();
+        rx_buffer_.pop();
     }
-    return count;
+    return bytes_read > 0;
 }
 
 int UART::available()
@@ -58,18 +49,72 @@ int UART::available()
     return uart_is_readable(m_uart) ? 1 : 0;
 }
 
+void UART::flush()
+{
+    rx_buffer_ = std::queue<char>();
+}
+
 // RX interrupt handler
 void UART::uart_irq_handler(void *context)
 {
     UART *uart = static_cast<UART *>(context);
+
     while (uart_is_readable(uart->m_uart))
     {
-        uint8_t ch = uart_getc(uart->m_uart);
-        // Can we send it back?
-        if (uart_is_writable(uart->m_uart)) {
-            // Change it slightly first!
-            ch++;
-            uart_putc(uart->m_uart, ch);
-        }
+        char c = uart_getc(uart->m_uart);
+        uart->rx_buffer_.push(c);
+    }
+}
+
+void UART::decode_message()
+{
+    char data[128]; // Allocate memory for the data buffer
+
+    if (!read(data, sizeof(data)))
+    {
+        return;
+    }
+
+    printf("message: %s\n", data);
+
+    uint8_t header = data[0];
+
+    switch (header)
+    {
+        case message::SET_ATTENUATION:
+            ;
+            break;
+        case message::GET_ATTENUATION:
+            ;
+            break;
+        case message::SET_LNA_ENABLE:
+            ;
+            break;
+        case message::GET_LNA_ENABLE:
+            ;
+            break;
+        case message::SET_ATTENUATOR_ENABLE:
+            ;
+            break;
+        case message::GET_ATTENUATOR_ENABLE:
+            ;
+            break;
+        case message::SET_CALIBRATION:
+            ;
+            break;
+        case message::GET_CALIBRATION:
+            ;
+            break;
+        case message::GET_BITS:
+            ;
+            break;
+        case message::GET_HARDWARE_NUMBERS:
+            ;
+            break;
+        case message::GET_SOFTWARE_NUMBERS:
+            ;
+            break;
+        default:
+            break;
     }
 }
