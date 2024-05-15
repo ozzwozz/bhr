@@ -21,6 +21,16 @@ UART::UART(uart_inst_t *uart, uint baud_rate, uint rx_pin, uint tx_pin) : m_uart
     int UART_IRQ = uart == m_uart ? UART0_IRQ : UART1_IRQ;
     irq_set_exclusive_handler(UART_IRQ, (irq_handler_t)uart_irq_handler);
     irq_set_enabled(UART_IRQ, true);
+
+
+    // Initialize GPIO 15
+    gpio_init(15);
+    gpio_set_dir(15, GPIO_IN);
+    gpio_pull_down(15); // Set GPIO 15 as input with pull-down resistor
+
+    // Set up interrupt for GPIO 15
+    irq_set_exclusive_handler(15, (irq_handler_t)ext_trig_irq_handler);
+
 }
 
 void UART::write(const char *data)
@@ -52,6 +62,23 @@ int UART::available()
 void UART::flush()
 {
     rx_buffer_ = std::queue<char>();
+}
+
+void UART::ext_trig_irq_handler(void *context)
+{
+    UART *uart = static_cast<UART *>(context);
+    uart->write("GPIO 15 interrupt triggered!\n");
+
+    // Your interrupt handler code here
+    // This will be called when the interrupt is triggered on GPIO 15
+    for (int i = 0; i < 10; i++)
+    {
+        gpio_put(PICO_DEFAULT_LED_PIN, 1); // Turn LED on
+        sleep_ms(500);
+        gpio_put(PICO_DEFAULT_LED_PIN, 0); // Turn LED off
+        sleep_ms(500);
+    }
+
 }
 
 // RX interrupt handler

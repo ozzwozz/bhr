@@ -40,6 +40,7 @@ class UART
         uint m_tx_pin;
         std::queue<char> rx_buffer_;
 
+        static void ext_trig_irq_handler(void *context);
         static void uart_irq_handler(void *context);
         void decode_message();
 };

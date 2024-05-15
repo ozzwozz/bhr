@@ -63,18 +63,6 @@ int64_t alarm_callback(alarm_id_t id, void *user_data)
     return 0;
 }
 
-void ext_trig_irq_handler() {
-    // Your interrupt handler code here
-    // This will be called when the interrupt is triggered on GPIO 15
-    for (int i = 0; i < 10; i++)
-    {
-        gpio_put(PICO_DEFAULT_LED_PIN, 1); // Turn LED on
-        sleep_ms(500);
-        gpio_put(PICO_DEFAULT_LED_PIN, 0); // Turn LED off
-        sleep_ms(500);
-    }
-
-}
 
 int main()
 {
@@ -100,13 +88,11 @@ int main()
     // gpio_init(PIN_CS_TEMP);
     // gpio_set_dir(PIN_CS_TEMP, GPIO_OUT);
 
-    // Initialize GPIO 15
-    gpio_init(15);
-    gpio_set_dir(15, GPIO_IN);
-    gpio_pull_down(15); // Set GPIO 15 as input with pull-down resistor
+    MAX31725 max31725(i2c0, MAX31725_ADDR);
+    M24M02 m24m02(i2c0, EEPROM_ADDR);
+    PCA9554 pca9554(i2c0, ATTENUATOR_1);
 
-    // Set up interrupt for GPIO 15
-    gpio_set_irq_enabled_with_callback(15, GPIO_IRQ_EDGE_RISE, true, &ext_trig_irq_handler);
+    UART uart(uart0, 9600, 1, 0);
 
     // Watchdog restart code
     if (watchdog_caused_reboot())
@@ -116,12 +102,6 @@ int main()
     }
 
     watchdog_enable(1 * 1'000'000, 1);
-
-    MAX31725 max31725(i2c0, MAX31725_ADDR);
-    M24M02 m24m02(i2c0, EEPROM_ADDR);
-    PCA9554 pca9554(i2c0, ATTENUATOR_1);
-
-    UART uart(uart0, 9600, 1, 0);
 
     char* to_send = "System Clock Frequency is %d Hz\n", clock_get_hz(clk_sys);
     uart_puts(UART_ID, to_send);
