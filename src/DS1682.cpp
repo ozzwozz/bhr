@@ -25,7 +25,7 @@ DS1682::~DS1682()
  * @return true 
  * @return false 
  */
-bool DS1682::setTime(uint32_t timestamp)
+bool DS1682::setTime(const uint32_t timestamp)
 {
     uint8_t buffer[5]; // 5 bytes needed for timestamp data
     buffer[0] = 0x00; // Register address for setting time

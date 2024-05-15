@@ -26,7 +26,7 @@ M24M02::~M24M02()
  * @return true 
  * @return false 
  */
-bool M24M02::read(uint32_t address, uint8_t *data, size_t len)
+bool M24M02::read(const uint32_t address, uint8_t *data, size_t len)
 {
     bool success = true;
     uint8_t addr_buf[2] = {(address >> 8) & 0xFF, address & 0xFF};
@@ -54,7 +54,7 @@ bool M24M02::read(uint32_t address, uint8_t *data, size_t len)
  * @return true 
  * @return false 
  */
-bool M24M02::write(uint32_t address, const uint8_t *data, size_t len)
+bool M24M02::write(const uint32_t address, const uint8_t *data, size_t len)
 {
     bool success = true;
     uint8_t addr_buf[3] = {(address >> 8) & 0xFF, address & 0xFF};

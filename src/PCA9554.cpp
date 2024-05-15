@@ -22,7 +22,7 @@ PCA9554::~PCA9554()
  * 
  * @param value 
  */
-void PCA9554::set_outputs(uint8_t value)
+void PCA9554::set_outputs(const uint8_t value)
 {
     uint8_t current_value = 0;
     I2CDevice::read(&current_value, 1);

@@ -57,6 +57,13 @@
 
 static int chars_rxed = 0;
 
+/**
+ * @brief Generic Alarm Callback
+ * 
+ * @param id 
+ * @param user_data 
+ * @return int64_t 
+ */
 int64_t alarm_callback(alarm_id_t id, void *user_data)
 {
     // Put your timeout handler code in here
@@ -93,6 +100,11 @@ int main()
     PCA9554 pca9554(i2c0, ATTENUATOR_1);
 
     UART uart(uart0, 9600, 1, 0);
+
+//     // ADC initialisation
+//     adc_init();
+//     adc_gpio_init(26);
+//     adc_select_input(0);
 
     // Watchdog restart code
     if (watchdog_caused_reboot())

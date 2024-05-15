@@ -11,6 +11,6 @@ class PCA9554 : public I2CDevice
         PCA9554(i2c_inst_t *i2c, uint8_t address);
         ~PCA9554();
 
-        void set_outputs(uint8_t value);
+        void set_outputs(const uint8_t value);
         uint8_t read_inputs();
 };
