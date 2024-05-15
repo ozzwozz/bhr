@@ -12,6 +12,7 @@
 class UART
 {
     public:
+        // TODO: Issue #7 - Implement Payload Definitions
         enum message_headers
         {
             SET_ATTENUATION = 0x00,
