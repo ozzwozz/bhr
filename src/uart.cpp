@@ -167,37 +167,37 @@ void UART::decode_message()
 
     switch (header)
     {
-        case message::SET_ATTENUATION:
+        case message_headers::SET_ATTENUATION:
             set_attenuation(data);
             break;
-        case message::GET_ATTENUATION:
+        case message_headers::GET_ATTENUATION:
             get_attenuation(response);
             break;
-        case message::SET_LNA_ENABLE:
+        case message_headers::SET_LNA_ENABLE:
             set_lna_enable(data);
             break;
-        case message::GET_LNA_ENABLE:
+        case message_headers::GET_LNA_ENABLE:
             get_lna_enable(response);
             break;
-        case message::SET_ATTENUATOR_ENABLE:
+        case message_headers::SET_ATTENUATOR_ENABLE:
             set_attenuator_enable(data);
             break;
-        case message::GET_ATTENUATOR_ENABLE:
+        case message_headers::GET_ATTENUATOR_ENABLE:
             get_attenuator_enable(response);
             break;
-        case message::SET_CALIBRATION:
+        case message_headers::SET_CALIBRATION:
             set_calibration(data);
             break;
-        case message::GET_CALIBRATION:
+        case message_headers::GET_CALIBRATION:
             get_calibration(response);
             break;
-        case message::GET_BITS:
+        case message_headers::GET_BITS:
             get_bits(response);
             break;
-        case message::GET_HARDWARE_NUMBERS:
+        case message_headers::GET_HARDWARE_NUMBERS:
             get_hardware_numbers(response);
             break;
-        case message::GET_SOFTWARE_NUMBERS:
+        case message_headers::GET_SOFTWARE_NUMBERS:
             get_software_numbers(response);
             break;
         default:

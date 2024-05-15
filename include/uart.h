@@ -12,7 +12,7 @@
 class UART
 {
     public:
-        enum message 
+        enum message_headers
         {
             SET_ATTENUATION = 0x00,
             GET_ATTENUATION = 0x01,
