@@ -7,8 +7,6 @@
  */
 class PCA9554 : public I2CDevice
 {
-    private:
-        /* data */
     public:
         PCA9554(i2c_inst_t *i2c, uint8_t address);
         ~PCA9554();
