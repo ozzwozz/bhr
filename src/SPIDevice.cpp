@@ -1,9 +1,5 @@
 #include "SPIDevice.h"
 
-
-/// @brief Construct a new SPIDevice::SPIDevice object
-/// @param spi_inst 
-/// @param cs_pin 
 SPIDevice::SPIDevice(spi_inst_t* spi_inst, uint cs_pin)
     : m_spi(spi_inst)
     , m_cs_pin(cs_pin)
@@ -15,34 +11,26 @@ SPIDevice::SPIDevice(spi_inst_t* spi_inst, uint cs_pin)
     deassertCS(); // Set CS pin high (inactive)
 }
 
-/// @brief Destroy the SPIDevice::SPIDevice object
 SPIDevice::~SPIDevice()
 {
 
 }
 
-/// @brief Configure the SPI
-/// @param baudrate 
 void SPIDevice::configure(uint baudrate)
 {
     spi_set_baudrate(m_spi, baudrate);
 }
 
-/// @brief Select the device
 void SPIDevice::assertCS()
 {
     gpio_put(m_cs_pin, 0);
 }
 
-/// @brief unselect the device
 void SPIDevice::deassertCS()
 {
     gpio_put(m_cs_pin, 1);
 }
 
-/// @brief write to the device
-/// @param data 
-/// @param len 
 void SPIDevice::write(const uint8_t *data, size_t len)
 {
     assertCS();
@@ -50,10 +38,6 @@ void SPIDevice::write(const uint8_t *data, size_t len)
     deassertCS();
 }
 
-
-/// @brief read from the device
-/// @param data 
-/// @param len 
 void SPIDevice::read(uint8_t *data, size_t len)
 {
     assertCS();
@@ -61,11 +45,6 @@ void SPIDevice::read(uint8_t *data, size_t len)
     deassertCS();
 }
 
-
-/// @brief Read and write to the target device
-/// @param tx_data 
-/// @param rx_data 
-/// @param len 
 void SPIDevice::exchange(const uint8_t *tx_data, uint8_t *rx_data, size_t len)
 {
     assertCS();

@@ -4,8 +4,8 @@
 #include "hardware/i2c.h"
 
 
- /// @file I2C super class for I2C Device driver to inherit from 
- 
+/// @class I2CDevice
+/// @brief I2C super class for I2C Device driver to inherit from
 class I2CDevice
 {
 private:
@@ -14,8 +14,23 @@ private:
     /// @param m_address member i2c device address 
     uint8_t m_address;
 public:
+    /// @brief Construct a new I2CDevice::I2CDevice object
+    /// @param i2c i2c instance
+    /// @param address target device address
     I2CDevice(i2c_inst_t *i2c, uint8_t address);
-    ~I2CDevice();
+
+    /// @brief Destroy the I2CDevice::I2CDevice object
+    virtual ~I2CDevice();
+
+    /// @brief Read datasent from the target device
+    /// @param data pointer to address of data to be sent
+    /// @param len length of the data to be sent
+    /// @return success
     bool read(uint8_t *data, size_t len);
+
+    /// @brief Write given data to the target device
+    /// @param data pointer to address of data to be sent
+    /// @param len length of the data to be sent
+    /// @return success 
     bool write(const uint8_t *data, size_t len);
 };
