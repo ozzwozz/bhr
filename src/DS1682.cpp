@@ -12,6 +12,14 @@ DS1682::DS1682(i2c_inst_t* i2c_inst, uint8_t address) : I2CDevice(i2c_inst, addr
 }
 
 /**
+ * @brief Destroy the DS1682::DS1682 object
+ * 
+ */
+DS1682::~DS1682()
+{
+
+}
+/**
  * @brief Set time on DS1682
  * 
  * @param timestamp 
