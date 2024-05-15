@@ -4,7 +4,6 @@
 
 /**
  * @file MAX31725 - Local Temperature Sensor Driver
- * 
  */
 class MAX31725 : public I2CDevice
 {

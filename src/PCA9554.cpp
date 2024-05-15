@@ -12,7 +12,6 @@ PCA9554::PCA9554(i2c_inst_t *i2c, uint8_t address) : I2CDevice(i2c, address)
 
 /**
  * @brief Destroy the PCA9554::PCA9554 object
- * 
  */
 PCA9554::~PCA9554()
 {

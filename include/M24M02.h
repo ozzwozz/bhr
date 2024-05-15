@@ -4,7 +4,6 @@
 
 /**
  * @file M24M02 EEPROM Dvice Driver
- * 
  */
 class M24M02 : public I2CDevice
 {

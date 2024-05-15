@@ -2,7 +2,6 @@
 
 /**
  * @file DS1682 - Total-Elapsed-Time Recorder with Alarm
- * 
  */
 
 class DS1682 : public I2CDevice {

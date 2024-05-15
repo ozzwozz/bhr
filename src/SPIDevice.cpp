@@ -16,9 +16,9 @@ SPIDevice::SPIDevice(spi_inst_t* spi_inst, uint cs_pin)
     gpio_set_dir(m_cs_pin, GPIO_OUT);
     deassertCS(); // Set CS pin high (inactive)
 }
+
 /**
  * @brief Destroy the SPIDevice::SPIDevice object
- * 
  */
 SPIDevice::~SPIDevice()
 {
@@ -37,7 +37,6 @@ void SPIDevice::configure(uint baudrate)
 
 /**
  * @brief Select the device
- * 
  */
 void SPIDevice::assertCS()
 {
@@ -45,7 +44,6 @@ void SPIDevice::assertCS()
 }
 /**
  * @brief unselect the device
- * 
  */
 void SPIDevice::deassertCS()
 {

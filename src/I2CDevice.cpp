@@ -14,7 +14,6 @@ I2CDevice::I2CDevice(i2c_inst_t *i2c, uint8_t address)
 
 /**
  * @brief Destroy the I2CDevice::I2CDevice object
- * 
  */
 I2CDevice::~I2CDevice()
 {

@@ -6,7 +6,9 @@
 #include "hardware/irq.h"
 #include <queue>
 
-
+/**
+ * @file UART Driver
+ */
 class UART
 {
     public:
@@ -37,6 +39,7 @@ class UART
         size_t send_message();
 
     private:
+        /** @param */
         uart_inst_t *m_uart;
         uint m_rx_pin;
         uint m_tx_pin;

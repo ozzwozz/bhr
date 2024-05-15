@@ -12,7 +12,6 @@ M24M02::M24M02(i2c_inst_t *i2c, uint8_t address) : I2CDevice(i2c, address)
 
 /**
  * @brief Destroy the M24M02::M24M02 object
- * 
  */
 M24M02::~M24M02()
 {

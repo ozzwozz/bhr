@@ -4,7 +4,6 @@
 
 /**
  * @file PCA9554 Attenuator Driver
- * 
  */
 class PCA9554 : public I2CDevice
 {
