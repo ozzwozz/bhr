@@ -127,7 +127,8 @@ int main()
 
         watchdog_update();
 
-        float temperature = max31725.read_temperature();
+        float temperature;
+        max31725.read_temperature(temperature);
         printf("Temperature: %.2fC\n", temperature);
 
         uint8_t eeprom_data[10];

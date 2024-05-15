@@ -36,7 +36,7 @@ class UART
         UART(uart_inst_t *uart, uint baud_rate, uint rx_pin, uint tx_pin);
 
         /// @brief Destroy the UART::UART object
-        UART::~UART();
+        ~UART();
 
         /// @brief Write to UART
         /// @param data 
