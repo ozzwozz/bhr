@@ -33,9 +33,13 @@
 // I2C defines
 // This example will use I2C0 on GPIO8 (SDA) and GPIO9 (SCL) running at 400KHz.
 // Pins can be changed, see the GPIO function select table in the datasheet for information on GPIO assignments
-#define I2C_PORT i2c0
-#define I2C_SDA 8
-#define I2C_SCL 9
+#define I2C0_PORT i2c0
+#define I2C0_SDA 8
+#define I2C0_SCL 9
+
+#define I2C1_PORT i2c1
+#define I2C1_SDA 14
+#define I2C1_SCL 15
 
 #define UART_ID uart0
 #define BAUD_RATE 115200
@@ -77,12 +81,18 @@ int main()
     add_alarm_in_ms(2000, alarm_callback, NULL, false);
 
     // I2C Initialisation. Using it at 400Khz.
-    i2c_init(I2C_PORT, 400*1000);
     
-    gpio_set_function(I2C_SDA, GPIO_FUNC_I2C);
-    gpio_set_function(I2C_SCL, GPIO_FUNC_I2C);
-    gpio_pull_up(I2C_SDA);
-    gpio_pull_up(I2C_SCL);
+    i2c_init(I2C0_PORT, 400*1000);
+    gpio_set_function(I2C0_SDA, GPIO_FUNC_I2C);
+    gpio_set_function(I2C0_SCL, GPIO_FUNC_I2C);
+    gpio_pull_up(I2C0_SDA);
+    gpio_pull_up(I2C0_SCL);
+
+    i2c_init(I2C1_PORT, 400*1000);
+    gpio_set_function(I2C1_SDA, GPIO_FUNC_I2C);
+    gpio_set_function(I2C1_SCL, GPIO_FUNC_I2C);
+    gpio_pull_up(I2C1_SDA);
+    gpio_pull_up(I2C1_SCL);
 
     // SPI initialisation. This example will use SPI at 1MHz.
     spi_init(SPI_PORT, 1'000'000);
@@ -95,7 +105,8 @@ int main()
 
     MAX31725 max31725(i2c0, MAX31725_ADDR);
     M24M02 m24m02(i2c0, EEPROM_ADDR);
-    PCA9554 pca9554(i2c0, ATTENUATOR_1);
+
+    PCA9554 pca9554(i2c1, ATTENUATOR_1);
 
     UART uart(uart0, 9600, 1, 0);
 
