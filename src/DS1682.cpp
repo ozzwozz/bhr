@@ -1,10 +1,23 @@
 #include "DS1682.h"
 
+/**
+ * @brief Construct a new DS1682::DS1682 object
+ * 
+ * @param i2c_inst i2c instance
+ * @param address device address
+ */
 DS1682::DS1682(i2c_inst_t* i2c_inst, uint8_t address) : I2CDevice(i2c_inst, address)
 {
     // Constructor implementation if needed
 }
 
+/**
+ * @brief Set time on DS1682
+ * 
+ * @param timestamp 
+ * @return true 
+ * @return false 
+ */
 bool DS1682::setTime(uint32_t timestamp)
 {
     uint8_t buffer[5]; // 5 bytes needed for timestamp data
@@ -18,6 +31,11 @@ bool DS1682::setTime(uint32_t timestamp)
     return I2CDevice::write(buffer, sizeof(buffer));
 }
 
+/**
+ * @brief Get the Time from DS1682
+ * 
+ * @return uint32_t current time
+ */
 uint32_t DS1682::getTime()
 {
     uint32_t timestamp;
@@ -39,6 +57,11 @@ uint32_t DS1682::getTime()
     return timestamp;
 }
 
+/**
+ * @brief TODO
+ * 
+ * @return uint32_t 
+ */
 uint32_t DS1682::getUniqueID()
 {
     uint32_t uniqueID;
