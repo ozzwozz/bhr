@@ -7,12 +7,10 @@ MAX31725::MAX31725(i2c_inst_t *i2c, uint8_t address) : I2CDevice(i2c, address)
 {
 }
 
-
 /// @brief Destroy the MAX31725::MAX31725 object
 MAX31725::~MAX31725()
 {
 }
-
 
 /// @brief Read register storing the temperature data on the MAX31725
 /// @return float 
