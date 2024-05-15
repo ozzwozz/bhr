@@ -58,12 +58,10 @@
 static int chars_rxed = 0;
 
 
- /// @brief Generic Alarm Callback
- 
- /// @param id 
- /// @param user_data 
- /// @return int64_t 
- 
+/// @brief Generic Alarm Callback
+/// @param id 
+/// @param user_data 
+/// @return int64_t 
 int64_t alarm_callback(alarm_id_t id, void *user_data)
 {
     // Put your timeout handler code in here
