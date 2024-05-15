@@ -53,23 +53,25 @@ pico_sdk_init()
 
 # Add all your header files here
 set(HEADER_FILES
-    include/I2CDevice.h
     include/DS1682.h
+    include/I2CDevice.h
     include/M24M02.h
     include/MAX31725.h
     include/PCA9554.h
+    include/SPIDevice.h
     include/uart.h
 )
 
 # Add all your source files here
 set(SOURCE_FILES
-    src/I2CDevice.cpp
+    src/bhr-embedded.cpp
     src/DS1682.cpp
+    src/I2CDevice.cpp
     src/M24M02.cpp
     src/MAX31725.cpp
     src/PCA9554.cpp
+    src/SPIDevice.cpp
     src/uart.cpp
-    src/bhr-embedded.cpp
 )
 
 # Include the directories containing the header files
