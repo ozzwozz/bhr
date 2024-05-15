@@ -20,7 +20,7 @@ class PCA9554 : public I2CDevice
         /// @param value 
         void set_outputs(const uint8_t value);
 
-        /// @brief Read data from the attenuator cards
+        /// @brief Read current settings from the attenuator cards
         /// @return uint8_t 
         uint8_t read_inputs();
 };

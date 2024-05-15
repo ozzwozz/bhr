@@ -18,10 +18,11 @@ public:
     bool setTime(const uint32_t timestamp);
 
     /// @brief Get the Time from DS1682
-    /// @return uint32_t current time
-    uint32_t getTime();
+    /// @param timestamp timestamp by reference
+    /// @return success is true
+    bool getTime(uint32_t &timestamp);
 
-    /// @brief TODO - I can't remember why I made this
+    /// @brief Get the device ID
     /// @return uint32_t 
     uint32_t getUniqueID();
 };

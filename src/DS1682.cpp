@@ -12,8 +12,9 @@ DS1682::~DS1682()
 
 bool DS1682::setTime(const uint32_t timestamp)
 {
-    uint8_t buffer[5]; // 5 bytes needed for timestamp data
+    uint8_t buffer[5]; // 1 byte is register address + 4 for data
     buffer[0] = 0x00; // Register address for setting time
+    
     // Populate buffer with timestamp data (assumes little-endian byte order)
     buffer[1] = timestamp & 0xFF;
     buffer[2] = (timestamp >> 8) & 0xFF;
@@ -23,25 +24,28 @@ bool DS1682::setTime(const uint32_t timestamp)
     return I2CDevice::write(buffer, sizeof(buffer));
 }
 
-uint32_t DS1682::getTime()
+bool DS1682::getTime(uint32_t &timestamp)
 {
-    uint32_t timestamp;
     uint8_t buffer[4]; // 4 bytes needed for timestamp data
     buffer[0] = 0x00; // Register address for reading time
 
+    // request time data
     if (!I2CDevice::write(buffer, 1))
     {
         timestamp = 0; // Error in writing register address
+        return false;
     }
 
+    // receive time data
     if (!I2CDevice::read(buffer, sizeof(buffer)))
     {
         timestamp = 0; // Error in reading time data
+        return false;
     }
 
     // Convert the received data to a timestamp (assumes little-endian byte order)
     timestamp = buffer[0] | (buffer[1] << 8) | (buffer[2] << 16) | (buffer[3] << 24);
-    return timestamp;
+    return true;
 }
 
 uint32_t DS1682::getUniqueID()

@@ -13,12 +13,12 @@ void PCA9554::set_outputs(const uint8_t value)
     uint8_t current_value = 0;
     I2CDevice::read(&current_value, 1);
 
+    // Masking currently set values so that only explicit changes are made
     uint8_t new_value = (current_value & 0xFF) | (value & 0xFF);
 
-    // TODO: probably not 16
     if(!I2CDevice::write(&new_value, 1))
     {
-        ; // Pass because I don't know what I wanted here
+        return;
     }
 }
 

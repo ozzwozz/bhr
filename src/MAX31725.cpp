@@ -8,9 +8,8 @@ MAX31725::~MAX31725()
 {
 }
 
-float MAX31725::read_temperature()
+void MAX31725::read_temperature(float &temperature)
 {
-    float temperature;
     uint8_t rx_data[2];
 
     uint8_t cmd = 0x00;
@@ -24,6 +23,4 @@ float MAX31725::read_temperature()
 
     int16_t temp_data = (rx_data[0] << 8) | rx_data[1];
     temperature = (temp_data / 256.0);
-
-    return temperature;
 }
