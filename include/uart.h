@@ -34,16 +34,21 @@ class UART
 
         size_t read(char *data, size_t len);
         int available();
-        void flush();
+        void flush_rx();
+        void flush_tx();
 
         size_t send_message();
 
     private:
-        /** @param */
+        /** @param m_uart uart instance*/
         uart_inst_t *m_uart;
+        /** @param m_rx_pin rx pin*/
         uint m_rx_pin;
+        /** @param m_tx_pin tx pin*/
         uint m_tx_pin;
+        /** @param rx_buffer_ rx buffer queue*/
         std::queue<char> rx_buffer_;
+        /** @param tx_buffer_ tx buffer queue*/
         std::queue<char> tx_buffer_;
 
         static void ext_trig_irq_handler(void *context);
