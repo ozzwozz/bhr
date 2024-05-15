@@ -2,14 +2,12 @@
 #include <string.h>
 #include <stdio.h>
 
-/**
- * @brief Construct a new UART::UART object
- * 
- * @param uart 
- * @param baud_rate 
- * @param rx_pin 
- * @param tx_pin 
- */
+
+/// @brief Construct a new UART::UART object
+/// @param uart 
+/// @param baud_rate 
+/// @param rx_pin 
+/// @param tx_pin 
 UART::UART(uart_inst_t *uart, uint baud_rate, uint rx_pin, uint tx_pin) : m_uart(uart)
 {
     gpio_set_function(rx_pin, GPIO_FUNC_UART);
@@ -41,34 +39,25 @@ UART::UART(uart_inst_t *uart, uint baud_rate, uint rx_pin, uint tx_pin) : m_uart
 
 }
 
-/**
- * @brief Write to UART
- * 
- * @param data 
- */
+/// @brief Write to UART
+/// @param data 
 void UART::write(const char *data)
 {
     uart_write_blocking(m_uart, reinterpret_cast<const uint8_t*>(data), strlen(data));
 }
 
-/**
- * @brief Write to UART
- * 
- * @param data 
- * @param len 
- */
+/// @brief Write to UART
+/// @param data 
+/// @param len 
 void UART::write(const char *data, size_t len)
 {
     uart_write_blocking(m_uart, reinterpret_cast<const uint8_t*>(data), len);
 }
 
-/**
- * @brief Read from UART
- * 
- * @param data 
- * @param len 
- * @return size_t 
- */
+/// @brief Read from UART
+/// @param data 
+/// @param len 
+/// @return size_t 
 size_t UART::read(char *data, size_t len)
 {
     size_t bytes_read = 0;
@@ -80,37 +69,28 @@ size_t UART::read(char *data, size_t len)
     return bytes_read > 0;
 }
 
-/**
- * @brief Check if UART is available to interact with
- * 
- * @return int 
- */
+/// @brief Check if UART is available to interact with
+/// @return int 
 int UART::available()
 {
     return uart_is_readable(m_uart) ? 1 : 0;
 }
 
-/**
- * @brief flush the Rx buffer
- */
+/// @brief flush the Rx buffer
 void UART::flush_rx()
 {
     rx_buffer_ = std::queue<char>();
 }
 
-/**
- * @brief flush the Tx buffer
- */
+/// @brief flush the Tx buffer
 void UART::flush_tx()
 {
     tx_buffer_ = std::queue<char>();
 }
 
-/**
- * @brief Handler for the EXT_TRIG/GPIO15 interrupt
- * 
- * @param context 
- */
+
+/// @brief Handler for the EXT_TRIG/GPIO15 interrupt
+/// @param context 
 void UART::ext_trig_irq_handler(void *context)
 {
     UART *uart = static_cast<UART *>(context);
@@ -128,11 +108,8 @@ void UART::ext_trig_irq_handler(void *context)
 
 }
 
-/**
- * @brief Interrupt handler for when data is recieved
- * 
- * @param context 
- */
+/// @brief Interrupt handler for when data is recieved
+/// @param context 
 void UART::uart_irq_handler(void *context)
 {
     UART *uart = static_cast<UART *>(context);
@@ -144,10 +121,7 @@ void UART::uart_irq_handler(void *context)
     }
 }
 
-/**
- * @brief Parse the received message
- * 
- */
+/// @brief Parse the received message
 void UART::decode_message()
 {
     char data[128]; // Allocate memory for the data buffer
@@ -207,11 +181,8 @@ void UART::decode_message()
     tx_buffer_.push(*response);
 }
 
-/**
- * @brief Send data in the tx buffer
- * 
- * @return size_t 
- */
+/// @brief Send data in the tx buffer
+/// @return size_t 
 size_t UART::send_message()
 {
     size_t bytes_sent = 0;
@@ -219,7 +190,7 @@ size_t UART::send_message()
     while (!tx_buffer_.empty() && bytes_sent < sizeof(data))
     {
         data[bytes_sent++] = tx_buffer_.front();
-        rx_buffer_.pop();
+        tx_buffer_.pop();
     }
 
     write(data);
@@ -227,12 +198,9 @@ size_t UART::send_message()
     return bytes_sent > 0;
 }
 
-/**
- * @brief Set the attenuation level
- * 
- * @param data 
- * @return uint8_t 
- */
+/// @brief Set the attenuation level
+/// @param data 
+/// @return uint8_t 
 uint8_t UART::set_attenuation(char* data)
 {
     uint8_t attenuation_value = data[1];
@@ -241,22 +209,16 @@ uint8_t UART::set_attenuation(char* data)
     return band_mask;
 }
 
-/**
- * @brief Get the current attenuation level
- * 
- * @param response 
- */
+/// @brief Get the current attenuation level
+/// @param response 
 void UART::get_attenuation(const char* response)
 {
 
 }
 
-/**
- * @brief Set the bands for which LNA is enabled/disabled
- * 
- * @param data 
- * @return uint8_t 
- */
+/// @brief Set the bands for which LNA is enabled/disabled
+/// @param data 
+/// @return uint8_t 
 uint8_t UART::set_lna_enable(char* data)
 {
     uint8_t lna_enabled = data[1];
@@ -265,22 +227,16 @@ uint8_t UART::set_lna_enable(char* data)
     return band_mask;
 }
 
-/**
- * @brief Get te bands on which LNA is enabled
- * 
- * @param response 
- */
+/// @brief Get te bands on which LNA is enabled
+/// @param response 
 void UART::get_lna_enable(const char* response)
 {
     uint8_t lna_enabled;
 }
 
-/**
- * @brief Set the bands for which the attenuators should be enabled/disabled
- * 
- * @param data 
- * @return uint8_t 
- */
+/// @brief Set the bands for which the attenuators should be enabled/disabled
+/// @param data 
+/// @return uint8_t 
 uint8_t UART::set_attenuator_enable(char* data)
 {
     uint8_t attenuator_enabled = data[1];
@@ -289,62 +245,44 @@ uint8_t UART::set_attenuator_enable(char* data)
     return band_mask;
 }
 
-/**
- * @brief Get the current attenuator enabled/disabled status for each band
- * 
- * @param response 
- */
+/// @brief Get the current attenuator enabled/disabled status for each band
+/// @param response 
 void UART::get_attenuator_enable(const char* response)
 {
     uint8_t attenuator_enabled;
 }
 
-/**
- * @brief Set the Calibration table on the EEPROM 
- * 
- * @param data 
- */
+/// @brief Set the Calibration table on the EEPROM 
+/// @param data 
 void UART::set_calibration(char* data)
 {
     uint8_t calibration_table = data[1];
     uint8_t band_mask = data[2];
 }
 
-/**
- * @brief Get the current calibration table on the EEPROM
- * 
- * @param response 
- */
+/// @brief Get the current calibration table on the EEPROM
+/// @param response 
 void UART::get_calibration(const char* response)
 {
     // unknown return
 }
 
-/**
- * @brief A list of the attenuator stage bits
- * 
- * @param response 
- */
+/// @brief A list of the attenuator stage bits
+/// @param response 
 void UART::get_bits(const char* response)
 {
     // unknown return
 }
 
-/**
- * @brief A list of the attenuator stage harder numbers
- * 
- * @param response 
- */
+/// @brief A list of the attenuator stage harder numbers
+/// @param response 
 void UART::get_hardware_numbers(const char* response)
 {
     // unknown return
 }
 
-/**
- * @brief A list of the attenuator stage software numbers
- * 
- * @param response 
- */
+/// @brief A list of the attenuator stage software numbers
+/// @param response 
 void UART::get_software_numbers(const char* response)
 {
     // unknown return

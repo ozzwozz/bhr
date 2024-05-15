@@ -1,27 +1,21 @@
 #include "MAX31725.h"
 
-/**
- * @brief Construct a new MAX31725::MAX31725 object
- * 
- * @param i2c 
- * @param address 
- */
+/// @brief Construct a new MAX31725::MAX31725 object
+/// @param i2c 
+/// @param address  
 MAX31725::MAX31725(i2c_inst_t *i2c, uint8_t address) : I2CDevice(i2c, address)
 {
 }
 
-/**
- * @brief Destroy the MAX31725::MAX31725 object
- */
+
+/// @brief Destroy the MAX31725::MAX31725 object
 MAX31725::~MAX31725()
 {
 }
 
-/**
- * @brief Read register storing the temperature data on the MAX31725
- * 
- * @return float 
- */
+
+/// @brief Read register storing the temperature data on the MAX31725
+/// @return float 
 float MAX31725::read_temperature()
 {
     float temperature;

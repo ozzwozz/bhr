@@ -6,9 +6,9 @@
 #include "hardware/irq.h"
 #include <queue>
 
-/**
- * @file UART Driver
- */
+
+ /// @file UART Driver
+ 
 class UART
 {
     public:
@@ -40,15 +40,15 @@ class UART
         size_t send_message();
 
     private:
-        /** @param m_uart uart instance*/
+        /// @param m_uart uart instance
         uart_inst_t *m_uart;
-        /** @param m_rx_pin rx pin*/
+        /// @param m_rx_pin rx pin
         uint m_rx_pin;
-        /** @param m_tx_pin tx pin*/
+        /// @param m_tx_pin tx pin
         uint m_tx_pin;
-        /** @param rx_buffer_ rx buffer queue*/
+        /// @param rx_buffer_ rx buffer queue
         std::queue<char> rx_buffer_;
-        /** @param tx_buffer_ tx buffer queue*/
+        /// @param tx_buffer_ tx buffer queue
         std::queue<char> tx_buffer_;
 
         static void ext_trig_irq_handler(void *context);

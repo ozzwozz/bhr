@@ -2,9 +2,9 @@
 
 #include "I2CDevice.h"
 
-/**
- * @file M24M02 EEPROM Dvice Driver
- */
+
+ /// @file M24M02 EEPROM Dvice Driver
+ 
 class M24M02 : public I2CDevice
 {
     public:
