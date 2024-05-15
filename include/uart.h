@@ -30,17 +30,32 @@ class UART
         void write(const char *data);
         void write(const char *data, size_t len);
 
-        bool read(char *data, size_t len);
+        size_t read(char *data, size_t len);
         int available();
         void flush();
+
+        size_t send_message();
 
     private:
         uart_inst_t *m_uart;
         uint m_rx_pin;
         uint m_tx_pin;
         std::queue<char> rx_buffer_;
+        std::queue<char> tx_buffer_;
 
         static void ext_trig_irq_handler(void *context);
         static void uart_irq_handler(void *context);
         void decode_message();
+
+        uint8_t set_attenuation(char* data);
+        void get_attenuation(const char* response);
+        uint8_t set_lna_enable(char* data);
+        void get_lna_enable(const char* response);
+        uint8_t set_attenuator_enable(char* data);
+        void get_attenuator_enable(const char* response);
+        void set_calibration(char* data);
+        void get_calibration(const char* response);
+        void get_bits(const char* response);
+        void get_hardware_numbers(const char* response);
+        void get_software_numbers(const char* response);
 };

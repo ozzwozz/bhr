@@ -43,7 +43,7 @@ void UART::write(const char *data, size_t len)
     uart_write_blocking(m_uart, reinterpret_cast<const uint8_t*>(data), len);
 }
 
-bool UART::read(char *data, size_t len)
+size_t UART::read(char *data, size_t len)
 {
     size_t bytes_read = 0;
     while (!rx_buffer_.empty() && bytes_read < len)
@@ -106,42 +106,128 @@ void UART::decode_message()
 
     uint8_t header = data[0];
 
+    char response[128];
+
+    response[0] = header;
+
     switch (header)
     {
         case message::SET_ATTENUATION:
-            ;
+            set_attenuation(data);
             break;
         case message::GET_ATTENUATION:
-            ;
+            get_attenuation(response);
             break;
         case message::SET_LNA_ENABLE:
-            ;
+            set_lna_enable(data);
             break;
         case message::GET_LNA_ENABLE:
-            ;
+            get_lna_enable(response);
             break;
         case message::SET_ATTENUATOR_ENABLE:
-            ;
+            set_attenuator_enable(data);
             break;
         case message::GET_ATTENUATOR_ENABLE:
-            ;
+            get_attenuator_enable(response);
             break;
         case message::SET_CALIBRATION:
-            ;
+            set_calibration(data);
             break;
         case message::GET_CALIBRATION:
-            ;
+            get_calibration(response);
             break;
         case message::GET_BITS:
-            ;
+            get_bits(response);
             break;
         case message::GET_HARDWARE_NUMBERS:
-            ;
+            get_hardware_numbers(response);
             break;
         case message::GET_SOFTWARE_NUMBERS:
-            ;
+            get_software_numbers(response);
             break;
         default:
             break;
     }
+
+    tx_buffer_.push(*response);
+}
+
+size_t UART::send_message()
+{
+    size_t bytes_sent = 0;
+    char data[128];
+    while (!tx_buffer_.empty() && bytes_sent < sizeof(data))
+    {
+        data[bytes_sent++] = tx_buffer_.front();
+        rx_buffer_.pop();
+    }
+
+    write(data);
+
+    return bytes_sent > 0;
+}
+
+uint8_t UART::set_attenuation(char* data)
+{
+    uint8_t attenuation_value = data[1];
+    uint8_t band_mask = data[2];
+
+    return band_mask;
+}
+
+void UART::get_attenuation(const char* response)
+{
+
+}
+
+uint8_t UART::set_lna_enable(char* data)
+{
+    uint8_t lna_enabled = data[1];
+    uint8_t band_mask = data[2];
+
+    return band_mask;
+}
+
+void UART::get_lna_enable(const char* response)
+{
+    uint8_t lna_enabled;
+}
+
+uint8_t UART::set_attenuator_enable(char* data)
+{
+    uint8_t attenuator_enabled = data[1];
+    uint8_t band_mask = data[2];
+
+    return band_mask;
+}
+
+void UART::get_attenuator_enable(const char* response)
+{
+    uint8_t attenuator_enabled;
+}
+
+void UART::set_calibration(char* data)
+{
+    uint8_t calibration_table = data[1];
+    uint8_t band_mask = data[2];
+}
+
+void UART::get_calibration(const char* response)
+{
+    // unknown return
+}
+
+void UART::get_bits(const char* response)
+{
+    // unknown return
+}
+
+void UART::get_hardware_numbers(const char* response)
+{
+    // unknown return
+}
+
+void UART::get_software_numbers(const char* response)
+{
+    // unknown return
 }
