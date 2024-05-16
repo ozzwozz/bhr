@@ -7,6 +7,9 @@
 /// @brief Driver for the MAX31725
 class MAX31725 : public I2CDevice
 {
+    private:
+        uint8_t cmd_read_temperature = 0x00;
+
     public:
         /// @brief Construct a new MAX31725::MAX31725 object
         /// @param i2c 

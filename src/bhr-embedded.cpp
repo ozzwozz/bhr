@@ -99,9 +99,6 @@ int main()
     gpio_set_function(PIN_MISO, GPIO_FUNC_SPI);
     gpio_set_function(PIN_SCK,  GPIO_FUNC_SPI);
     gpio_set_function(PIN_MOSI, GPIO_FUNC_SPI);
-    
-    // gpio_init(PIN_CS_TEMP);
-    // gpio_set_dir(PIN_CS_TEMP, GPIO_OUT);
 
     MAX31725 max31725(i2c0, MAX31725_ADDR);
     M24M02 m24m02(i2c0, EEPROM_ADDR);
@@ -164,7 +161,7 @@ int main()
         {
             char received_char;
             uart.read(&received_char, 1);
-            printf("Recieved character from UART: %c\n", received_char);
+            printf("Received character from UART: %c\n", received_char);
         }
         gpio_put(LED_PIN, 0); // Turn LED off
     }

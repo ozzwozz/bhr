@@ -12,9 +12,7 @@ void MAX31725::read_temperature(float &temperature)
 {
     uint8_t rx_data[2];
 
-    uint8_t cmd = 0x00;
-
-    write(&cmd, 1);
+    write(&cmd_read_temperature, 1);
 
     if (!read(rx_data, 2))
     {
