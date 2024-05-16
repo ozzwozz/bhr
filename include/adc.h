@@ -6,10 +6,13 @@
 class ADC
 {
 private:
-    uint16_t ADC1_CTRL_value;
-    uint16_t P5V5_value;
-    uint16_t P3V3_OCXO_PGOOD_value;
-    uint16_t P12V_value;
+    float ADC1_CTRL_value;
+    float P5V5_value;
+    float P3V3_value;
+    float OCXO_PGOOD_value;
+    float P12V_value;
+    float INTERNAL_value;
+
 public:
     ADC();
     ~ADC();
@@ -22,4 +25,5 @@ public:
 
     uint16_t read_raw_adc(uint pin);
     float read_voltage_adc(uint pin);
+    bool ADC::read_all();
 };
