@@ -15,6 +15,7 @@
 #include "uart.h"
 #include "DS1682.h"
 #include "adc.h"
+#include "SI53361.h"
 
 // SPI Defines
 // We are going to use SPI 0, and allocate it to the following GPIO pins
@@ -103,6 +104,7 @@ int main()
 
     MAX31725 max31725 = MAX31725(i2c0, MAX31725_ADDR);
     M24M02 m24m02 = M24M02(i2c0, EEPROM_ADDR);
+    SI53361 si53361 = SI53361();
 
     PCA9554 pca9554_1 = PCA9554(i2c1, ATTENUATOR_1);
     PCA9554 pca9554_2 = PCA9554(i2c1, ATTENUATOR_2);
