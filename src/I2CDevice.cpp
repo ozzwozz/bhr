@@ -12,20 +12,18 @@ I2CDevice::~I2CDevice()
 
 bool I2CDevice::read(uint8_t *data, size_t len)
 {
-    bool success = false;
     if (i2c_read_blocking(m_i2c, m_address, data, len, false) != PICO_ERROR_GENERIC)
     {
-        success = true;
+        return true;
     }
-    return success;
+    return false;
 }
 
 bool I2CDevice::write(const uint8_t *data, size_t len)
 {
-    bool success = false;
     if (i2c_write_blocking(m_i2c, m_address, data, len, false) != PICO_ERROR_GENERIC)
     {
-        success = true;
+        return true;
     }
-    return success;
+    return false;
 }

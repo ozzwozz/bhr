@@ -24,5 +24,5 @@ public:
 
     /// @brief Get the device ID
     /// @return uint32_t 
-    uint32_t getUniqueID();
+    bool getUniqueID(uint32_t &device_id);
 };

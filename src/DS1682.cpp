@@ -48,23 +48,24 @@ bool DS1682::getTime(uint32_t &timestamp)
     return true;
 }
 
-uint32_t DS1682::getUniqueID()
+bool DS1682::getUniqueID(uint32_t &device_id)
 {
-    uint32_t uniqueID;
     uint8_t buffer[8]; // 8 bytes needed for unique ID data
     buffer[0] = 0x08; // Register address for reading unique ID
 
     if (!I2CDevice::write(buffer, 1))
     {
-        uniqueID = 0; // Error in writing register address
+        device_id = 0; // Error in writing register address
+        return false;
     }
 
     if (!I2CDevice::read(buffer, sizeof(buffer)))
     {
-        uniqueID = 0; // Error in reading unique ID data
+        device_id = 0; // Error in reading unique ID data
+        return false;
     }
 
     // Convert the received data to a unique ID (assumes little-endian byte order)
-    uniqueID = (buffer[0] << 24) | (buffer[1] << 16) | (buffer[2] << 8) | buffer[3];
-    return uniqueID;
+    device_id = (buffer[0] << 24) | (buffer[1] << 16) | (buffer[2] << 8) | buffer[3];
+    return true;
 }
