@@ -175,39 +175,145 @@ uint8_t UART::set_attenuation(char* data)
 {
     uint8_t attenuation_value = data[1];
     uint8_t band_mask = data[2];
+    uint8_t set_attenuators = 0;
 
-    return band_mask;
+    if ((band_mask & (1 << 7)) != 0)
+    {
+        set_attenuators |= (Attenuator_1.set_outputs(attenuation_value) << 7);
+    }
+    if ((band_mask & (1 << 6)) != 0)
+    {
+        set_attenuators |= (Attenuator_2.set_outputs(attenuation_value) << 6);
+    }
+    if ((band_mask & (1 << 5)) != 0)
+    {
+        set_attenuators |= (Attenuator_3.set_outputs(attenuation_value) << 5);
+    }
+    if ((band_mask & (1 << 4)) != 0)
+    {
+        set_attenuators |= (Attenuator_4.set_outputs(attenuation_value) << 4);
+    }
+    if ((band_mask & (1 << 3)) != 0)
+    {
+        set_attenuators |= (Attenuator_5.set_outputs(attenuation_value) << 3);
+    }
+
+    return set_attenuators;
 }
 
 void UART::get_attenuation(const char* response)
 {
+    uint8_t attenuation_value;
+    uint8_t band_mask = data[2];
 
+    if ((band_mask & (1 << 7)) != 0)
+    {
+        attenuation_value = Attenuator_1.read_inputs();
+    }
+    if ((band_mask & (1 << 6)) != 0)
+    {
+        attenuation_value = Attenuator_2.read_inputs();
+    }
+    if ((band_mask & (1 << 5)) != 0)
+    {
+        attenuation_value = Attenuator_3.read_inputs();
+    }
+    if ((band_mask & (1 << 4)) != 0)
+    {
+        attenuation_value = Attenuator_4.read_inputs();
+    }
+    if ((band_mask & (1 << 3)) != 0)
+    {
+        attenuation_value = Attenuator_5.read_inputs();
+    }
+
+    //response[1] = attenuation_value;
 }
 
 uint8_t UART::set_lna_enable(char* data)
 {
     uint8_t lna_enabled = data[1];
     uint8_t band_mask = data[2];
+    uint8_t enabled_lna;
 
+    if ((band_mask & (1 << 7)) != 0)
+    {
+        enabled_lna |= (Attenuator_1.set_lna(lna_enabled) << 7);
+    }
+    if ((band_mask & (1 << 6)) != 0)
+    {
+        enabled_lna |= (Attenuator_2.set_lna(lna_enabled) << 6);
+    }
+    if ((band_mask & (1 << 5)) != 0)
+    {
+        enabled_lna |= (Attenuator_3.set_lna(lna_enabled) << 5);
+    }
+    if ((band_mask & (1 << 4)) != 0)
+    {
+        enabled_lna |= (Attenuator_4.set_lna(lna_enabled) << 4);
+    }
+    if ((band_mask & (1 << 3)) != 0)
+    {
+        enabled_lna |= (Attenuator_5.set_lna(lna_enabled) << 3);
+    }
+    
     return band_mask;
 }
 
 void UART::get_lna_enable(const char* response)
 {
-    uint8_t lna_enabled;
+    uint8_t lna_status;
+
+    lna_status |= (Attenuator_1.get_lna() << 7);
+    lna_status |= (Attenuator_2.get_lna() << 6);
+    lna_status |= (Attenuator_3.get_lna() << 5);
+    lna_status |= (Attenuator_4.get_lna() << 4);
+    lna_status |= (Attenuator_5.get_lna() << 3);
+    
+    // response[1] = lna_status;
 }
 
 uint8_t UART::set_attenuator_enable(char* data)
 {
     uint8_t attenuator_enabled = data[1];
     uint8_t band_mask = data[2];
+    uint8_t enabled_lna = 0;
 
-    return band_mask;
+    if ((band_mask & (1 << 7)) != 0)
+    {
+        enabled_lna |= (Attenuator_1.set_attenuator_enable(attenuator_enabled) << 7);
+    }
+    if ((band_mask & (1 << 6)) != 0)
+    {
+        enabled_lna |= (Attenuator_2.set_attenuator_enable(attenuator_enabled) << 6);
+    }
+    if ((band_mask & (1 << 5)) != 0)
+    {
+        enabled_lna |= (Attenuator_3.set_attenuator_enable(attenuator_enabled) << 5);
+    }
+    if ((band_mask & (1 << 4)) != 0)
+    {
+        enabled_lna |= (Attenuator_4.set_attenuator_enable(attenuator_enabled) << 4);
+    }
+    if ((band_mask & (1 << 3)) != 0)
+    {
+        enabled_lna |= (Attenuator_5.set_attenuator_enable(attenuator_enabled) << 3);
+    }
+
+    return enabled_lna;
 }
 
 void UART::get_attenuator_enable(const char* response)
 {
-    uint8_t attenuator_enabled;
+    uint8_t attenuators_enabled;
+
+    attenuators_enabled |= (Attenuator_1.get_attenuator_enable() << 7);
+    attenuators_enabled |= (Attenuator_2.get_attenuator_enable() << 6);
+    attenuators_enabled |= (Attenuator_3.get_attenuator_enable() << 5);
+    attenuators_enabled |= (Attenuator_4.get_attenuator_enable() << 4);
+    attenuators_enabled |= (Attenuator_5.get_attenuator_enable() << 3);
+    
+    // response[1] = attenuators_enabled;
 }
 
 void UART::set_calibration(char* data)
@@ -223,15 +329,35 @@ void UART::get_calibration(const char* response)
 
 void UART::get_bits(const char* response)
 {
-    // unknown return
+    uint32_t timestamp;
+    float temperature;
+
+    // Voltages
+    if (ds1682.getTime(&timestamp))
+    {
+
+    }
+
+    if (max31725.read_temperature(&temperature))
+    {
+
+    }
 }
 
 void UART::get_hardware_numbers(const char* response)
 {
-    // unknown return
+    uint32_t device_id;
+
+    // ETR Hardware Number
+    if (ds1682.getUniqueID(&device_id))
+    {
+
+    }
+
+    // EEPROM (?)
 }
 
 void UART::get_software_numbers(const char* response)
 {
-    // unknown return
+    // Pi Pico Software Number
 }

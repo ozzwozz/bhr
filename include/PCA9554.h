@@ -23,4 +23,12 @@ class PCA9554 : public I2CDevice
         /// @brief Read current settings from the attenuator cards
         /// @return uint8_t 
         uint8_t read_inputs();
+
+        bool set_lna(bool value);
+        
+        bool get_lna();
+
+        bool set_attenuator_enable(bool value);
+        
+        bool get_attenuator_enable(bool value);
 };

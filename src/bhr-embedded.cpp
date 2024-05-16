@@ -124,9 +124,6 @@ int main()
 
     watchdog_enable(1 * 1'000'000, 1);
 
-    char* to_send = "System Clock Frequency is %d Hz\n", clock_get_hz(clk_sys);
-    uart_puts(UART_ID, to_send);
-
     // Configure onboard LED pin
     const uint LED_PIN = PICO_DEFAULT_LED_PIN;
     gpio_init(LED_PIN);

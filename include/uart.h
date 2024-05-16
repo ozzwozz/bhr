@@ -104,6 +104,7 @@ class UART
         /// @param data 
         /// @return uint8_t 
         uint8_t set_lna_enable(char* data);
+        
         /// @brief Get te bands on which LNA is enabled
         /// @param response 
         void get_lna_enable(const char* response);
