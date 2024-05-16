@@ -25,5 +25,5 @@ public:
 
     uint16_t read_raw_adc(uint pin);
     float read_voltage_adc(uint pin);
-    bool ADC::read_all();
+    void read_all();
 };
