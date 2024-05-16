@@ -14,6 +14,7 @@
 #include "M24M02.h"
 #include "uart.h"
 #include "DS1682.h"
+#include "adc.h"
 
 // SPI Defines
 // We are going to use SPI 0, and allocate it to the following GPIO pins
@@ -100,17 +101,17 @@ int main()
     gpio_set_function(PIN_SCK,  GPIO_FUNC_SPI);
     gpio_set_function(PIN_MOSI, GPIO_FUNC_SPI);
 
-    MAX31725 max31725(i2c0, MAX31725_ADDR);
-    M24M02 m24m02(i2c0, EEPROM_ADDR);
+    MAX31725 max31725 = MAX31725(i2c0, MAX31725_ADDR);
+    M24M02 m24m02 = M24M02(i2c0, EEPROM_ADDR);
 
-    PCA9554 pca9554(i2c1, ATTENUATOR_1);
+    PCA9554 pca9554 = PCA9554(i2c1, ATTENUATOR_1);
+    PCA9554 pca9554 = PCA9554(i2c1, ATTENUATOR_2);
+    PCA9554 pca9554 = PCA9554(i2c1, ATTENUATOR_3);
+    PCA9554 pca9554 = PCA9554(i2c1, ATTENUATOR_4);
+    PCA9554 pca9554 = PCA9554(i2c1, ATTENUATOR_5);
 
-    UART uart(uart0, 9600, 1, 0);
-
-//     // ADC initialisation
-//     adc_init();
-//     adc_gpio_init(26);
-//     adc_select_input(0);
+    UART uart = UART(uart0, 9600, 1, 0);
+    ADC adc = ADC();
 
     // Watchdog restart code
     if (watchdog_caused_reboot())
