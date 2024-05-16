@@ -59,6 +59,7 @@ set(HEADER_FILES
     include/M24M02.h
     include/MAX31725.h
     include/PCA9554.h
+    include/SI53361.h
     include/SPIDevice.h
     include/uart.h
 )
@@ -73,6 +74,7 @@ set(SOURCE_FILES
     src/MAX31725.cpp
     src/PCA9554.cpp
     src/SPIDevice.cpp
+    src/SI53361.cpp
     src/uart.cpp
 )
 
