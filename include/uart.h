@@ -25,7 +25,8 @@ class UART
             GET_CALIBRATION = 0x11,
             GET_BITS = 0X20,
             GET_HARDWARE_NUMBERS = 0X21,
-            GET_SOFTWARE_NUMBERS = 0X22
+            GET_SOFTWARE_NUMBERS = 0X22,
+            EXTERNAL_INTERRUPT = 0x30
         }; // Enum inside the class
 
         /// @brief Construct a new UART::UART object

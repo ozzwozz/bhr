@@ -72,7 +72,7 @@ void UART::flush_tx()
 void UART::ext_trig_irq_handler(void *context)
 {
     UART *uart = static_cast<UART *>(context);
-    uart->write("GPIO 15 interrupt triggered!\n");
+    uart->write((char*)EXTERNAL_INTERRUPT);
 
     // Your interrupt handler code here
     // This will be called when the interrupt is triggered on GPIO 15
