@@ -104,11 +104,11 @@ int main()
     MAX31725 max31725 = MAX31725(i2c0, MAX31725_ADDR);
     M24M02 m24m02 = M24M02(i2c0, EEPROM_ADDR);
 
-    PCA9554 pca9554 = PCA9554(i2c1, ATTENUATOR_1);
-    PCA9554 pca9554 = PCA9554(i2c1, ATTENUATOR_2);
-    PCA9554 pca9554 = PCA9554(i2c1, ATTENUATOR_3);
-    PCA9554 pca9554 = PCA9554(i2c1, ATTENUATOR_4);
-    PCA9554 pca9554 = PCA9554(i2c1, ATTENUATOR_5);
+    PCA9554 pca9554_1 = PCA9554(i2c1, ATTENUATOR_1);
+    PCA9554 pca9554_2 = PCA9554(i2c1, ATTENUATOR_2);
+    PCA9554 pca9554_3 = PCA9554(i2c1, ATTENUATOR_3);
+    PCA9554 pca9554_4 = PCA9554(i2c1, ATTENUATOR_4);
+    PCA9554 pca9554_5 = PCA9554(i2c1, ATTENUATOR_5);
 
     UART uart = UART(uart0, 9600, 1, 0);
     ADC adc = ADC();
@@ -153,9 +153,9 @@ int main()
         }
         printf("\n");
 
-        pca9554.set_outputs(0x00);
+        pca9554_1.set_outputs(0x00);
         sleep_ms(500);
-        pca9554.set_outputs(0xFF);
+        pca9554_1.set_outputs(0xFF);
         sleep_ms(500);
 
         if (uart.available())
