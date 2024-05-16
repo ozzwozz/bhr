@@ -14,11 +14,9 @@ void MAX31725::read_temperature(float &temperature)
 
     write(&cmd_read_temperature, 1);
 
-    if (!read(rx_data, 2))
+    if (read(rx_data, 2))
     {
-        temperature = NULL;
+        int16_t temp_data = (rx_data[0] << 8) | rx_data[1];
+        temperature = (temp_data / 256.0);
     }
-
-    int16_t temp_data = (rx_data[0] << 8) | rx_data[1];
-    temperature = (temp_data / 256.0);
 }
