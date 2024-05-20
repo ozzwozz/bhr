@@ -41,19 +41,19 @@ class UART
         /// @param baud_rate 
         /// @param rx_pin 
         /// @param tx_pin
-        /// @param max31725 Instatiated MAX31725 driver object
-        /// @param m24m02 Instatiated M24M02 driver object
-        /// @param si53361 Instatiated SI53361 driver object
-        /// @param pca9554_1 Instatiated PCA9554 driver object
-        /// @param pca9554_2 Instatiated PCA9554 driver object
-        /// @param pca9554_3 Instatiated PCA9554 driver object
-        /// @param pca9554_4 Instatiated PCA9554 driver object
-        /// @param pca9554_5 Instatiated PCA9554 driver object
-        /// @param adc Instatiated ADC driver object
-        /// @param ds1682 Instatiated driver object
-        UART(uart_inst_t *uart, uint baud_rate, uint rx_pin, uint tx_pin, MAX31725 max31725
-        , M24M02 m24m02, SI53361 si53361, PCA9554 pca9554_1, PCA9554 pca9554_2,
-        PCA9554 pca9554_3, PCA9554 pca9554_4, PCA9554 pca9554_5, ADC adc, DS1682 ds1682);
+        /// @param max31725 Instantiated MAX31725 driver object
+        /// @param m24m02 Instantiated M24M02 driver object
+        /// @param si53361 Instantiated SI53361 driver object
+        /// @param pca9554_1 Instantiated PCA9554 driver object
+        /// @param pca9554_2 Instantiated PCA9554 driver object
+        /// @param pca9554_3 Instantiated PCA9554 driver object
+        /// @param pca9554_4 Instantiated PCA9554 driver object
+        /// @param pca9554_5 Instantiated PCA9554 driver object
+        /// @param adc Instantiated ADC driver object
+        /// @param ds1682 Instantiated driver object
+        UART(uart_inst_t *uart, uint baud_rate, uint rx_pin, uint tx_pin, MAX31725 &max31725
+        , M24M02 &m24m02, SI53361 &si53361, PCA9554 &pca9554_1, PCA9554 &pca9554_2,
+        PCA9554 &pca9554_3, PCA9554 &pca9554_4, PCA9554 &pca9554_5, ADC &adc, DS1682 &ds1682);
 
         /// @brief Destroy the UART object
         ~UART();
@@ -114,6 +114,9 @@ class UART
 
         /// @param m_adc ADC object
         ADC m_adc;
+
+        /// @param m_ext_trig_pin External trigger pin
+        uint m_ext_trig_pin;
         
         /// @param m_rx_pin rx pin
         uint m_rx_pin;
@@ -122,7 +125,7 @@ class UART
         /// @param rx_buffer_ rx buffer queue
         std::queue<char> rx_buffer_;
         /// @param tx_buffer_ tx buffer queue
-        std::queue<char> tx_buffer_;
+        std::queue<std::vector<char>> tx_buffer_;
 
         /// @brief Handler for the EXT_TRIG/GPIO15 interrupt
         /// @param context 
@@ -142,7 +145,7 @@ class UART
 
         /// @brief Get the current attenuation level
         /// @param response 
-        void get_attenuation(const char* response);
+        void get_attenuation(std::vector<char>& response);
 
         /// @brief Set the bands for which LNA is enabled/disabled
         /// @param data 
@@ -151,7 +154,7 @@ class UART
         
         /// @brief Get te bands on which LNA is enabled
         /// @param response 
-        void get_lna_enable(const char* response);
+        void get_lna_enable(std::vector<char>& response);
 
         /// @brief Set the bands for which the attenuators should be enabled/disabled
         /// @param data 
@@ -160,7 +163,7 @@ class UART
 
         /// @brief Get the current attenuator enabled/disabled status for each band
         /// @param response 
-        void get_attenuator_enable(const char* response);
+        void get_attenuator_enable(std::vector<char>& response);
 
         /// @brief Set the Calibration table on the EEPROM 
         /// @param data 
@@ -168,17 +171,17 @@ class UART
 
         /// @brief Get the current calibration table on the EEPROM
         /// @param response 
-        void get_calibration(const char* response);
+        void get_calibration(std::vector<char>& response);
 
         /// @brief A list of the attenuator stage bits
         /// @param response 
-        void get_bits(const char* response);
+        void get_bits(std::vector<char>& response);
 
         /// @brief A list of the attenuator stage harder numbers
         /// @param response 
-        void get_hardware_numbers(const char* response);
+        void get_hardware_numbers(std::vector<char>& response);
 
         /// @brief A list of the attenuator stage software numbers
         /// @param response 
-        void get_software_numbers(const char* response);
+        void get_software_numbers(std::vector<char>& response);
 };

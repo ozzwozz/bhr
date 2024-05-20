@@ -1,6 +1,6 @@
 #include "SI53361.h"
 
-SI53361::SI53361(/* args */)
+SI53361::SI53361()
 {
     gpio_init(m_clock_select_pin);
     gpio_init(m_output_enable_pin);

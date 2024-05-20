@@ -20,7 +20,7 @@ class M24M02 : public I2CDevice
         /// @param address register address to access
         /// @param data object to store the data in
         /// @param len length of the data to be sent and received
-        /// @return success  is true
+        /// @return success is true
         bool read(const uint32_t address, uint8_t *data, size_t len);
         
         /// @brief Write to the EEPROM Device

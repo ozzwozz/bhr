@@ -9,15 +9,15 @@ class PCA9554 : public I2CDevice
 {
     public:
         /// @brief Construct a new PCA9554 object
-        /// @param i2c 
-        /// @param address 
+        /// @param i2c i2c instance
+        /// @param address address of the target
         PCA9554(i2c_inst_t *i2c, uint8_t address);
 
         /// @brief Destroy the PCA9554 object
         ~PCA9554();
 
         /// @brief Write data to the attenuator cards
-        /// @param value 
+        /// @param value Value to set the attenuator output to
         /// @return success is true
         bool set_outputs(const uint8_t value);
 
@@ -26,7 +26,7 @@ class PCA9554 : public I2CDevice
         uint8_t read_inputs();
 
         /// @brief Write data to the attenuator cards
-        /// @param value 
+        /// @param value value to set the LNA bit to
         /// @return success is true
         bool set_lna(bool value);
         

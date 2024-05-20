@@ -1,4 +1,4 @@
-# == DO NEVER EDIT THE NEXT LINES for Raspberry Pi Pico VS Code Extension to work ==
+# == NEVER EDIT THE NEXT LINES for Raspberry Pi Pico VS Code Extension to work ==
 if(WIN32)
    set(USERHOME $ENV{USERPROFILE})
 else()
@@ -23,7 +23,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Initialise pico_sdk from installed location
 # (note this can come from environment, CMake cache etc)
 
-# == DO NEVER EDIT THE NEXT LINES for Raspberry Pi Pico VS Code Extension to work ==
+# == NEVER EDIT THE NEXT LINES for Raspberry Pi Pico VS Code Extension to work ==
 if(WIN32)
    set(USERHOME $ENV{USERPROFILE})
 else()
@@ -86,7 +86,7 @@ include_directories(include)
 # add_executable(bhr-embedded bhr-embedded.cpp )
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
 
-pico_set_program_name(bhr-embedded "bhr-embedded")
+pico_set_program_name(bhr-embedded "attenuator_controller")
 pico_set_program_version(bhr-embedded "0.1")
 
 # Generate PIO header

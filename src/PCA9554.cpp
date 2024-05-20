@@ -31,7 +31,7 @@ uint8_t PCA9554::read_inputs()
     return data;
 }
 
-bool PCA9554::set_lna(bool value)
+bool PCA9554::set_lna(const bool value)
 {
     uint8_t current_value = 0;
     if (!I2CDevice::read(&current_value, 1))
@@ -43,12 +43,12 @@ bool PCA9554::set_lna(bool value)
     unsigned char clearMask = ~(1 << 6);
 
     // Mask to set the 7th bit
-    unsigned char setMask = 1 << 6;
+    unsigned char setMask = value << 6;
 
     // Clear the 7th bit
     current_value &= clearMask;
 
-    // Set the 7th bit to 1
+    // Set the 7th bit
     current_value |= setMask;
 
     if (!I2CDevice::write(&current_value, 1))
@@ -85,12 +85,12 @@ bool PCA9554::set_attenuator_enable(bool value)
     unsigned char clearMask = ~(1 << 7);
 
     // Mask to set the 7th bit
-    unsigned char setMask = 1 << 7;
+    unsigned char setMask = value << 7;
 
     // Clear the 7th bit
     current_value &= clearMask;
 
-    // Set the 7th bit to 1
+    // Set the 7th bit
     current_value |= setMask;
 
     if (!I2CDevice::write(&current_value, 1))
@@ -111,5 +111,4 @@ bool PCA9554::get_attenuator_enable(bool &value)
 
     value = (current_value << 7);
     return true;
-
 }

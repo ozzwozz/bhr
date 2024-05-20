@@ -12,8 +12,8 @@ class MAX31725 : public I2CDevice
 
     public:
         /// @brief Construct a new MAX31725 object
-        /// @param i2c 
-        /// @param address  
+        /// @param i2c i2c instance
+        /// @param address Address of the target
         MAX31725(i2c_inst_t *i2c, uint8_t address);
 
         /// @brief Destroy the MAX31725 object

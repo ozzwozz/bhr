@@ -7,30 +7,30 @@
 class SPIDevice {
 public:
     /// @brief Construct a new SPIDevice object
-    /// @param spi_inst 
-    /// @param cs_pin 
+    /// @param spi_inst SPI instance
+    /// @param cs_pin chip select pin
     SPIDevice(spi_inst_t* spi_inst, uint cs_pin);
 
     /// @brief Destroy the SPIDevice object
     virtual ~SPIDevice();
 
     /// @brief Configure the SPI
-    /// @param baudrate 
+    /// @param baudrate baud rate
     void configure(uint baudrate = 1000000); // Default baudrate is 1MHz
 
     /// @brief write to the device
-    /// @param data 
-    /// @param len 
+    /// @param data data to write
+    /// @param len length of the data to write
     void write(const uint8_t *data, size_t len);
 
     /// @brief read from the device
-    /// @param data 
-    /// @param len 
+    /// @param data variable to return data to
+    /// @param len length of data expected
     void read(uint8_t *data, size_t len);
 
     /// @brief Read and write to the target device
-    /// @param tx_data 
-    /// @param rx_data 
+    /// @param tx_data data to send
+    /// @param rx_data variable to recieve the data
     /// @param len 
     void exchange(const uint8_t *tx_data, uint8_t *rx_data, size_t len);
 

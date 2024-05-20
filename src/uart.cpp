@@ -2,10 +2,9 @@
 #include <string.h>
 #include <stdio.h>
 
-UART::UART(uart_inst_t *uart, uint baud_rate, uint rx_pin, uint tx_pin
-        , MAX31725 m_max31725, M24M02 m24m02, SI53361 si53361, PCA9554 pca9554_1
-        , PCA9554 pca9554_2, PCA9554 pca9554_3, PCA9554 pca9554_4, PCA9554 pca9554_5
-        , ADC adc, DS1682 ds1682)
+UART::UART(uart_inst_t *uart, uint baud_rate, uint rx_pin, uint tx_pin, MAX31725 &max31725
+        , M24M02 &m24m02, SI53361 &si53361, PCA9554 &pca9554_1, PCA9554 &pca9554_2,
+        PCA9554 &pca9554_3, PCA9554 &pca9554_4, PCA9554 &pca9554_5, ADC &adc, DS1682 &ds1682)
             : m_uart(uart)
             , m_max31725(m_max31725)
             , m_m24m02(m24m02)
@@ -31,20 +30,17 @@ UART::UART(uart_inst_t *uart, uint baud_rate, uint rx_pin, uint tx_pin
 
     uart_set_irq_enables(m_uart, true, false);
     
-    
     int UART_IRQ = uart == m_uart ? UART0_IRQ : UART1_IRQ;
     irq_set_exclusive_handler(UART_IRQ, (irq_handler_t)uart_irq_handler);
     irq_set_enabled(UART_IRQ, true);
 
-
-    // Initialize GPIO 15
-    gpio_init(15);
-    gpio_set_dir(15, GPIO_IN);
-    gpio_pull_down(15); // Set GPIO 15 as input with pull-down resistor
+    // Initialize External interrupt trigger
+    gpio_init(m_ext_trig_pin);
+    gpio_set_dir(m_ext_trig_pin, GPIO_IN);
+    gpio_pull_down(m_ext_trig_pin); // Set External interrupt trigger as input with pull-down resistor
 
     // Set up interrupt for GPIO 15
     irq_set_exclusive_handler(15, (irq_handler_t)ext_trig_irq_handler);
-
 }
 
 void UART::write(const char *data)
@@ -80,7 +76,7 @@ void UART::flush_rx()
 
 void UART::flush_tx()
 {
-    tx_buffer_ = std::queue<char>();
+    tx_buffer_ = std::queue<std::vector<char>>();
 }
 
 void UART::ext_trig_irq_handler(void *context)
@@ -97,7 +93,6 @@ void UART::ext_trig_irq_handler(void *context)
         gpio_put(PICO_DEFAULT_LED_PIN, 0); // Turn LED off
         sleep_ms(500);
     }
-
 }
 
 void UART::uart_irq_handler(void *context)
@@ -124,7 +119,7 @@ void UART::decode_message()
 
     uint8_t header = data[0];
 
-    char response[128];
+    std::vector<char> response;
 
     response[0] = header;
 
@@ -167,7 +162,7 @@ void UART::decode_message()
             break;
     }
 
-    tx_buffer_.push(*response);
+    tx_buffer_.push(response);
 }
 
 size_t UART::send_message()
@@ -176,7 +171,7 @@ size_t UART::send_message()
     char data[128];
     while (!tx_buffer_.empty() && bytes_sent < sizeof(data))
     {
-        data[bytes_sent++] = tx_buffer_.front();
+        // data[bytes_sent++] = tx_buffer_.front();
         tx_buffer_.pop();
     }
 
@@ -215,10 +210,10 @@ uint8_t UART::set_attenuation(char* data)
     return set_attenuators;
 }
 
-void UART::get_attenuation(const char* data)
+void UART::get_attenuation(std::vector<char>& response)
 {
     uint8_t attenuation_value;
-    uint8_t band_mask = data[2];
+    uint8_t band_mask = response[2];
 
     if ((band_mask & (1 << 7)) != 0)
     {
@@ -241,7 +236,7 @@ void UART::get_attenuation(const char* data)
         attenuation_value = m_pca9554_5.read_inputs();
     }
 
-    //response[1] = attenuation_value;
+    // data[1] = attenuation_value;
 }
 
 uint8_t UART::set_lna_enable(char* data)
@@ -274,7 +269,7 @@ uint8_t UART::set_lna_enable(char* data)
     return band_mask;
 }
 
-void UART::get_lna_enable(const char* response)
+void UART::get_lna_enable(std::vector<char>& response)
 {
     uint8_t lna_status;
     bool value;
@@ -333,7 +328,7 @@ uint8_t UART::set_attenuator_enable(char* data)
     return enabled_lna;
 }
 
-void UART::get_attenuator_enable(const char* response)
+void UART::get_attenuator_enable(std::vector<char>& response)
 {
     uint8_t attenuators_enabled;
     bool value;
@@ -368,29 +363,34 @@ void UART::set_calibration(char* data)
     uint8_t band_mask = data[2];
 }
 
-void UART::get_calibration(const char* response)
+void UART::get_calibration(std::vector<char>& response)
 {
     // unknown return
 }
 
-void UART::get_bits(const char* response)
+void UART::get_bits(std::vector<char>& response)
 {
     uint32_t timestamp;
     float temperature;
 
-    // Voltages
+    size_t initialSize = response.size(); // Store initial size to calculate the size of added data
+
+    // Get timestamp from DS1682
     if (m_ds1682.getTime(timestamp))
     {
-
+        response.resize(initialSize + sizeof(uint32_t));
+        memcpy(response.data() + initialSize, &timestamp, sizeof(uint32_t));
     }
 
+    // Get temperature from MAX31725
     if (m_max31725.read_temperature(temperature))
     {
-
+        response.resize(initialSize + sizeof(float));
+        memcpy(response.data() + initialSize, &temperature, sizeof(float));
     }
 }
 
-void UART::get_hardware_numbers(const char* response)
+void UART::get_hardware_numbers(std::vector<char>& response)
 {
     uint32_t device_id;
 
@@ -403,7 +403,7 @@ void UART::get_hardware_numbers(const char* response)
     // EEPROM (?)
 }
 
-void UART::get_software_numbers(const char* response)
+void UART::get_software_numbers(std::vector<char>& response)
 {
     // Pi Pico Software Number
 }

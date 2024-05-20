@@ -15,7 +15,7 @@ class SI53361
 
     public:
         /// @brief Construct a new SI53361 object
-        SI53361(/* args */);
+        SI53361();
 
         /// @brief Destroy the SI53361 object
         ~SI53361();
@@ -26,5 +26,4 @@ class SI53361
         void enable_internal_clock();
         /// @brief Disable the clock
         void disable_clock();
-        
 };
