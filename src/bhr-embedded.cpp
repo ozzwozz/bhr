@@ -3,7 +3,6 @@
 #include "hardware/spi.h"
 #include "hardware/i2c.h"
 #include "hardware/pio.h"
-#include "hardware/timer.h"
 #include "hardware/watchdog.h"
 #include "hardware/clocks.h"
 #include "hardware/gpio.h"
@@ -61,26 +60,9 @@
 
 #define ATTENUATOR_REG_OUT 0x01
 
-static int chars_rxed = 0;
-
-
-/// @brief Generic Alarm Callback
-/// @param id 
-/// @param user_data 
-/// @return int64_t 
-int64_t alarm_callback(alarm_id_t id, void *user_data)
-{
-    // Put your timeout handler code in here
-    return 0;
-}
-
-
 int main()
 {
     stdio_init_all();
-
-    // Timer code - This fires off the callback after 2000ms
-    add_alarm_in_ms(2000, alarm_callback, NULL, false);
 
     // I2C Initialisation. Using it at 400Khz.
     
@@ -114,11 +96,7 @@ int main()
 
     ADC adc = ADC();
     UART uart = UART(uart0, 9600, 1, 0, max31725, m24m02, si53361, pca9554_1,
-pca9554_2,
-pca9554_3,
-pca9554_4,
-pca9554_5,
-adc);
+                    pca9554_2, pca9554_3, pca9554_4, pca9554_5, adc);
 
     // Watchdog restart code
     if (watchdog_caused_reboot())
