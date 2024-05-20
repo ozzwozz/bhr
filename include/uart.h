@@ -36,7 +36,7 @@ class UART
             EXTERNAL_INTERRUPT = 0x30
         }; // Enum inside the class
 
-        /// @brief Construct a new UART::UART object
+        /// @brief Construct a new UART object
         /// @param uart 
         /// @param baud_rate 
         /// @param rx_pin 
@@ -45,7 +45,7 @@ class UART
         , M24M02 m24m02, SI53361 si53361, PCA9554 pca9554_1, PCA9554 pca9554_2,
         PCA9554 pca9554_3, PCA9554 pca9554_4, PCA9554 pca9554_5, ADC adc);
 
-        /// @brief Destroy the UART::UART object
+        /// @brief Destroy the UART object
         ~UART();
 
         /// @brief Write to UART

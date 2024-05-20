@@ -14,12 +14,12 @@ private:
     /// @param m_address member i2c device address 
     uint8_t m_address;
 public:
-    /// @brief Construct a new I2CDevice::I2CDevice object
+    /// @brief Construct a new I2CDevice object
     /// @param i2c i2c instance
     /// @param address target device address
     I2CDevice(i2c_inst_t *i2c, uint8_t address);
 
-    /// @brief Destroy the I2CDevice::I2CDevice object
+    /// @brief Destroy the I2CDevice object
     virtual ~I2CDevice();
 
     /// @brief Read data sent from the target device

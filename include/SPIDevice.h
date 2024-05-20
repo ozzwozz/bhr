@@ -6,12 +6,12 @@
 /// @brief Super class for SPIDevices to inherit from
 class SPIDevice {
 public:
-    /// @brief Construct a new SPIDevice::SPIDevice object
+    /// @brief Construct a new SPIDevice object
     /// @param spi_inst 
     /// @param cs_pin 
     SPIDevice(spi_inst_t* spi_inst, uint cs_pin);
 
-    /// @brief Destroy the SPIDevice::SPIDevice object
+    /// @brief Destroy the SPIDevice object
     virtual ~SPIDevice();
 
     /// @brief Configure the SPI

@@ -6,12 +6,12 @@
 /// @brief Driver for the DS1682
 class DS1682 : public I2CDevice {
     public:
-        /// @brief Construct a new DS1682::DS1682 object
+        /// @brief Construct a new DS1682 object
         /// @param i2c_inst i2c instance
         /// @param address device address
         DS1682(i2c_inst_t* i2c_inst, uint8_t address);
 
-        /// @brief Destroy the DS1682::DS1682 object
+        /// @brief Destroy the DS1682 object
         ~DS1682();
 
         /// @brief Set time on DS1682

@@ -8,12 +8,12 @@
 class PCA9554 : public I2CDevice
 {
     public:
-        /// @brief Construct a new PCA9554::PCA9554 object
+        /// @brief Construct a new PCA9554 object
         /// @param i2c 
         /// @param address 
         PCA9554(i2c_inst_t *i2c, uint8_t address);
 
-        /// @brief Destroy the PCA9554::PCA9554 object
+        /// @brief Destroy the PCA9554 object
         ~PCA9554();
 
         /// @brief Write data to the attenuator cards
