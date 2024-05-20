@@ -22,7 +22,7 @@ public:
     /// @brief Destroy the I2CDevice::I2CDevice object
     virtual ~I2CDevice();
 
-    /// @brief Read datasent from the target device
+    /// @brief Read data sent from the target device
     /// @param data pointer to address of data to be sent
     /// @param len length of the data to be sent
     /// @return success
