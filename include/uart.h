@@ -6,6 +6,13 @@
 #include "hardware/irq.h"
 #include <queue>
 
+#include "PCA9554.h"
+#include "MAX31725.h"
+#include "M24M02.h"
+#include "DS1682.h"
+#include "adc.h"
+#include "SI53361.h"
+
 
 /// @class UART
 /// @brief UART Driver Class
@@ -34,7 +41,9 @@ class UART
         /// @param baud_rate 
         /// @param rx_pin 
         /// @param tx_pin 
-        UART(uart_inst_t *uart, uint baud_rate, uint rx_pin, uint tx_pin);
+        UART(uart_inst_t *uart, uint baud_rate, uint rx_pin, uint tx_pin, MAX31725 max31725
+        , M24M02 m24m02, SI53361 si53361, PCA9554 pca9554_1, PCA9554 pca9554_2,
+        PCA9554 pca9554_3, PCA9554 pca9554_4, PCA9554 pca9554_5, ADC adc);
 
         /// @brief Destroy the UART::UART object
         ~UART();
@@ -71,6 +80,20 @@ class UART
     private:
         /// @param m_uart uart instance
         uart_inst_t *m_uart;
+
+        MAX31725 m_max31725;
+        M24M02 m_m24m02;
+        SI53361 m_si53361;
+        DS1682 m_ds1682;
+
+        PCA9554 m_pca9554_1;
+        PCA9554 m_pca9554_2;
+        PCA9554 m_pca9554_3;
+        PCA9554 m_pca9554_4;
+        PCA9554 m_pca9554_5;
+
+        ADC m_adc;
+        
         /// @param m_rx_pin rx pin
         uint m_rx_pin;
         /// @param m_tx_pin tx pin

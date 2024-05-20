@@ -18,7 +18,7 @@ class PCA9554 : public I2CDevice
 
         /// @brief Write data to the attenuator cards
         /// @param value 
-        void set_outputs(const uint8_t value);
+        bool set_outputs(const uint8_t value);
 
         /// @brief Read current settings from the attenuator cards
         /// @return uint8_t 
@@ -30,5 +30,5 @@ class PCA9554 : public I2CDevice
 
         bool set_attenuator_enable(bool value);
         
-        bool get_attenuator_enable(bool value);
+        bool get_attenuator_enable(bool &value);
 };

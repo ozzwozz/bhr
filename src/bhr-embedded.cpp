@@ -112,8 +112,13 @@ int main()
     PCA9554 pca9554_4 = PCA9554(i2c1, ATTENUATOR_4);
     PCA9554 pca9554_5 = PCA9554(i2c1, ATTENUATOR_5);
 
-    UART uart = UART(uart0, 9600, 1, 0);
     ADC adc = ADC();
+    UART uart = UART(uart0, 9600, 1, 0, max31725, m24m02, si53361, pca9554_1,
+pca9554_2,
+pca9554_3,
+pca9554_4,
+pca9554_5,
+adc);
 
     // Watchdog restart code
     if (watchdog_caused_reboot())

@@ -20,6 +20,6 @@ class MAX31725 : public I2CDevice
         ~MAX31725();
 
         /// @brief Read register storing the temperature data on the MAX31725
-        /// @return float 
-        void read_temperature(float &temperature);
+        /// @return bool success 
+        bool read_temperature(float &temperature);
 };
