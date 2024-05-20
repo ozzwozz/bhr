@@ -5,7 +5,7 @@
 UART::UART(uart_inst_t *uart, uint baud_rate, uint rx_pin, uint tx_pin
         , MAX31725 m_max31725, M24M02 m24m02, SI53361 si53361, PCA9554 pca9554_1
         , PCA9554 pca9554_2, PCA9554 pca9554_3, PCA9554 pca9554_4, PCA9554 pca9554_5
-        , ADC adc)
+        , ADC adc, DS1682 ds1682)
             : m_uart(uart)
             , m_max31725(m_max31725)
             , m_m24m02(m24m02)
@@ -16,7 +16,7 @@ UART::UART(uart_inst_t *uart, uint baud_rate, uint rx_pin, uint tx_pin
             , m_pca9554_4(pca9554_4)
             , m_pca9554_5(pca9554_5)
             , m_adc(adc)
-            , m_ds1682(m_ds1682)
+            , m_ds1682(ds1682)
 {
     gpio_set_function(rx_pin, GPIO_FUNC_UART);
     gpio_set_function(tx_pin, GPIO_FUNC_UART);
@@ -277,12 +277,28 @@ uint8_t UART::set_lna_enable(char* data)
 void UART::get_lna_enable(const char* response)
 {
     uint8_t lna_status;
+    bool value;
 
-    lna_status |= (m_pca9554_1.get_lna() << 7);
-    lna_status |= (m_pca9554_2.get_lna() << 6);
-    lna_status |= (m_pca9554_3.get_lna() << 5);
-    lna_status |= (m_pca9554_4.get_lna() << 4);
-    lna_status |= (m_pca9554_5.get_lna() << 3);
+    if (m_pca9554_1.get_lna(value))
+    {
+        lna_status |= (value << 7);
+    }
+    if (m_pca9554_2.get_lna(value))
+    {
+        lna_status |= (value << 6);
+    }
+    if (m_pca9554_2.get_lna(value))
+    {
+        lna_status |= (value << 5);
+    }
+    if (m_pca9554_2.get_lna(value))
+    {
+        lna_status |= (value << 4);
+    }
+    if (m_pca9554_2.get_lna(value))
+    {
+        lna_status |= (value << 3);
+    }
     
     // response[1] = lna_status;
 }

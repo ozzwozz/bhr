@@ -59,13 +59,18 @@ bool PCA9554::set_lna(bool value)
     return true;
 }
 
-bool PCA9554::get_lna()
+bool PCA9554::get_lna(bool &value)
 {
     uint8_t current_value = 0;
-    I2CDevice::read(&current_value, 1);
+    if (!I2CDevice::read(&current_value, 1))
+    {
+        return false;
+    }
 
     // Mask to clear the 7th bit
-    return 1 << 6;
+    value = current_value << 6;
+
+    return true;
 }
 
 bool PCA9554::set_attenuator_enable(bool value)

@@ -25,7 +25,7 @@
 #define PIN_SCK  18
 #define PIN_MOSI 19
 
-
+#define DS1682_ADDR 0xD6
 #define EEPROM_ADDR 0x50
 
 #define CMD_READ_TEMP 0x00
@@ -93,10 +93,11 @@ int main()
     PCA9554 pca9554_3 = PCA9554(i2c1, ATTENUATOR_3);
     PCA9554 pca9554_4 = PCA9554(i2c1, ATTENUATOR_4);
     PCA9554 pca9554_5 = PCA9554(i2c1, ATTENUATOR_5);
+    DS1682 ds1682 = DS1682(i2c0, DS1682_ADDR);
 
     ADC adc = ADC();
     UART uart = UART(uart0, 9600, 1, 0, max31725, m24m02, si53361, pca9554_1,
-                    pca9554_2, pca9554_3, pca9554_4, pca9554_5, adc);
+                    pca9554_2, pca9554_3, pca9554_4, pca9554_5, adc, ds1682);
 
     // Watchdog restart code
     if (watchdog_caused_reboot())

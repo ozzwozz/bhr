@@ -40,10 +40,20 @@ class UART
         /// @param uart 
         /// @param baud_rate 
         /// @param rx_pin 
-        /// @param tx_pin 
+        /// @param tx_pin
+        /// @param max31725 Instatiated MAX31725 driver object
+        /// @param m24m02 Instatiated M24M02 driver object
+        /// @param si53361 Instatiated SI53361 driver object
+        /// @param pca9554_1 Instatiated PCA9554 driver object
+        /// @param pca9554_2 Instatiated PCA9554 driver object
+        /// @param pca9554_3 Instatiated PCA9554 driver object
+        /// @param pca9554_4 Instatiated PCA9554 driver object
+        /// @param pca9554_5 Instatiated PCA9554 driver object
+        /// @param adc Instatiated ADC driver object
+        /// @param ds1682 Instatiated driver object
         UART(uart_inst_t *uart, uint baud_rate, uint rx_pin, uint tx_pin, MAX31725 max31725
         , M24M02 m24m02, SI53361 si53361, PCA9554 pca9554_1, PCA9554 pca9554_2,
-        PCA9554 pca9554_3, PCA9554 pca9554_4, PCA9554 pca9554_5, ADC adc);
+        PCA9554 pca9554_3, PCA9554 pca9554_4, PCA9554 pca9554_5, ADC adc, DS1682 ds1682);
 
         /// @brief Destroy the UART object
         ~UART();
@@ -81,17 +91,28 @@ class UART
         /// @param m_uart uart instance
         uart_inst_t *m_uart;
 
+        /// @param m_max31725 MAX31725 object
         MAX31725 m_max31725;
+
+        /// @param m_m24m02 M24M02 object
         M24M02 m_m24m02;
+        /// @param m_si53361 SI53361 object
         SI53361 m_si53361;
+        /// @param m_ds1682 DS1682 object
         DS1682 m_ds1682;
 
+        /// @param m_pca9554_1 PCA9554 object
         PCA9554 m_pca9554_1;
+        /// @param m_pca9554_2 PCA9554 object
         PCA9554 m_pca9554_2;
+        /// @param m_pca9554_3 PCA9554 object
         PCA9554 m_pca9554_3;
+        /// @param m_pca9554_4 PCA9554 object
         PCA9554 m_pca9554_4;
+        /// @param m_pca9554_5 PCA9554 object
         PCA9554 m_pca9554_5;
 
+        /// @param m_adc ADC object
         ADC m_adc;
         
         /// @param m_rx_pin rx pin

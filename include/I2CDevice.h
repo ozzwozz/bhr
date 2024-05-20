@@ -25,12 +25,12 @@ public:
     /// @brief Read data sent from the target device
     /// @param data pointer to address of data to be sent
     /// @param len length of the data to be sent
-    /// @return success
+    /// @return success is true
     bool read(uint8_t *data, size_t len);
 
     /// @brief Write given data to the target device
     /// @param data pointer to address of data to be sent
     /// @param len length of the data to be sent
-    /// @return success 
+    /// @return success is true
     bool write(const uint8_t *data, size_t len);
 };

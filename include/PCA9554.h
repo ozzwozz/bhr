@@ -18,17 +18,30 @@ class PCA9554 : public I2CDevice
 
         /// @brief Write data to the attenuator cards
         /// @param value 
+        /// @return success is true
         bool set_outputs(const uint8_t value);
 
         /// @brief Read current settings from the attenuator cards
         /// @return uint8_t 
         uint8_t read_inputs();
 
+        /// @brief Write data to the attenuator cards
+        /// @param value 
+        /// @return success is true
         bool set_lna(bool value);
         
-        bool get_lna();
+        /// @brief Get the LNA status from the attenuator card
+        /// @param value get the LNA status by reference
+        /// @return success is true
+        bool get_lna(bool &value);
 
+        /// @brief Write data to the attenuator cards
+        /// @param value set the attenuator enable pin
+        /// @return success is true
         bool set_attenuator_enable(bool value);
         
+        /// @brief Write data to the attenuator cards
+        /// @param value get the attenuator enable status by reference
+        /// @return success is true
         bool get_attenuator_enable(bool &value);
 };

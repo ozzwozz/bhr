@@ -16,7 +16,7 @@ class DS1682 : public I2CDevice {
 
         /// @brief Set time on DS1682
         /// @param timestamp 
-        /// @return success
+        /// @return success is true
         bool setTime(const uint32_t timestamp);
 
         /// @brief Get the Time from DS1682
@@ -25,6 +25,7 @@ class DS1682 : public I2CDevice {
         bool getTime(uint32_t &timestamp);
 
         /// @brief Get the device ID
-        /// @return uint32_t 
+        /// @param device_id device id by reference
+        /// @return success is true
         bool getUniqueID(uint32_t &device_id);
 };
