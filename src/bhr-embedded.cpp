@@ -64,6 +64,11 @@ int main()
 {
     stdio_init_all();
 
+    // Configure onboard LED pin
+    const uint LED_PIN = PICO_DEFAULT_LED_PIN;
+    gpio_init(LED_PIN);
+    gpio_set_dir(LED_PIN, GPIO_OUT);
+    
     // I2C Initialisation. Using it at 400Khz.
     i2c_init(I2C0_PORT, 400*1000);
     gpio_set_function(I2C0_SDA, GPIO_FUNC_I2C);
@@ -107,10 +112,7 @@ int main()
 
     watchdog_enable(1 * 1'000'000, 1);
 
-    // Configure onboard LED pin
-    const uint LED_PIN = PICO_DEFAULT_LED_PIN;
-    gpio_init(LED_PIN);
-    gpio_set_dir(LED_PIN, GPIO_OUT);
+    gpio_put(LED_PIN, 0); // Turn LED off
 
     while (true)
     {
@@ -118,35 +120,12 @@ int main()
 
         watchdog_update();
 
-        float temperature;
-        max31725.read_temperature(temperature);
-        printf("Temperature: %.2fC\n", temperature);
-
-        uint8_t eeprom_data[10];
-        if (m24m02.read(0, eeprom_data, 10))
-        {
-            printf("Done");
-        }
-
-        printf("EEPROM Data: ");
-        for (int i = 0; i < 10; i++)
-        {
-            printf("%02X ", eeprom_data[i]);
-        }
-        printf("\n");
-
-        pca9554_1.set_outputs(0x00);
-        sleep_ms(500);
-        pca9554_1.set_outputs(0xFF);
-        sleep_ms(500);
-
         if (uart.available())
         {
             char received_char;
             uart.read(&received_char, 1);
             printf("Received character from UART: %c\n", received_char);
         }
-        gpio_put(LED_PIN, 0); // Turn LED off
     }
 
     return 0;
