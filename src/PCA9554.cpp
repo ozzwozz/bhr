@@ -24,11 +24,14 @@ bool PCA9554::set_outputs(const uint8_t value)
     return true;
 }
 
-uint8_t PCA9554::read_inputs()
+bool PCA9554::read_inputs(uint8_t &value)
 {
-    uint8_t data;
-    I2CDevice::read(&data, 1);
-    return data;
+    if (!I2CDevice::read(&value, 1))
+    {
+        return false;
+    }
+    
+    return true;
 }
 
 bool PCA9554::set_lna(const bool value)

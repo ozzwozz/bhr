@@ -139,27 +139,28 @@ class UART
         void decode_message();
 
         /// @brief Set the attenuation level
+        /// @param response  
         /// @param data 
-        /// @return uint8_t 
-        uint8_t set_attenuation(char* data);
+        void set_attenuation(std::vector<char>& response, char* data);
 
         /// @brief Get the current attenuation level
         /// @param response 
-        void get_attenuation(std::vector<char>& response);
+        /// @param band_mask
+        void get_attenuation(std::vector<char>& response, uint8_t band_mask);
 
         /// @brief Set the bands for which LNA is enabled/disabled
-        /// @param data 
-        /// @return uint8_t 
-        uint8_t set_lna_enable(char* data);
+        /// @param response 
+        /// @param data  
+        void set_lna_enable(std::vector<char>& response, char* data);
         
         /// @brief Get te bands on which LNA is enabled
         /// @param response 
         void get_lna_enable(std::vector<char>& response);
 
         /// @brief Set the bands for which the attenuators should be enabled/disabled
+        /// @param response  
         /// @param data 
-        /// @return uint8_t 
-        uint8_t set_attenuator_enable(char* data);
+        void set_attenuator_enable(std::vector<char>& response, char* data);
 
         /// @brief Get the current attenuator enabled/disabled status for each band
         /// @param response 

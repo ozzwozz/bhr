@@ -22,8 +22,9 @@ class PCA9554 : public I2CDevice
         bool set_outputs(const uint8_t value);
 
         /// @brief Read current settings from the attenuator cards
-        /// @return uint8_t 
-        uint8_t read_inputs();
+        /// @param uint8_t current output settings
+        /// @return success of the read is true
+        bool read_inputs(uint8_t &value);
 
         /// @brief Write data to the attenuator cards
         /// @param value value to set the LNA bit to

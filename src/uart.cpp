@@ -83,17 +83,9 @@ void UART::flush_tx()
 void UART::ext_trig_irq_handler(void *context)
 {
     UART *uart = static_cast<UART *>(context);
-    uart->write((char*)EXTERNAL_INTERRUPT);
 
-    // Your interrupt handler code here
-    // This will be called when the interrupt is triggered on GPIO 15
-    for (int i = 0; i < 10; i++)
-    {
-        gpio_put(PICO_DEFAULT_LED_PIN, 1); // Turn LED on
-        sleep_ms(500);
-        gpio_put(PICO_DEFAULT_LED_PIN, 0); // Turn LED off
-        sleep_ms(500);
-    }
+    // Send interrupt occured message to the SBC
+    uart->write((char*)EXTERNAL_INTERRUPT);
 }
 
 void UART::uart_irq_handler(void *context)
@@ -119,6 +111,7 @@ void UART::decode_message()
     printf("message: %s\n", data);
 
     uint8_t header = data[0];
+    uint8_t band_mask = data[1];
 
     std::vector<char> response;
 
@@ -127,19 +120,19 @@ void UART::decode_message()
     switch (header)
     {
         case message_headers::SET_ATTENUATION:
-            set_attenuation(data);
+            set_attenuation(response, data);
             break;
         case message_headers::GET_ATTENUATION:
-            get_attenuation(response);
+            get_attenuation(response, band_mask);
             break;
         case message_headers::SET_LNA_ENABLE:
-            set_lna_enable(data);
+            set_lna_enable(response, data);
             break;
         case message_headers::GET_LNA_ENABLE:
             get_lna_enable(response);
             break;
         case message_headers::SET_ATTENUATOR_ENABLE:
-            set_attenuator_enable(data);
+            set_attenuator_enable(response, data);
             break;
         case message_headers::GET_ATTENUATOR_ENABLE:
             get_attenuator_enable(response);
@@ -181,7 +174,7 @@ size_t UART::send_message()
     return bytes_sent > 0;
 }
 
-uint8_t UART::set_attenuation(char* data)
+void UART::set_attenuation(std::vector<char>& response, char* data)
 {
     uint8_t attenuation_value = data[1];
     uint8_t band_mask = data[2];
@@ -208,39 +201,55 @@ uint8_t UART::set_attenuation(char* data)
         set_attenuators |= (m_pca9554_5.set_outputs(attenuation_value) << 3);
     }
 
-    return set_attenuators;
+    response[1] = set_attenuators;
 }
 
-void UART::get_attenuation(std::vector<char>& response)
+void UART::get_attenuation(std::vector<char>& response, uint8_t band_mask)
 {
     uint8_t attenuation_value;
-    uint8_t band_mask = response[2];
+    uint8_t temp;
+
 
     if ((band_mask & (1 << 7)) != 0)
     {
-        attenuation_value = m_pca9554_1.read_inputs();
+        if (m_pca9554_1.read_inputs(temp))
+        {
+            attenuation_value |= temp;
+        }    
     }
-    if ((band_mask & (1 << 6)) != 0)
+    else if ((band_mask & (1 << 6)) != 0)
     {
-        attenuation_value = m_pca9554_2.read_inputs();
+        if (m_pca9554_2.read_inputs(temp))
+        {
+            attenuation_value |= temp;
+        }
     }
-    if ((band_mask & (1 << 5)) != 0)
+    else if ((band_mask & (1 << 5)) != 0)
     {
-        attenuation_value = m_pca9554_3.read_inputs();
+        if (m_pca9554_3.read_inputs(temp))
+        {
+            attenuation_value |= temp;
+        }
     }
-    if ((band_mask & (1 << 4)) != 0)
+    else if ((band_mask & (1 << 4)) != 0)
     {
-        attenuation_value = m_pca9554_4.read_inputs();
+        if (m_pca9554_4.read_inputs(temp))
+        {
+            attenuation_value |= temp;
+        }
     }
-    if ((band_mask & (1 << 3)) != 0)
+    else if ((band_mask & (1 << 3)) != 0)
     {
-        attenuation_value = m_pca9554_5.read_inputs();
+        if (m_pca9554_5.read_inputs(temp))
+        {
+            attenuation_value |= temp;
+        }    
     }
 
-    // data[1] = attenuation_value;
+    response[1] = attenuation_value;
 }
 
-uint8_t UART::set_lna_enable(char* data)
+void UART::set_lna_enable(std::vector<char>& response, char* data)
 {
     uint8_t lna_enabled = data[1];
     uint8_t band_mask = data[2];
@@ -267,7 +276,7 @@ uint8_t UART::set_lna_enable(char* data)
         enabled_lna |= (m_pca9554_5.set_lna(lna_enabled) << 3);
     }
     
-    return band_mask;
+    response[1] = enabled_lna;
 }
 
 void UART::get_lna_enable(std::vector<char>& response)
@@ -296,10 +305,10 @@ void UART::get_lna_enable(std::vector<char>& response)
         lna_status |= (value << 3);
     }
     
-    // response[1] = lna_status;
+    response[1] = lna_status;
 }
 
-uint8_t UART::set_attenuator_enable(char* data)
+void UART::set_attenuator_enable(std::vector<char>& response, char* data)
 {
     uint8_t attenuator_enabled = data[1];
     uint8_t band_mask = data[2];
@@ -326,7 +335,7 @@ uint8_t UART::set_attenuator_enable(char* data)
         enabled_lna |= (m_pca9554_5.set_attenuator_enable(attenuator_enabled) << 3);
     }
 
-    return enabled_lna;
+    // response[1] = enabled_lna;
 }
 
 void UART::get_attenuator_enable(std::vector<char>& response)
@@ -355,7 +364,7 @@ void UART::get_attenuator_enable(std::vector<char>& response)
         attenuators_enabled |= (value << 3);
     }
     
-    // response[1] = attenuators_enabled;
+    response[1] = attenuators_enabled;
 }
 
 void UART::set_calibration(char* data)
