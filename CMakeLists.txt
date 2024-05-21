@@ -46,7 +46,7 @@ if (PICO_SDK_VERSION_STRING VERSION_LESS "1.4.0")
   message(FATAL_ERROR "Raspberry Pi Pico SDK version 1.4.0 (or later) required. Your version is ${PICO_SDK_VERSION_STRING}")
 endif()
 
-project(bhr-embedded C CXX ASM)
+project(attenuator_controller C CXX ASM)
 
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
@@ -67,7 +67,7 @@ set(HEADER_FILES
 # Add all your source files here
 set(SOURCE_FILES
     src/adc.cpp
-    src/bhr-embedded.cpp
+    src/attenuator_controller.cpp
     src/DS1682.cpp
     src/I2CDevice.cpp
     src/M24M02.cpp
@@ -83,31 +83,31 @@ include_directories(include)
 
 # Add executable. Default name is the project name, version 0.1
 
-# add_executable(bhr-embedded bhr-embedded.cpp )
+# add_executable(attenuator_controller attenuator_controller.cpp )
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
 
-pico_set_program_name(bhr-embedded "attenuator_controller")
-pico_set_program_version(bhr-embedded "0.1")
+pico_set_program_name(attenuator_controller "attenuator_controller")
+pico_set_program_version(attenuator_controller "0.1")
 
 # Generate PIO header
-pico_generate_pio_header(bhr-embedded ${CMAKE_CURRENT_LIST_DIR}/blink.pio)
+pico_generate_pio_header(attenuator_controller ${CMAKE_CURRENT_LIST_DIR}/blink.pio)
 
 # Modify the below lines to enable/disable output over UART/USB
-pico_enable_stdio_uart(bhr-embedded 1)
-pico_enable_stdio_usb(bhr-embedded 0)
+pico_enable_stdio_uart(attenuator_controller 1)
+pico_enable_stdio_usb(attenuator_controller 0)
 
 # Add the standard library to the build
-target_link_libraries(bhr-embedded
+target_link_libraries(attenuator_controller
         pico_stdlib)
 
 # Add the standard include files to the build
-target_include_directories(bhr-embedded PRIVATE
+target_include_directories(attenuator_controller PRIVATE
   ${CMAKE_CURRENT_LIST_DIR}
   ${CMAKE_CURRENT_LIST_DIR}/.. # for our common lwipopts or any other standard includes, if required
 )
 
 # Add any user requested libraries
-target_link_libraries(bhr-embedded 
+target_link_libraries(attenuator_controller 
         hardware_spi
         hardware_i2c
         hardware_pio
@@ -117,5 +117,5 @@ target_link_libraries(bhr-embedded
         hardware_adc
         )
 
-pico_add_extra_outputs(bhr-embedded)
+pico_add_extra_outputs(attenuator_controller)
 

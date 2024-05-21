@@ -54,7 +54,12 @@ bool DS1682::getTime(uint32_t &timestamp)
 bool DS1682::getUniqueID(uint32_t &device_id)
 {
     uint8_t buffer[8]; // 8 bytes needed for unique ID data
-    buffer[0] = 0x08; // Register address for reading unique ID
+
+    // Register address for reading unique ID
+    buffer[0] = unique_id_address_low;
+    buffer[1] = unique_id_address_low_mid;
+    buffer[2] = unique_id_address_high_mid;
+    buffer[3] = unique_id_address_high;
 
     if (!I2CDevice::write(buffer, 1))
     {

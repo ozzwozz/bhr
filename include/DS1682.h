@@ -11,6 +11,11 @@ class DS1682 : public I2CDevice {
     const uint8_t etc_high_mid_byte = 0x07;
     const uint8_t etc_high_byte = 0x08;
 
+    const uint8_t unique_id_address_low = 0x0B;
+    const uint8_t unique_id_address_low_mid = 0x0C;
+    const uint8_t unique_id_address_high_mid = 0x0D;
+    const uint8_t unique_id_address_high = 0x0E;
+
     public:
         /// @brief Construct a new DS1682 object
         /// @param i2c_inst i2c instance
