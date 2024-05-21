@@ -30,6 +30,7 @@ UART::UART(uart_inst_t *uart, uint baud_rate, uint rx_pin, uint tx_pin, MAX31725
 
     uart_set_irq_enables(m_uart, true, false);
     
+    // check which instance of UART is being used to give the correct UART interrupt handler
     int UART_IRQ = uart == m_uart ? UART0_IRQ : UART1_IRQ;
     irq_set_exclusive_handler(UART_IRQ, (irq_handler_t)uart_irq_handler);
     irq_set_enabled(UART_IRQ, true);

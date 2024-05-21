@@ -31,7 +31,7 @@ public:
     /// @brief Read and write to the target device
     /// @param tx_data data to send
     /// @param rx_data variable to recieve the data
-    /// @param len 
+    /// @param len length of send/receive data expected
     void exchange(const uint8_t *tx_data, uint8_t *rx_data, size_t len);
 
 protected:

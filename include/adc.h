@@ -11,15 +11,15 @@ private:
     /// @param ADC1_CTRL_value member variable to store the ADC1 control value
     float ADC1_CTRL_value;
     /// @param P5V5_value member variable to store the P5V5 voltage
-    float P5V5_value;
+    float P5V5_V;
     /// @param P3V3_value member variable to store the P3V3 voltage
-    float P3V3_value;
-    /// @param OCXO_PGOOD_value member variable to store the OCXO_PGOOD voltage
-    float OCXO_PGOOD_value;
+    float P3V3_V;
+    /// @param OCXO_PGOOD_V member variable to store the OCXO_PGOOD voltage
+    float OCXO_PGOOD_V;
     /// @param P12V_value member variable to store the P12V voltage
-    float P12V_value;
+    float P12V_V;
     /// @param INTERNAL_value member variable to store the INTERNAL voltage
-    float INTERNAL_value;
+    float INTERNAL_V;
 
 public:
     /// @brief Construct a new ADC object

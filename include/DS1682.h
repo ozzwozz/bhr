@@ -5,6 +5,12 @@
 /// @class DS1682 - Total-Elapsed-Time Recorder with Alarm
 /// @brief Driver for the DS1682
 class DS1682 : public I2CDevice {
+    private:
+    const uint8_t etc_low_byte = 0x05;
+    const uint8_t etc_low_mid_byte = 0x06;
+    const uint8_t etc_high_mid_byte = 0x07;
+    const uint8_t etc_high_byte = 0x08;
+
     public:
         /// @brief Construct a new DS1682 object
         /// @param i2c_inst i2c instance

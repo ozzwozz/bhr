@@ -27,17 +27,20 @@ bool DS1682::setTime(const uint32_t timestamp)
 bool DS1682::getTime(uint32_t &timestamp)
 {
     uint8_t buffer[4]; // 4 bytes needed for timestamp data
-    buffer[0] = 0x00; // Register address for reading time
+    buffer[0] = etc_low_byte; // Register address for reading time
+    buffer[1] = etc_low_mid_byte;
+    buffer[2] = etc_high_mid_byte;
+    buffer[3] = etc_high_byte;
 
     // request time data
-    if (!I2CDevice::write(buffer, 1))
+    if (!I2CDevice::write(buffer, 4))
     {
         timestamp = 0; // Error in writing register address
         return false;
     }
 
     // receive time data
-    if (!I2CDevice::read(buffer, sizeof(buffer)))
+    if (!I2CDevice::read(buffer, 4))
     {
         timestamp = 0; // Error in reading time data
         return false;
