@@ -92,28 +92,28 @@ class UART_Handler
         uart_inst_t *m_uart;
 
         /// @param m_max31725 MAX31725 object
-        MAX31725 m_max31725;
+        MAX31725 &m_max31725;
 
         /// @param m_m24m02 M24M02 object
-        M24M02 m_m24m02;
+        M24M02 &m_m24m02;
         /// @param m_si53361 SI53361 object
-        SI53361 m_si53361;
+        SI53361 &m_si53361;
         /// @param m_ds1682 DS1682 object
-        DS1682 m_ds1682;
+        DS1682 &m_ds1682;
 
         /// @param m_pca9554_1 PCA9554 object
-        PCA9554 m_pca9554_1;
+        PCA9554 &m_pca9554_1;
         /// @param m_pca9554_2 PCA9554 object
-        PCA9554 m_pca9554_2;
+        PCA9554 &m_pca9554_2;
         /// @param m_pca9554_3 PCA9554 object
-        PCA9554 m_pca9554_3;
+        PCA9554 &m_pca9554_3;
         /// @param m_pca9554_4 PCA9554 object
-        PCA9554 m_pca9554_4;
+        PCA9554 &m_pca9554_4;
         /// @param m_pca9554_5 PCA9554 object
-        PCA9554 m_pca9554_5;
+        PCA9554 &m_pca9554_5;
 
         /// @param m_adc ADC object
-        ADC m_adc;
+        ADC &m_adc;
 
         /// @param m_ext_trig_pin External trigger pin
         uint m_ext_trig_pin;

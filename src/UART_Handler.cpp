@@ -253,30 +253,30 @@ void UART_Handler::set_lna_enable(std::vector<char>& response, char* data)
 {
     uint8_t lna_enabled = data[1];
     uint8_t band_mask = data[2];
-    uint8_t enabled_attenuators;
+    uint8_t enabled_lna;
 
     if ((band_mask & (1 << 7)) != 0)
     {
-        enabled_attenuators |= (m_pca9554_1.set_lna(lna_enabled) << 7);
+        enabled_lna |= (m_pca9554_1.set_lna(lna_enabled) << 7);
     }
     if ((band_mask & (1 << 6)) != 0)
     {
-        enabled_attenuators |= (m_pca9554_2.set_lna(lna_enabled) << 6);
+        enabled_lna |= (m_pca9554_2.set_lna(lna_enabled) << 6);
     }
     if ((band_mask & (1 << 5)) != 0)
     {
-        enabled_attenuators |= (m_pca9554_3.set_lna(lna_enabled) << 5);
+        enabled_lna |= (m_pca9554_3.set_lna(lna_enabled) << 5);
     }
     if ((band_mask & (1 << 4)) != 0)
     {
-        enabled_attenuators |= (m_pca9554_4.set_lna(lna_enabled) << 4);
+        enabled_lna |= (m_pca9554_4.set_lna(lna_enabled) << 4);
     }
     if ((band_mask & (1 << 3)) != 0)
     {
-        enabled_attenuators |= (m_pca9554_5.set_lna(lna_enabled) << 3);
+        enabled_lna |= (m_pca9554_5.set_lna(lna_enabled) << 3);
     }
     
-    response[1] = enabled_attenuators;
+    response[1] = enabled_lna;
 }
 
 void UART_Handler::get_lna_enable(std::vector<char>& response)
