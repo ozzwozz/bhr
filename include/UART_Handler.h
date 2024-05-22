@@ -14,9 +14,9 @@
 #include "SI53361.h"
 
 
-/// @class UART
+/// @class UART_Handler
 /// @brief UART Driver Class
-class UART
+class UART_Handler
 {
     public:
         // TODO: Issue #7 - Implement Payload Definitions
@@ -51,12 +51,12 @@ class UART
         /// @param pca9554_5 Instantiated PCA9554 driver object
         /// @param adc Instantiated ADC driver object
         /// @param ds1682 Instantiated driver object
-        UART(uart_inst_t *uart, uint baud_rate, uint rx_pin, uint tx_pin, MAX31725 &max31725
+        UART_Handler(uart_inst_t *uart, uint baud_rate, uint rx_pin, uint tx_pin, MAX31725 &max31725
         , M24M02 &m24m02, SI53361 &si53361, PCA9554 &pca9554_1, PCA9554 &pca9554_2,
         PCA9554 &pca9554_3, PCA9554 &pca9554_4, PCA9554 &pca9554_5, ADC &adc, DS1682 &ds1682);
 
         /// @brief Destroy the UART object
-        ~UART();
+        ~UART_Handler();
 
         /// @brief Write to UART
         /// @param data 

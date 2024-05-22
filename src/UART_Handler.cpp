@@ -1,8 +1,8 @@
-#include "uart.h"
+#include "UART_Handler.h"
 #include <string.h>
 #include <stdio.h>
 
-UART::UART(uart_inst_t *uart, uint baud_rate, uint rx_pin, uint tx_pin, MAX31725 &max31725
+UART_Handler::UART_Handler(uart_inst_t *uart, uint baud_rate, uint rx_pin, uint tx_pin, MAX31725 &max31725
         , M24M02 &m24m02, SI53361 &si53361, PCA9554 &pca9554_1, PCA9554 &pca9554_2,
         PCA9554 &pca9554_3, PCA9554 &pca9554_4, PCA9554 &pca9554_5, ADC &adc, DS1682 &ds1682)
             : m_uart(uart)
@@ -44,17 +44,17 @@ UART::UART(uart_inst_t *uart, uint baud_rate, uint rx_pin, uint tx_pin, MAX31725
     irq_set_exclusive_handler(15, (irq_handler_t)ext_trig_irq_handler);
 }
 
-void UART::write(const char *data)
+void UART_Handler::write(const char *data)
 {
     uart_write_blocking(m_uart, reinterpret_cast<const uint8_t*>(data), strlen(data));
 }
 
-void UART::write(const char *data, size_t len)
+void UART_Handler::write(const char *data, size_t len)
 {
     uart_write_blocking(m_uart, reinterpret_cast<const uint8_t*>(data), len);
 }
 
-size_t UART::read(char *data, size_t len)
+size_t UART_Handler::read(char *data, size_t len)
 {
     size_t bytes_read = 0;
     while (!rx_buffer_.empty() && bytes_read < len)
@@ -65,32 +65,32 @@ size_t UART::read(char *data, size_t len)
     return bytes_read > 0;
 }
 
-int UART::available()
+int UART_Handler::available()
 {
     return uart_is_readable(m_uart) ? 1 : 0;
 }
 
-void UART::flush_rx()
+void UART_Handler::flush_rx()
 {
     rx_buffer_ = std::queue<char>();
 }
 
-void UART::flush_tx()
+void UART_Handler::flush_tx()
 {
     tx_buffer_ = std::queue<std::vector<char>>();
 }
 
-void UART::ext_trig_irq_handler(void *context)
+void UART_Handler::ext_trig_irq_handler(void *context)
 {
-    UART *uart = static_cast<UART *>(context);
+    UART_Handler *uart = static_cast<UART_Handler *>(context);
 
     // Send interrupt occured message to the SBC
     uart->write((char*)EXTERNAL_INTERRUPT);
 }
 
-void UART::uart_irq_handler(void *context)
+void UART_Handler::uart_irq_handler(void *context)
 {
-    UART *uart = static_cast<UART *>(context);
+    UART_Handler *uart = static_cast<UART_Handler *>(context);
 
     while (uart_is_readable(uart->m_uart))
     {
@@ -99,7 +99,7 @@ void UART::uart_irq_handler(void *context)
     }
 }
 
-void UART::decode_message()
+void UART_Handler::decode_message()
 {
     char data[128]; // Allocate memory for the data buffer
 
@@ -159,7 +159,7 @@ void UART::decode_message()
     tx_buffer_.push(response);
 }
 
-size_t UART::send_message()
+size_t UART_Handler::send_message()
 {
     size_t bytes_sent = 0;
     char data[128];
@@ -174,7 +174,7 @@ size_t UART::send_message()
     return bytes_sent > 0;
 }
 
-void UART::set_attenuation(std::vector<char>& response, char* data)
+void UART_Handler::set_attenuation(std::vector<char>& response, char* data)
 {
     uint8_t attenuation_value = data[1];
     uint8_t band_mask = data[2];
@@ -204,7 +204,7 @@ void UART::set_attenuation(std::vector<char>& response, char* data)
     response[1] = set_attenuators;
 }
 
-void UART::get_attenuation(std::vector<char>& response, uint8_t band_mask)
+void UART_Handler::get_attenuation(std::vector<char>& response, uint8_t band_mask)
 {
     uint8_t attenuation_value;
     uint8_t temp;
@@ -249,7 +249,7 @@ void UART::get_attenuation(std::vector<char>& response, uint8_t band_mask)
     response[1] = attenuation_value;
 }
 
-void UART::set_lna_enable(std::vector<char>& response, char* data)
+void UART_Handler::set_lna_enable(std::vector<char>& response, char* data)
 {
     uint8_t lna_enabled = data[1];
     uint8_t band_mask = data[2];
@@ -279,7 +279,7 @@ void UART::set_lna_enable(std::vector<char>& response, char* data)
     response[1] = enabled_attenuators;
 }
 
-void UART::get_lna_enable(std::vector<char>& response)
+void UART_Handler::get_lna_enable(std::vector<char>& response)
 {
     uint8_t lna_status;
     bool value;
@@ -308,37 +308,37 @@ void UART::get_lna_enable(std::vector<char>& response)
     response[1] = lna_status;
 }
 
-void UART::set_attenuator_enable(std::vector<char>& response, char* data)
+void UART_Handler::set_attenuator_enable(std::vector<char>& response, char* data)
 {
     uint8_t attenuator_enabled = data[1];
     uint8_t band_mask = data[2];
-    uint8_t enabled_lna = 0;
+    uint8_t enabled_attenuators;
 
     if ((band_mask & (1 << 7)) != 0)
     {
-        enabled_lna |= (m_pca9554_1.set_attenuator_enable(attenuator_enabled) << 7);
+        enabled_attenuators |= (m_pca9554_1.set_attenuator_enable(attenuator_enabled) << 7);
     }
     if ((band_mask & (1 << 6)) != 0)
     {
-        enabled_lna |= (m_pca9554_2.set_attenuator_enable(attenuator_enabled) << 6);
+        enabled_attenuators |= (m_pca9554_2.set_attenuator_enable(attenuator_enabled) << 6);
     }
     if ((band_mask & (1 << 5)) != 0)
     {
-        enabled_lna |= (m_pca9554_3.set_attenuator_enable(attenuator_enabled) << 5);
+        enabled_attenuators |= (m_pca9554_3.set_attenuator_enable(attenuator_enabled) << 5);
     }
     if ((band_mask & (1 << 4)) != 0)
     {
-        enabled_lna |= (m_pca9554_4.set_attenuator_enable(attenuator_enabled) << 4);
+        enabled_attenuators |= (m_pca9554_4.set_attenuator_enable(attenuator_enabled) << 4);
     }
     if ((band_mask & (1 << 3)) != 0)
     {
-        enabled_lna |= (m_pca9554_5.set_attenuator_enable(attenuator_enabled) << 3);
+        enabled_attenuators |= (m_pca9554_5.set_attenuator_enable(attenuator_enabled) << 3);
     }
 
-    // response[1] = enabled_lna;
+    response[1] = enabled_attenuators;
 }
 
-void UART::get_attenuator_enable(std::vector<char>& response)
+void UART_Handler::get_attenuator_enable(std::vector<char>& response)
 {
     uint8_t attenuators_enabled;
     bool value;
@@ -367,18 +367,18 @@ void UART::get_attenuator_enable(std::vector<char>& response)
     response[1] = attenuators_enabled;
 }
 
-void UART::set_calibration(char* data)
+void UART_Handler::set_calibration(char* data)
 {
     uint8_t calibration_table = data[1];
     uint8_t band_mask = data[2];
 }
 
-void UART::get_calibration(std::vector<char>& response)
+void UART_Handler::get_calibration(std::vector<char>& response)
 {
     // unknown return
 }
 
-void UART::get_bits(std::vector<char>& response)
+void UART_Handler::get_bits(std::vector<char>& response)
 {
     uint32_t timestamp;
     float temperature;
@@ -400,7 +400,7 @@ void UART::get_bits(std::vector<char>& response)
     }
 }
 
-void UART::get_hardware_numbers(std::vector<char>& response)
+void UART_Handler::get_hardware_numbers(std::vector<char>& response)
 {
     uint32_t device_id;
 
@@ -413,7 +413,7 @@ void UART::get_hardware_numbers(std::vector<char>& response)
     // EEPROM (?)
 }
 
-void UART::get_software_numbers(std::vector<char>& response)
+void UART_Handler::get_software_numbers(std::vector<char>& response)
 {
     // Pi Pico Software Number
 }

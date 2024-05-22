@@ -1,3 +1,17 @@
+# == DO NEVER EDIT THE NEXT LINES for Raspberry Pi Pico VS Code Extension to work ==
+if(WIN32)
+   set(USERHOME $ENV{USERPROFILE})
+else()
+    set(USERHOME $ENV{HOME})
+endif()
+set(PICO_SDK_PATH ${USERHOME}/.pico-sdk/sdk/1.5.1)
+set(PICO_TOOLCHAIN_PATH ${USERHOME}/.pico-sdk/toolchain/13_2_Rel1)
+if(WIN32)
+    set(pico-sdk-tools_DIR ${USERHOME}/.pico-sdk/tools/1.5.1)
+    include(${pico-sdk-tools_DIR}/pico-sdk-tools-config.cmake)
+    include(${pico-sdk-tools_DIR}/pico-sdk-tools-config-version.cmake)
+endif()
+# ====================================================================================
 # == NEVER EDIT THE NEXT LINES for Raspberry Pi Pico VS Code Extension to work ==
 if(WIN32)
    set(USERHOME $ENV{USERPROFILE})
@@ -61,7 +75,7 @@ set(HEADER_FILES
     include/PCA9554.h
     include/SI53361.h
     include/SPIDevice.h
-    include/uart.h
+    include/UART_Handler.h
 )
 
 # Add all your source files here
@@ -75,7 +89,7 @@ set(SOURCE_FILES
     src/PCA9554.cpp
     src/SPIDevice.cpp
     src/SI53361.cpp
-    src/uart.cpp
+    src/UART_Handler.cpp
 )
 
 # Include the directories containing the header files
@@ -118,4 +132,3 @@ target_link_libraries(attenuator_controller
         )
 
 pico_add_extra_outputs(attenuator_controller)
-

@@ -11,7 +11,7 @@
 #include "PCA9554.h"
 #include "MAX31725.h"
 #include "M24M02.h"
-#include "uart.h"
+#include "UART_Handler.h"
 #include "DS1682.h"
 #include "adc.h"
 #include "SI53361.h"
@@ -100,7 +100,7 @@ int main()
     DS1682 ds1682 = DS1682(i2c0, DS1682_ADDR);
 
     ADC adc = ADC();
-    UART uart = UART(uart0, 9600, 1, 0, max31725, m24m02, si53361, pca9554_1,
+    UART_Handler uart = UART_Handler(uart0, 9600, 1, 0, max31725, m24m02, si53361, pca9554_1,
                     pca9554_2, pca9554_3, pca9554_4, pca9554_5, adc, ds1682);
 
     // Watchdog restart code
