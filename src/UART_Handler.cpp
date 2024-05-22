@@ -6,7 +6,7 @@ UART_Handler::UART_Handler(uart_inst_t *uart, uint baud_rate, uint rx_pin, uint 
         , M24M02 &m24m02, SI53361 &si53361, PCA9554 &pca9554_1, PCA9554 &pca9554_2,
         PCA9554 &pca9554_3, PCA9554 &pca9554_4, PCA9554 &pca9554_5, ADC &adc, DS1682 &ds1682)
             : m_uart(uart)
-            , m_max31725(m_max31725)
+            , m_max31725(max31725)
             , m_m24m02(m24m02)
             , m_si53361(si53361)
             , m_pca9554_1(pca9554_1)
