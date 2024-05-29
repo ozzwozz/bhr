@@ -33,21 +33,33 @@ void SPIDevice::deassertCS()
 
 void SPIDevice::write(const uint8_t *data, size_t len)
 {
+    // select the device
     assertCS();
-    spi_write_blocking(m_spi, data, len);
+    if (spi_is_writable(m_spi))
+    {
+        spi_write_blocking(m_spi, data, len);
+    }
+    // deselect the device
     deassertCS();
 }
 
 void SPIDevice::read(uint8_t *data, size_t len)
 {
+    // select the device
     assertCS();
-    spi_read_blocking(m_spi, 0, data, len);
+    if (spi_is_readable(m_spi))
+    {
+        spi_read_blocking(m_spi, 0, data, len);
+    }
+    // deselect the device
     deassertCS();
 }
 
 void SPIDevice::exchange(const uint8_t *tx_data, uint8_t *rx_data, size_t len)
 {
+    // select the device
     assertCS();
     spi_write_read_blocking(m_spi, tx_data, rx_data, len);
+    // deselect the device
     deassertCS();
 }

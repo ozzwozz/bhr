@@ -10,7 +10,7 @@ M24M02::~M24M02()
 
 bool M24M02::read(const uint32_t address, uint8_t *data, size_t len)
 {
-    uint8_t addr_buf[2] = {(address >> 8) & 0xFF, address & 0xFF};
+    uint8_t addr_buf[2] {(address >> 8) & 0xFF, address & 0xFF};
 
     // Send EEPROM address
     if (!I2CDevice::write(addr_buf, len))
@@ -18,6 +18,7 @@ bool M24M02::read(const uint32_t address, uint8_t *data, size_t len)
         return false;
     }
 
+    // read returned data
     if (!I2CDevice::read(data, len))
     {
         return false;
@@ -28,7 +29,7 @@ bool M24M02::read(const uint32_t address, uint8_t *data, size_t len)
 
 bool M24M02::write(const uint32_t address, const uint8_t *data, size_t len)
 {
-    uint8_t addr_buf[3] = {(address >> 8) & 0xFF, address & 0xFF};
+    uint8_t addr_buf[3] {(address >> 8) & 0xFF, address & 0xFF};
 
     // Send EEPROM address
     if (!I2CDevice::write(addr_buf, len))

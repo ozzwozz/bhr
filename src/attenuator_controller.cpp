@@ -42,16 +42,6 @@
 #define I2C1_SDA 14
 #define I2C1_SCL 15
 
-#define UART_ID uart0
-#define BAUD_RATE 115200
-#define DATA_BITS 8
-#define STOP_BITS 1
-#define PARITY    UART_PARITY_NONE
-
-// Placeholder is 0 and 1 but is probably something else
-#define UART_TX_PIN 0
-#define UART_RX_PIN 1
-
 #define ATTENUATOR_1 0X40
 #define ATTENUATOR_2 0X42
 #define ATTENUATOR_3 0X44
@@ -88,25 +78,25 @@ int main()
     gpio_set_function(PIN_SCK,  GPIO_FUNC_SPI);
     gpio_set_function(PIN_MOSI, GPIO_FUNC_SPI);
 
-    MAX31725 max31725 = MAX31725(i2c0, MAX31725_ADDR);
-    M24M02 m24m02 = M24M02(i2c0, EEPROM_ADDR);
-    SI53361 si53361 = SI53361();
+    // MAX31725 max31725 = MAX31725(i2c0, MAX31725_ADDR);
+    // M24M02 m24m02 = M24M02(i2c0, EEPROM_ADDR);
+    // SI53361 si53361 = SI53361();
 
-    PCA9554 pca9554_1 = PCA9554(i2c1, ATTENUATOR_1);
-    PCA9554 pca9554_2 = PCA9554(i2c1, ATTENUATOR_2);
-    PCA9554 pca9554_3 = PCA9554(i2c1, ATTENUATOR_3);
-    PCA9554 pca9554_4 = PCA9554(i2c1, ATTENUATOR_4);
-    PCA9554 pca9554_5 = PCA9554(i2c1, ATTENUATOR_5);
-    DS1682 ds1682 = DS1682(i2c0, DS1682_ADDR);
+    // PCA9554 pca9554_1 = PCA9554(i2c1, ATTENUATOR_1);
+    // PCA9554 pca9554_2 = PCA9554(i2c1, ATTENUATOR_2);
+    // PCA9554 pca9554_3 = PCA9554(i2c1, ATTENUATOR_3);
+    // PCA9554 pca9554_4 = PCA9554(i2c1, ATTENUATOR_4);
+    // PCA9554 pca9554_5 = PCA9554(i2c1, ATTENUATOR_5);
+    // DS1682 ds1682 = DS1682(i2c0, DS1682_ADDR);
 
-    ADC adc = ADC();
-    UART_Handler uart = UART_Handler(uart0, 9600, 1, 0, max31725, m24m02, si53361, pca9554_1,
-                    pca9554_2, pca9554_3, pca9554_4, pca9554_5, adc, ds1682);
+    // ADC adc = ADC();
+    // UART_Handler uart = UART_Handler(max31725, m24m02, si53361, pca9554_1,
+    //                 pca9554_2, pca9554_3, pca9554_4, pca9554_5, adc, ds1682);
 
     // Watchdog restart code
     if (watchdog_caused_reboot())
     {
-        uart_puts(UART_ID, "Rebooted by Watchdog!\n");
+        printf("Rebooted by Watchdog!\n");
         // Whatever action you may take if a watchdog caused a reboot
     }
 
@@ -116,16 +106,20 @@ int main()
 
     while (true)
     {
-        gpio_put(LED_PIN, 1); // Turn LED on
+        gpio_put(LED_PIN, 0); // Turn LED on
 
         watchdog_update();
-
-        if (uart.available())
+        sleep_ms(10);
+        uint8_t input[3];
+        scanf("%d", &input);
+        if (input)
         {
-            char received_char;
-            uart.read(&received_char, 1);
-            printf("Received character from UART: %c\n", received_char);
+            // uart.decode_message(input);
+
+            printf("Received character from UART: %d\n", input);
         }
+
+        gpio_put(LED_PIN, 1); // Turn LED on
     }
 
     return 0;

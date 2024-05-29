@@ -2,11 +2,10 @@
 #include <string.h>
 #include <stdio.h>
 
-UART_Handler::UART_Handler(uart_inst_t *uart, uint baud_rate, uint rx_pin, uint tx_pin, MAX31725 &max31725
+UART_Handler::UART_Handler(MAX31725 &max31725
         , M24M02 &m24m02, SI53361 &si53361, PCA9554 &pca9554_1, PCA9554 &pca9554_2,
         PCA9554 &pca9554_3, PCA9554 &pca9554_4, PCA9554 &pca9554_5, ADC &adc, DS1682 &ds1682)
-            : m_uart(uart)
-            , m_max31725(max31725)
+            : m_max31725(max31725)
             , m_m24m02(m24m02)
             , m_si53361(si53361)
             , m_pca9554_1(pca9554_1)
@@ -17,24 +16,6 @@ UART_Handler::UART_Handler(uart_inst_t *uart, uint baud_rate, uint rx_pin, uint 
             , m_adc(adc)
             , m_ds1682(ds1682)
 {
-    gpio_set_function(rx_pin, GPIO_FUNC_UART);
-    gpio_set_function(tx_pin, GPIO_FUNC_UART);
-    uart_set_baudrate(m_uart, baud_rate);
-    uart_set_format(m_uart, 8, 1, UART_PARITY_NONE);
-
-    // Turn off FIFO's - we want to do this character by character
-    uart_set_fifo_enabled(m_uart, false);
-
-    // Set UART flow control CTS/RTS, we don't want these, so turn them off
-    uart_set_hw_flow(m_uart, false, false);
-
-    uart_set_irq_enables(m_uart, true, false);
-    
-    // check which instance of UART is being used to give the correct UART interrupt handler
-    int UART_IRQ = uart == m_uart ? UART0_IRQ : UART1_IRQ;
-    irq_set_exclusive_handler(UART_IRQ, (irq_handler_t)uart_irq_handler);
-    irq_set_enabled(UART_IRQ, true);
-
     // Initialize External interrupt trigger
     gpio_init(m_ext_trig_pin);
     gpio_set_dir(m_ext_trig_pin, GPIO_IN);
@@ -44,74 +25,20 @@ UART_Handler::UART_Handler(uart_inst_t *uart, uint baud_rate, uint rx_pin, uint 
     irq_set_exclusive_handler(15, (irq_handler_t)ext_trig_irq_handler);
 }
 
-void UART_Handler::write(const char *data)
-{
-    uart_write_blocking(m_uart, reinterpret_cast<const uint8_t*>(data), strlen(data));
-}
-
-void UART_Handler::write(const char *data, size_t len)
-{
-    uart_write_blocking(m_uart, reinterpret_cast<const uint8_t*>(data), len);
-}
-
-size_t UART_Handler::read(char *data, size_t len)
-{
-    size_t bytes_read = 0;
-    while (!rx_buffer_.empty() && bytes_read < len)
-    {
-        data[bytes_read++] = rx_buffer_.front();
-        rx_buffer_.pop();
-    }
-    return bytes_read > 0;
-}
-
-int UART_Handler::available()
-{
-    return uart_is_readable(m_uart) ? 1 : 0;
-}
-
-void UART_Handler::flush_rx()
-{
-    rx_buffer_ = std::queue<char>();
-}
-
-void UART_Handler::flush_tx()
-{
-    tx_buffer_ = std::queue<std::vector<char>>();
-}
-
 void UART_Handler::ext_trig_irq_handler(void *context)
 {
-    UART_Handler *uart = static_cast<UART_Handler *>(context);
-
     // Send interrupt occured message to the SBC
-    uart->write((char*)EXTERNAL_INTERRUPT);
+    printf("%d", (char*)EXTERNAL_INTERRUPT);
 }
 
-void UART_Handler::uart_irq_handler(void *context)
-{
-    UART_Handler *uart = static_cast<UART_Handler *>(context);
-
-    while (uart_is_readable(uart->m_uart))
-    {
-        char c = uart_getc(uart->m_uart);
-        uart->rx_buffer_.push(c);
-    }
-}
-
-void UART_Handler::decode_message()
+void UART_Handler::decode_message(const uint8_t message[3])
 {
     char data[128]; // Allocate memory for the data buffer
 
-    if (!read(data, sizeof(data)))
-    {
-        return;
-    }
+    printf("message: %s\n", message);
 
-    printf("message: %s\n", data);
-
-    uint8_t header = data[0];
-    uint8_t band_mask = data[1];
+    uint8_t header = message[0];
+    uint8_t band_mask = message[1];
 
     std::vector<char> response;
 
@@ -156,22 +83,7 @@ void UART_Handler::decode_message()
             break;
     }
 
-    tx_buffer_.push(response);
-}
-
-size_t UART_Handler::send_message()
-{
-    size_t bytes_sent = 0;
-    char data[128];
-    while (!tx_buffer_.empty() && bytes_sent < sizeof(data))
-    {
-        // data[bytes_sent++] = tx_buffer_.front();
-        tx_buffer_.pop();
-    }
-
-    write(data);
-
-    return bytes_sent > 0;
+    printf("%s", response);
 }
 
 void UART_Handler::set_attenuation(std::vector<char>& response, char* data)
@@ -407,7 +319,7 @@ void UART_Handler::get_hardware_numbers(std::vector<char>& response)
     // ETR Hardware Number
     if (!m_ds1682.getUniqueID(device_id))
     {
-        write("Unable to retrieve the hardware numbers.");
+        printf("Unable to retrieve the hardware numbers.");
     }
 
     // EEPROM (?)
