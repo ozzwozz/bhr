@@ -1,7 +1,7 @@
 #pragma once
 
 #include "pico/stdlib.h"
-#include "hardware/uart.h"
+// #include "hardware/uart.h"
 #include "hardware/gpio.h"
 #include "hardware/irq.h"
 #include <queue>
@@ -37,10 +37,6 @@ class UART_Handler
         }; // Enum inside the class
 
         /// @brief Construct a new UART object
-        /// @param uart 
-        /// @param baud_rate 
-        /// @param rx_pin 
-        /// @param tx_pin
         /// @param max31725 Instantiated MAX31725 driver object
         /// @param m24m02 Instantiated M24M02 driver object
         /// @param si53361 Instantiated SI53361 driver object
@@ -51,45 +47,17 @@ class UART_Handler
         /// @param pca9554_5 Instantiated PCA9554 driver object
         /// @param adc Instantiated ADC driver object
         /// @param ds1682 Instantiated driver object
-        UART_Handler(uart_inst_t *uart, uint baud_rate, uint rx_pin, uint tx_pin, MAX31725 &max31725
-        , M24M02 &m24m02, SI53361 &si53361, PCA9554 &pca9554_1, PCA9554 &pca9554_2,
-        PCA9554 &pca9554_3, PCA9554 &pca9554_4, PCA9554 &pca9554_5, ADC &adc, DS1682 &ds1682);
-
+        UART_Handler(MAX31725 &max31725, M24M02 &m24m02, SI53361 &si53361
+        , PCA9554 &pca9554_1, PCA9554 &pca9554_2, PCA9554 &pca9554_3, PCA9554 &pca9554_4, PCA9554 &pca9554_5
+        , ADC &adc, DS1682 &ds1682);
+                
         /// @brief Destroy the UART object
         ~UART_Handler();
 
-        /// @brief Write to UART
-        /// @param data 
-        void write(const char *data);
-
-        /// @brief Write to UART
-        /// @param data 
-        /// @param len 
-        void write(const char *data, size_t len);
-
-        /// @brief Read from UART
-        /// @param data 
-        /// @param len 
-        /// @return size_t 
-        size_t read(char *data, size_t len);
-
-        /// @brief Check if UART is available to interact with
-        /// @return int 
-        int available();
-
-        /// @brief flush the Rx buffer
-        void flush_rx();
-
-        /// @brief flush the Tx buffer
-        void flush_tx();
-
-        /// @brief Send data in the tx buffer
-        /// @return size_t 
-        size_t send_message();
+        /// @brief Parse the received message
+        void decode_message(const uint8_t message[3]);
 
     private:
-        /// @param m_uart uart instance
-        uart_inst_t *m_uart;
 
         /// @param m_max31725 MAX31725 object
         MAX31725 &m_max31725;
@@ -117,26 +85,10 @@ class UART_Handler
 
         /// @param m_ext_trig_pin External trigger pin
         uint m_ext_trig_pin;
-        
-        /// @param m_rx_pin rx pin
-        uint m_rx_pin;
-        /// @param m_tx_pin tx pin
-        uint m_tx_pin;
-        /// @param rx_buffer_ rx buffer queue
-        std::queue<char> rx_buffer_;
-        /// @param tx_buffer_ tx buffer queue
-        std::queue<std::vector<char>> tx_buffer_;
 
         /// @brief Handler for the EXT_TRIG/GPIO15 interrupt
         /// @param context 
         static void ext_trig_irq_handler(void *context);
-
-        /// @brief Interrupt handler for when data is recieved
-        /// @param context 
-        static void uart_irq_handler(void *context);
-
-        /// @brief Parse the received message
-        void decode_message();
 
         /// @brief Set the attenuation level
         /// @param response  
