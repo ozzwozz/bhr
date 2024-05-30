@@ -20,7 +20,7 @@ MAX31725::~MAX31725()
 
 bool MAX31725::set_over_temp_limit()
 {
-    uint8_t tx_data[2] {cmd_set_temp_limit, m_temperature_limit_C};
+    uint8_t tx_data[2] {m_cmd_set_temp_limit, m_temperature_limit_C};
 
     if (!write(tx_data, 1))
     {
@@ -34,7 +34,7 @@ bool MAX31725::read_temperature(float &temperature)
 {
     uint8_t rx_data[2];
 
-    if (!write(&cmd_read_temperature, 1))
+    if (!write(&m_cmd_read_temperature, 1))
     {
         return false;
     }

@@ -11,7 +11,7 @@
 #include "PCA9554.h"
 #include "MAX31725.h"
 #include "M24M02.h"
-#include "UART_Handler.h"
+#include "USB_Handler.h"
 #include "DS1682.h"
 #include "adc.h"
 #include "SI53361.h"
@@ -78,20 +78,20 @@ int main()
     gpio_set_function(PIN_SCK,  GPIO_FUNC_SPI);
     gpio_set_function(PIN_MOSI, GPIO_FUNC_SPI);
 
-    // MAX31725 max31725 = MAX31725(i2c0, MAX31725_ADDR);
-    // M24M02 m24m02 = M24M02(i2c0, EEPROM_ADDR);
-    // SI53361 si53361 = SI53361();
+    MAX31725 max31725 = MAX31725(i2c0, MAX31725_ADDR);
+    M24M02 m24m02 = M24M02(i2c0, EEPROM_ADDR);
+    SI53361 si53361 = SI53361();
 
-    // PCA9554 pca9554_1 = PCA9554(i2c1, ATTENUATOR_1);
-    // PCA9554 pca9554_2 = PCA9554(i2c1, ATTENUATOR_2);
-    // PCA9554 pca9554_3 = PCA9554(i2c1, ATTENUATOR_3);
-    // PCA9554 pca9554_4 = PCA9554(i2c1, ATTENUATOR_4);
-    // PCA9554 pca9554_5 = PCA9554(i2c1, ATTENUATOR_5);
-    // DS1682 ds1682 = DS1682(i2c0, DS1682_ADDR);
+    PCA9554 pca9554_1 = PCA9554(i2c1, ATTENUATOR_1);
+    PCA9554 pca9554_2 = PCA9554(i2c1, ATTENUATOR_2);
+    PCA9554 pca9554_3 = PCA9554(i2c1, ATTENUATOR_3);
+    PCA9554 pca9554_4 = PCA9554(i2c1, ATTENUATOR_4);
+    PCA9554 pca9554_5 = PCA9554(i2c1, ATTENUATOR_5);
+    DS1682 ds1682 = DS1682(i2c0, DS1682_ADDR);
 
-    // ADC adc = ADC();
-    // UART_Handler uart = UART_Handler(max31725, m24m02, si53361, pca9554_1,
-    //                 pca9554_2, pca9554_3, pca9554_4, pca9554_5, adc, ds1682);
+    ADC adc = ADC();
+    USB_Handler uart = USB_Handler(max31725, m24m02, si53361, pca9554_1,
+                    pca9554_2, pca9554_3, pca9554_4, pca9554_5, adc, ds1682);
 
     // Watchdog restart code
     if (watchdog_caused_reboot())
@@ -106,7 +106,7 @@ int main()
 
     while (true)
     {
-        gpio_put(LED_PIN, 0); // Turn LED on
+        gpio_put(LED_PIN, 1); // Turn LED on
 
         watchdog_update();
         sleep_ms(10);
@@ -114,12 +114,12 @@ int main()
         scanf("%d", &input);
         if (input)
         {
-            // uart.decode_message(input);
-
+            uart.decode_message(input);
             printf("Received character from UART: %d\n", input);
         }
 
-        gpio_put(LED_PIN, 1); // Turn LED on
+        gpio_put(LED_PIN, 0); // Turn LED off
+        sleep_ms(10);
     }
 
     return 0;
