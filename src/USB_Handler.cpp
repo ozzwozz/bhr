@@ -1,6 +1,7 @@
 #include "USB_Handler.h"
 #include <string.h>
 #include <stdio.h>
+#include "tusb.h"
 
 USB_Handler::USB_Handler(MAX31725 &max31725
         , M24M02 &m24m02, SI53361 &si53361, PCA9554 &pca9554_1, PCA9554 &pca9554_2,
@@ -19,53 +20,62 @@ USB_Handler::USB_Handler(MAX31725 &max31725
     // Initialize External interrupt trigger
     gpio_init(m_ext_trig_pin);
     gpio_set_dir(m_ext_trig_pin, GPIO_IN);
-    gpio_pull_down(m_ext_trig_pin); // Set External interrupt trigger as input with pull-down resistor
+    gpio_pull_up(m_ext_trig_pin); // Set External interrupt trigger as input with pull-down resistor
 
-    // Set up interrupt for GPIO 15
-    irq_set_exclusive_handler(15, (irq_handler_t)ext_trig_irq_handler);
+    // Set up interrupt for m_ext_trig_pin
+    gpio_set_irq_enabled_with_callback(m_ext_trig_pin, GPIO_IRQ_EDGE_RISE, true, ext_trig_irq_handler); 
+
+    // irq_set_exclusive_handler(USBCTRL_IRQ, (irq_handler_t)usb_rx);
+    // irq_set_enabled(USBCTRL_IRQ, true);
 }
 
-void USB_Handler::ext_trig_irq_handler(void *context)
+void USB_Handler::ext_trig_irq_handler(uint gpio, uint32_t events)
 {
+    
     // Send interrupt occured message to the SBC
-    printf("%d", (char*)EXTERNAL_INTERRUPT);
+    // printf("%d", (char*)EXTERNAL_INTERRUPT);
 }
 
 void USB_Handler::decode_message(const uint8_t message[3])
 {
-    char data[128]; // Allocate memory for the data buffer
+    char* data; // Allocate memory for the data buffer
+    uint8_t mutable_message[3];
+    mutable_message[0] = message[0];
+    mutable_message[1] = message[1];
+    mutable_message[2] = message[2];
 
-    printf("message: %s\n", message);
+    printf("message: %d %d %d\n", message[0], message[1], message[2]);
 
     uint8_t header = message[0];
     uint8_t band_mask = message[1];
 
-    std::vector<char> response;
+    // std::vector<char> response;
+    uint8_t response[3];
 
     response[0] = header;
 
     switch (header)
     {
         case message_headers::SET_ATTENUATION:
-            set_attenuation(response, data);
+            set_attenuation(response, mutable_message);
             break;
         case message_headers::GET_ATTENUATION:
             get_attenuation(response, band_mask);
             break;
         case message_headers::SET_LNA_ENABLE:
-            set_lna_enable(response, data);
+            set_lna_enable(response, mutable_message);
             break;
         case message_headers::GET_LNA_ENABLE:
             get_lna_enable(response);
             break;
         case message_headers::SET_ATTENUATOR_ENABLE:
-            set_attenuator_enable(response, data);
+            set_attenuator_enable(response, mutable_message);
             break;
         case message_headers::GET_ATTENUATOR_ENABLE:
             get_attenuator_enable(response);
             break;
         case message_headers::SET_CALIBRATION:
-            set_calibration(data);
+            set_calibration(mutable_message);
             break;
         case message_headers::GET_CALIBRATION:
             get_calibration(response);
@@ -83,10 +93,10 @@ void USB_Handler::decode_message(const uint8_t message[3])
             break;
     }
 
-    printf("%s", response);
+    printf("header: %x  body: %d %d %d %d %d", response[0], response[1], response[2], response[3], response[4], response[5]);
 }
 
-void USB_Handler::set_attenuation(std::vector<char>& response, char* data)
+void USB_Handler::set_attenuation(uint8_t response[3], uint8_t data[3])
 {
     uint8_t attenuation_value = data[1];
     uint8_t band_mask = data[2];
@@ -116,7 +126,7 @@ void USB_Handler::set_attenuation(std::vector<char>& response, char* data)
     response[1] = set_attenuators;
 }
 
-void USB_Handler::get_attenuation(std::vector<char>& response, uint8_t band_mask)
+void USB_Handler::get_attenuation(uint8_t response[3], uint8_t band_mask)
 {
     uint8_t attenuation_value;
     uint8_t temp;
@@ -161,7 +171,7 @@ void USB_Handler::get_attenuation(std::vector<char>& response, uint8_t band_mask
     response[1] = attenuation_value;
 }
 
-void USB_Handler::set_lna_enable(std::vector<char>& response, char* data)
+void USB_Handler::set_lna_enable(uint8_t response[3], uint8_t data[3])
 {
     uint8_t lna_enabled = data[1];
     uint8_t band_mask = data[2];
@@ -191,7 +201,7 @@ void USB_Handler::set_lna_enable(std::vector<char>& response, char* data)
     response[1] = enabled_lna;
 }
 
-void USB_Handler::get_lna_enable(std::vector<char>& response)
+void USB_Handler::get_lna_enable(uint8_t response[3])
 {
     uint8_t lna_status;
     bool value;
@@ -220,7 +230,7 @@ void USB_Handler::get_lna_enable(std::vector<char>& response)
     response[1] = lna_status;
 }
 
-void USB_Handler::set_attenuator_enable(std::vector<char>& response, char* data)
+void USB_Handler::set_attenuator_enable(uint8_t response[3], uint8_t data[3])
 {
     uint8_t attenuator_enabled = data[1];
     uint8_t band_mask = data[2];
@@ -250,7 +260,7 @@ void USB_Handler::set_attenuator_enable(std::vector<char>& response, char* data)
     response[1] = enabled_attenuators;
 }
 
-void USB_Handler::get_attenuator_enable(std::vector<char>& response)
+void USB_Handler::get_attenuator_enable(uint8_t response[3])
 {
     uint8_t attenuators_enabled;
     bool value;
@@ -279,40 +289,36 @@ void USB_Handler::get_attenuator_enable(std::vector<char>& response)
     response[1] = attenuators_enabled;
 }
 
-void USB_Handler::set_calibration(char* data)
+void USB_Handler::set_calibration(uint8_t data[3])
 {
     uint8_t calibration_table = data[1];
     uint8_t band_mask = data[2];
 }
 
-void USB_Handler::get_calibration(std::vector<char>& response)
+void USB_Handler::get_calibration(uint8_t response[3])
 {
     // unknown return
 }
 
-void USB_Handler::get_bits(std::vector<char>& response)
+void USB_Handler::get_bits(uint8_t response[3])
 {
     uint32_t timestamp;
     float temperature;
 
-    size_t initialSize = response.size(); // Store initial size to calculate the size of added data
-
     // Get timestamp from DS1682
     if (m_ds1682.getTime(timestamp))
     {
-        response.resize(initialSize + sizeof(uint32_t));
-        memcpy(response.data() + initialSize, &timestamp, sizeof(uint32_t));
+        response[1] = timestamp;
     }
 
     // Get temperature from MAX31725
     if (m_max31725.read_temperature(temperature))
     {
-        response.resize(initialSize + sizeof(float));
-        memcpy(response.data() + initialSize, &temperature, sizeof(float));
+        response[2] = temperature;
     }
 }
 
-void USB_Handler::get_hardware_numbers(std::vector<char>& response)
+void USB_Handler::get_hardware_numbers(uint8_t response[3])
 {
     uint32_t device_id;
 
@@ -325,7 +331,7 @@ void USB_Handler::get_hardware_numbers(std::vector<char>& response)
     // EEPROM (?)
 }
 
-void USB_Handler::get_software_numbers(std::vector<char>& response)
+void USB_Handler::get_software_numbers(uint8_t response[3])
 {
     // Pi Pico Software Number
 }
