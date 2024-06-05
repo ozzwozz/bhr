@@ -26,17 +26,17 @@ public:
     bool read_temperature(float &temperature);
 
     /// @brief Handler for the over temp interrupt
-    static void over_temp_irq_handler(void *context);
+    static void over_temp_irq_handler(uint gpio, uint32_t events);
 
 private:
     /// @param m_cmd_read_temperature command address for reading the temperature
-    static constexpr uint8_t m_cmd_read_temperature = 0x00;
+    static constexpr uint8_t  m_cmd_read_temperature = 0x00;
 
     /// @param m_cmd_set_temp_limit command address for setting the over_temp limit
     static constexpr uint8_t m_cmd_set_temp_limit = 0x03;
 
     /// @param m_overtemp_pin interrupt pin for the overtemp trigger
-    const uint m_overtemp_pin = 14;
+    const uint m_overtemp_pin = 6;
 
     /// @param m_temperature_limit_C over_temp trigger temperrature in Celsius
     const float m_temperature_limit_C = 85;

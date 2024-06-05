@@ -83,57 +83,60 @@ private:
     ADC &m_adc;
 
     /// @param m_ext_trig_pin External trigger pin
-    uint m_ext_trig_pin;
+    uint m_ext_trig_pin = 15;
+
+    static void usb_rx(void *context);
 
     /// @brief Handler for the EXT_TRIG/GPIO15 interrupt
     /// @param context 
-    static void ext_trig_irq_handler(void *context);
+    static void ext_trig_irq_handler(uint gpio, uint32_t events);
+
 
     /// @brief Set the attenuation level
     /// @param response  
     /// @param data 
-    void set_attenuation(std::vector<char>& response, char* data);
+    void set_attenuation(uint8_t response[3], uint8_t data[3]);
 
     /// @brief Get the current attenuation level
     /// @param response 
     /// @param band_mask
-    void get_attenuation(std::vector<char>& response, uint8_t band_mask);
+    void get_attenuation(uint8_t response[3], uint8_t band_mask);
 
     /// @brief Set the bands for which LNA is enabled/disabled
     /// @param response 
     /// @param data  
-    void set_lna_enable(std::vector<char>& response, char* data);
+    void set_lna_enable(uint8_t response[3], uint8_t data[3]);
     
     /// @brief Get te bands on which LNA is enabled
     /// @param response 
-    void get_lna_enable(std::vector<char>& response);
+    void get_lna_enable(uint8_t response[3]);
 
     /// @brief Set the bands for which the attenuators should be enabled/disabled
     /// @param response  
     /// @param data 
-    void set_attenuator_enable(std::vector<char>& response, char* data);
+    void set_attenuator_enable(uint8_t response[3], uint8_t data[3]);
 
     /// @brief Get the current attenuator enabled/disabled status for each band
     /// @param response 
-    void get_attenuator_enable(std::vector<char>& response);
+    void get_attenuator_enable(uint8_t response[3]);
 
     /// @brief Set the Calibration table on the EEPROM 
     /// @param data 
-    void set_calibration(char* data);
+    void set_calibration(uint8_t data[3]);
 
     /// @brief Get the current calibration table on the EEPROM
     /// @param response 
-    void get_calibration(std::vector<char>& response);
+    void get_calibration(uint8_t response[3]);
 
     /// @brief A list of the attenuator stage bits
     /// @param response 
-    void get_bits(std::vector<char>& response);
+    void get_bits(uint8_t response[3]);
 
     /// @brief A list of the attenuator stage harder numbers
     /// @param response 
-    void get_hardware_numbers(std::vector<char>& response);
+    void get_hardware_numbers(uint8_t response[3]);
 
     /// @brief A list of the attenuator stage software numbers
     /// @param response 
-    void get_software_numbers(std::vector<char>& response);
+    void get_software_numbers(uint8_t response[3]);
 };
