@@ -27,12 +27,17 @@ public:
         GET_LNA_ENABLE = 0x03,
         SET_ATTENUATOR_ENABLE = 0x04,
         GET_ATTENUATOR_ENABLE = 0x05,
+        SET_10MHZ_REFERENCE_SOURCE = 0x06,
+        GET_10MHZ_REFERENCE_SOURCE = 0x07,
         SET_CALIBRATION = 0x10,
         GET_CALIBRATION = 0x11,
         GET_BITS = 0X20,
         GET_HARDWARE_NUMBERS = 0X21,
         GET_SOFTWARE_NUMBERS = 0X22,
-        EXTERNAL_INTERRUPT = 0x30
+        EXTERNAL_INTERRUPT = 0x30,
+        RESET_ETC = 0x31,
+        SET_P3V3_OXCO_PIN = 0x40,
+        SET_P5V5_PIN = 0x41
     }; // Enum inside the class
 
     /// @brief Construct a new UART object
@@ -95,30 +100,39 @@ private:
     /// @brief Set the attenuation level
     /// @param response  
     /// @param data 
-    void set_attenuation(uint8_t response[3], uint8_t data[3]);
+    void set_attenuation(uint8_t response[12], uint8_t data[3]);
 
     /// @brief Get the current attenuation level
     /// @param response 
     /// @param band_mask
-    void get_attenuation(uint8_t response[3], uint8_t band_mask);
+    void get_attenuation(uint8_t response[12], uint8_t band_mask);
 
     /// @brief Set the bands for which LNA is enabled/disabled
     /// @param response 
     /// @param data  
-    void set_lna_enable(uint8_t response[3], uint8_t data[3]);
+    void set_lna_enable(uint8_t response[12], uint8_t data[3]);
     
     /// @brief Get te bands on which LNA is enabled
     /// @param response 
-    void get_lna_enable(uint8_t response[3]);
+    void get_lna_enable(uint8_t response[12]);
 
     /// @brief Set the bands for which the attenuators should be enabled/disabled
     /// @param response  
     /// @param data 
-    void set_attenuator_enable(uint8_t response[3], uint8_t data[3]);
+    void set_attenuator_enable(uint8_t response[12], uint8_t data[3]);
 
     /// @brief Get the current attenuator enabled/disabled status for each band
     /// @param response 
-    void get_attenuator_enable(uint8_t response[3]);
+    void get_attenuator_enable(uint8_t response[12]);
+
+    /// @brief Set the clock to use
+    /// @param response
+    /// @param data the clock that should be used
+    void set_clock_state(uint8_t response[12], uint8_t data[3]);
+
+    /// @brief Get the current clock in use
+    /// @param response 
+    void get_clock_state(uint8_t response[12]);
 
     /// @brief Set the Calibration table on the EEPROM 
     /// @param data 
@@ -126,17 +140,28 @@ private:
 
     /// @brief Get the current calibration table on the EEPROM
     /// @param response 
-    void get_calibration(uint8_t response[3]);
+    void get_calibration(uint8_t response[12]);
 
     /// @brief A list of the attenuator stage bits
     /// @param response 
-    void get_bits(uint8_t response[3]);
+    void get_bits(uint8_t response[12]);
 
     /// @brief A list of the attenuator stage harder numbers
     /// @param response 
-    void get_hardware_numbers(uint8_t response[3]);
+    void get_hardware_numbers(uint8_t response[12]);
 
     /// @brief A list of the attenuator stage software numbers
     /// @param response 
-    void get_software_numbers(uint8_t response[3]);
+    void get_software_numbers(uint8_t response[12]);
+    
+    /// @brief Call the ETC reset command
+    void reset_etc();
+
+    /// @brief Set the p3v3 OXCO pin
+    /// @param mutable_message 
+    void set_p3v3_oxco_pin(uint8_t mutable_message[3]);
+
+    /// @brief Set the p5v5 pin
+    /// @param mutable_message 
+    void set_p5v5_pin(uint8_t mutable_message[3]);
 };

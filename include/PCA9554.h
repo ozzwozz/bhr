@@ -7,11 +7,16 @@
 /// @brief Driver for the PCA9554
 class PCA9554 : public I2CDevice
 {
+protected:
+    /// @param m_power_enable_pin Pin to control power to the attenuator card
+    uint m_power_enable_pin;
+
 public:
     /// @brief Construct a new PCA9554 object
     /// @param i2c i2c instance
     /// @param address address of the target
-    PCA9554(i2c_inst_t *i2c, uint8_t address);
+    /// @param power_enable_pin
+    PCA9554(i2c_inst_t *i2c, uint8_t address, uint power_enable_pin);
 
     /// @brief Destroy the PCA9554 object
     ~PCA9554();
@@ -45,4 +50,10 @@ public:
     /// @param value get the attenuator enable status by reference
     /// @return success is true
     bool get_attenuator_enable(bool &value);
+    
+    /// @brief Enable the corresponding power line
+    void set_power_enable();
+
+    /// @brief Disable the corresponding power line
+    void set_power_disable();
 };

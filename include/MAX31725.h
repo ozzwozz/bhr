@@ -2,6 +2,11 @@
 
 #include "I2CDevice.h"
 
+/// @param m_cmd_read_temperature command address for reading the temperature
+constexpr uint8_t  m_cmd_read_temperature = 0x00;
+
+/// @param m_cmd_set_temp_limit command address for setting the over_temp limit
+constexpr uint8_t m_cmd_set_temp_limit = 0x03;
 
 /// @class MAX31725
 /// @brief Driver for the MAX31725 - Local Temperature Sensor Driver
@@ -29,12 +34,6 @@ public:
     static void over_temp_irq_handler(uint gpio, uint32_t events);
 
 private:
-    /// @param m_cmd_read_temperature command address for reading the temperature
-    static constexpr uint8_t  m_cmd_read_temperature = 0x00;
-
-    /// @param m_cmd_set_temp_limit command address for setting the over_temp limit
-    static constexpr uint8_t m_cmd_set_temp_limit = 0x03;
-
     /// @param m_overtemp_pin interrupt pin for the overtemp trigger
     const uint m_overtemp_pin = 6;
 

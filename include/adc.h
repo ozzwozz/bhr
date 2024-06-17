@@ -8,12 +8,23 @@
 class ADC
 {
 private:
+    /// @param P5V5_ENABLE_PIN P5V5 voltage Pin
+    const uint P5V5_ENABLE_PIN = 12;
+    /// @param P3V3_OCXO_ENABLE_PIN P3V3 and OCXO voltage Pin
+    const uint P3V3_OCXO_ENABLE_PIN = 14;
+
+    /// @param P5V5_PGOOD_PIN P5V5 voltage Pin
+    const uint P5V5_PGOOD_PIN = 13;
+    /// @param P3V3_OCXO_PGOOD_PIN P3V3 and OCXO voltage Pin
+    const uint P3V3_OCXO_PGOOD_PIN = 21;
+
     /// @param ADC1_CTRL_PIN ADC 1 voltage Control Pin
     const uint ADC1_CTRL_PIN = 22;
+
     /// @param P5V5_PIN P5V5 voltage Pin
     const uint P5V5_PIN = 26;
-    /// @param P3V3_OCXO_PGOOD_PIN P3V3 and OCXO voltage Pin
-    const uint P3V3_OCXO_PGOOD_PIN = 27;
+    /// @param P3V3_OCXO_PIN P3V3 and OCXO voltage Pin
+    const uint P3V3_OCXO_PIN = 27;
     /// @param P12V_PIN P12V voltage Pin
     const uint P12V_PIN = 28;
     /// @param INTERNAL_PIN Internal voltage Pin
@@ -50,4 +61,16 @@ public:
 
     /// @brief read the voltage on all of the pins
     void read_all();
+
+    /// @brief Set the p5v5 enable pin
+    void set_p5v5_enable_pin();
+
+    /// @brief Set the p3v3 oxco enable pin
+    void set_p3v3_oxco_enable_pin();
+
+    /// @brief Unset the p5v5 enable pin
+    void set_p5v5_disable();
+
+    /// @brief Unset the p3v3 oxco enable pin
+    void set_p3v3_oxco_disable();
 };

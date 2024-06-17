@@ -22,6 +22,8 @@ public:
 
     /// @brief Enable the external clock
     void enable_external_clock();
+    /// @brief Get the current clock state based on the enabeld pins
+    uint8_t get_clock_state();
     /// @brief Enable the internal clock
     void enable_internal_clock();
     /// @brief Disable the clock

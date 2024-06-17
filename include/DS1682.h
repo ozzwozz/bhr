@@ -15,6 +15,9 @@ public:
     /// @brief Destroy the DS1682 object
     ~DS1682();
 
+    /// @brief
+    void writeConfigRegister(uint8_t config);
+
     /// @brief Set time on DS1682
     /// @param timestamp 
     /// @return success is true
@@ -29,6 +32,14 @@ public:
     /// @param device_id get device id by reference
     /// @return success is true
     bool getUniqueID(uint32_t &device_id);
+
+    /// @brief 
+    /// @param counter 
+    /// @return success is true
+    bool getEventCounter(uint16_t &counter);
+
+    /// @brief reset the ETC, EEPROM and event counter
+    void reset();
 
 private:
     /// @param etc_low_byte address for the lowest byte of the timestamp
@@ -48,4 +59,23 @@ private:
     const uint8_t unique_id_address_high_mid = 0x0D;
     /// @param unique_id_address_high address for the upmost byte of the ID
     const uint8_t unique_id_address_high = 0x0E;
+
+    union configuration_t
+    {
+        struct configuration_bits_t
+        {
+            bool event_counter_msb : 1;
+            bool alarm_polarity : 1;
+            bool reset_enable : 1;
+            bool alarm_output_select : 1;
+            bool write_memory_disabled_flag : 1;
+            bool write_disabled_flag : 1;
+            bool alarm_flag : 1;
+            // bit 7 is unused
+        } b;
+        uint8_t i;
+        
+    } configuration;
+
+    uint8_t reset_command[2] {0x1D, 0x55};
 };
