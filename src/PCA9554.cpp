@@ -1,11 +1,13 @@
 #include "PCA9554.h"
 
-PCA9554::PCA9554(i2c_inst_t *i2c, uint8_t address) : I2CDevice(i2c, address)
+PCA9554::PCA9554(i2c_inst_t *i2c, uint8_t address, uint power_enable_pin) : I2CDevice(i2c, address), m_power_enable_pin(power_enable_pin)
 {
+    set_power_enable();
 }
 
 PCA9554::~PCA9554()
 {
+    set_power_disable();
 }
 
 bool PCA9554::set_outputs(const uint8_t value)
@@ -114,4 +116,14 @@ bool PCA9554::get_attenuator_enable(bool &value)
 
     value = (current_value << 7);
     return true;
+}
+
+void PCA9554::set_power_enable()
+{
+    gpio_put(m_power_enable_pin, 1);
+}
+
+void PCA9554::set_power_disable()
+{
+    gpio_put(m_power_enable_pin, 0);
 }

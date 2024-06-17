@@ -46,6 +46,12 @@
 #define ATTENUATOR_4 0X46
 #define ATTENUATOR_5 0X48
 
+#define ATTENUATOR_1_POWER 7
+#define ATTENUATOR_2_POWER 8
+#define ATTENUATOR_3_POWER 9
+#define ATTENUATOR_4_POWER 10
+#define ATTENUATOR_5_POWER 11
+
 #define ATTENUATOR_REG_OUT 0x01
 
 int main()
@@ -61,7 +67,7 @@ int main()
 
     // 0x7fffff is roughly 8.3 seconds and the maximum
     watchdog_enable(0x7fffff, 1);
-    printf("watchdog setup");
+    // printf("watchdog setup");
 
     // Configure onboard LED pin
     const uint LED_PIN = PICO_DEFAULT_LED_PIN;
@@ -91,28 +97,28 @@ int main()
     sleep_ms(2000);
 
     MAX31725 max31725 = MAX31725(i2c0, MAX31725_ADDR);
-    printf("max31725 set up\n");
+    // printf("max31725 set up\n");
     M24M02 m24m02 = M24M02(i2c0, EEPROM_ADDR);
-    printf("m24m02 set up\n");
+    // printf("m24m02 set up\n");
     SI53361 si53361 = SI53361();
-    printf("si53361 set up\n");
+    // printf("si53361 set up\n");
     DS1682 ds1682 = DS1682(i2c0, DS1682_ADDR);
-    printf("ds1682 set up\n");
+    // printf("ds1682 set up\n");
 
-    PCA9554 pca9554_1 = PCA9554(i2c1, ATTENUATOR_1);
-    PCA9554 pca9554_2 = PCA9554(i2c1, ATTENUATOR_2);
-    PCA9554 pca9554_3 = PCA9554(i2c1, ATTENUATOR_3);
-    PCA9554 pca9554_4 = PCA9554(i2c1, ATTENUATOR_4);
-    PCA9554 pca9554_5 = PCA9554(i2c1, ATTENUATOR_5);
-    printf("All pca9554's set up\n");
+    PCA9554 pca9554_1 = PCA9554(i2c1, ATTENUATOR_1, ATTENUATOR_1_POWER);
+    PCA9554 pca9554_2 = PCA9554(i2c1, ATTENUATOR_2, ATTENUATOR_2_POWER);
+    PCA9554 pca9554_3 = PCA9554(i2c1, ATTENUATOR_3, ATTENUATOR_3_POWER);
+    PCA9554 pca9554_4 = PCA9554(i2c1, ATTENUATOR_4, ATTENUATOR_4_POWER);
+    PCA9554 pca9554_5 = PCA9554(i2c1, ATTENUATOR_5, ATTENUATOR_5_POWER);
+    // printf("All pca9554's set up\n");
 
     ADC adc = ADC();
-    printf("adc set up\n");
+    // printf("adc set up\n");
 
     USB_Handler usb_handler = USB_Handler(max31725, m24m02, si53361, pca9554_1,
                     pca9554_2, pca9554_3, pca9554_4, pca9554_5, adc, ds1682);
-    printf("usb_handler set up\n");
-
+    // printf("usb_handler set up\n");
+    
     while (true)
     {
         gpio_put(LED_PIN, 0); // Turn LED off
@@ -120,32 +126,18 @@ int main()
 
         watchdog_update();
 
-        // uint32_t time;
-        // ds1682.getTime(time);
-        // uint32_t id;
-        // ds1682.getUniqueID(id);
-        // printf("time %10ld \n", time);
-        // printf("id %lu \n", id);
-
-        // sleep_ms(10);
         uint8_t input[3];
         input[0] = getchar_timeout_us(0);
         input[1] = getchar_timeout_us(10);
         input[2] = getchar_timeout_us(10);
 
-        
         for (int x = 0; x < sizeof(input); x++)
         {
-            if (input[x] == 255)
+            if (input[x] != PICO_ERROR_TIMEOUT)
             {
-                break;
+                usb_handler.decode_message(input);
             }
-            
-            usb_handler.decode_message(input);
-            printf("Received character from usb: %d %d %d \n", input[0], input[1], input[2]);
         }
-
-        // printf("looped \n");
 
         gpio_put(LED_PIN, 1); // Turn LED on
         sleep_ms(50);
