@@ -12,6 +12,8 @@ private:
     uint m_clock_select_pin = 19;
     /// @param m_output_enable_pin output enable pin
     uint m_output_enable_pin = 20;
+    /// @param m_ext_clock_detect external clock detect
+    uint m_ext_clock_detect = 18;
 
 public:
     /// @brief Construct a new SI53361 object

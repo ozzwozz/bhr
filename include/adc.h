@@ -27,8 +27,6 @@ private:
     const uint P3V3_OCXO_PIN = 27;
     /// @param P12V_PIN P12V voltage Pin
     const uint P12V_PIN = 28;
-    /// @param INTERNAL_PIN Internal voltage Pin
-    const uint INTERNAL_PIN = 29;
 
 public:
     /// @brief Construct a new ADC object
@@ -37,17 +35,19 @@ public:
     ~ADC();
     
     /// @param ADC1_CTRL_value member variable to store the ADC1 control value
-    float ADC1_CTRL_value;
+    uint16_t ADC1_CTRL_value;
     /// @param voltage_P5V5 member variable to store the P5V5 voltage
-    float voltage_P5V5;
+    uint16_t voltage_P5V5;
     /// @param voltage_P3V3 member variable to store the P3V3 voltage
-    float voltage_P3V3;
+    uint16_t voltage_P3V3;
     /// @param voltage_OCXO_PGOOD member variable to store the OCXO_PGOOD voltage
-    float voltage_OCXO_PGOOD;
+    uint16_t voltage_OCXO_PGOOD;
     /// @param voltage_P12V member variable to store the P12V voltage
-    float voltage_P12V;
-    /// @param voltage_INTERNAL member variable to store the INTERNAL voltage
-    float voltage_INTERNAL;
+    uint16_t voltage_P12V;
+    /// @param voltage_P3V3_PGOOD member variable to store the INTERNAL voltage
+    uint16_t voltage_P3V3_PGOOD;
+    /// @param voltage_P5V5_PGOOD member variable to store the INTERNAL voltage
+    uint16_t voltage_P5V5_PGOOD;
 
     /// @brief read the raw value of the given adc pin
     /// @param pin 
@@ -57,6 +57,7 @@ public:
     /// @brief read the converted voltage value of the given adc pin
     /// @param pin 
     /// @return float the voltage value at the pin
+    // float read_voltage_adc(uint pin);
     float read_voltage_adc(uint pin);
 
     /// @brief read the voltage on all of the pins

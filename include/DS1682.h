@@ -28,11 +28,6 @@ public:
     /// @return success is true
     bool getTime(uint32_t &timestamp);
 
-    /// @brief Get the device ID
-    /// @param device_id get device id by reference
-    /// @return success is true
-    bool getUniqueID(uint32_t &device_id);
-
     /// @brief 
     /// @param counter 
     /// @return success is true
@@ -51,14 +46,8 @@ private:
     /// @param etc_high_byte address for the upmost byte of the timestamp
     const uint8_t etc_high_byte = 0x08;
 
-    /// @param unique_id_address_low address for the lowest byte of the ID
-    const uint8_t unique_id_address_low = 0x0B;
-    /// @param unique_id_address_low_mid address for the lower middle byte of the ID
-    const uint8_t unique_id_address_low_mid = 0x0C;
-    /// @param unique_id_address_high_mid address for the upper middle byte of the ID
-    const uint8_t unique_id_address_high_mid = 0x0D;
-    /// @param unique_id_address_high address for the upmost byte of the ID
-    const uint8_t unique_id_address_high = 0x0E;
+    const uint8_t event_counter_address_low = 0x09;
+    const uint8_t event_counter_address_high = 0x0A;
 
     union configuration_t
     {
@@ -77,5 +66,6 @@ private:
         
     } configuration;
 
+    /// @param reset_command Command to reset the stored ETC values 
     uint8_t reset_command[2] {0x1D, 0x55};
 };
