@@ -7,9 +7,6 @@ MAX31725::MAX31725(i2c_inst_t *i2c, uint8_t address) : I2CDevice(i2c, address)
     gpio_set_dir(m_overtemp_pin, GPIO_IN);
     gpio_pull_up(m_overtemp_pin); // Set External interrupt trigger as input with pull-down resistor
 
-    // uint8_t command[2] {0x01, 0b00000000};
-    // write(command, 2);
-
     set_over_temp_limit();
     
     // Set up interrupt for GPIO 6

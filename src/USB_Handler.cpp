@@ -25,14 +25,10 @@ USB_Handler::USB_Handler(MAX31725 &max31725
 
     // Set up interrupt for m_ext_trig_pin
     gpio_set_irq_enabled_with_callback(m_ext_trig_pin, GPIO_IRQ_EDGE_RISE, true, ext_trig_irq_handler); 
-
-    // irq_set_exclusive_handler(USBCTRL_IRQ, (irq_handler_t)usb_rx);
-    // irq_set_enabled(USBCTRL_IRQ, true);
 }
 
 void USB_Handler::ext_trig_irq_handler(uint gpio, uint32_t events)
 {
-    
     // Send interrupt occured message to the SBC
     // printf("%d", (char*)EXTERNAL_INTERRUPT);
 }
@@ -43,7 +39,7 @@ void USB_Handler::decode_message(const uint8_t message[3])
     uint8_t header = message[0];
     uint8_t band_mask = message[1];
 
-    uint8_t response[12];
+    uint8_t response[20];
 
     mutable_message[0] = message[0];
     mutable_message[1] = message[1];
@@ -115,7 +111,14 @@ void USB_Handler::decode_message(const uint8_t message[3])
             printf("%d ", response[9]);
             printf("%d ", response[10]);
             printf("%d ", response[11]);
-            printf("%d \n", response[12]);
+            printf("%d ", response[12]);
+            printf("%d ", response[13]);
+            printf("%d ", response[14]);
+            printf("%d ", response[15]);
+            printf("%d ", response[16]);
+            printf("%d ", response[17]);
+            printf("%d ", response[18]);
+            printf("%d \n", response[19]);
             break;
         case message_headers::GET_HARDWARE_NUMBERS:
             get_hardware_numbers(response);
@@ -124,6 +127,16 @@ void USB_Handler::decode_message(const uint8_t message[3])
             break;
         case message_headers::GET_SOFTWARE_NUMBERS:
             get_software_numbers(response);
+            printf("%x ", response[0]);
+            printf("%d \n", response[1]);
+            break;
+        case message_headers::SET_HARDWARE_NUMBERS:
+            set_hardware_numbers(response, mutable_message);
+            printf("%x ", response[0]);
+            printf("%d \n", response[1]);
+            break;
+        case message_headers::SET_SOFTWARE_NUMBERS:
+            set_software_numbers(response, mutable_message);
             printf("%x ", response[0]);
             printf("%d \n", response[1]);
             break;
@@ -141,7 +154,7 @@ void USB_Handler::decode_message(const uint8_t message[3])
     }
 }
 
-void USB_Handler::set_attenuation(uint8_t response[12], uint8_t data[3])
+void USB_Handler::set_attenuation(uint8_t response[20], uint8_t data[3])
 {
     uint8_t attenuation_value = data[1];
     uint8_t band_mask = data[2];
@@ -171,7 +184,7 @@ void USB_Handler::set_attenuation(uint8_t response[12], uint8_t data[3])
     response[1] = set_attenuators;
 }
 
-void USB_Handler::get_attenuation(uint8_t response[12], uint8_t band_mask)
+void USB_Handler::get_attenuation(uint8_t response[20], uint8_t band_mask)
 {
     uint8_t attenuation_value = 0;
     uint8_t temp;
@@ -216,7 +229,7 @@ void USB_Handler::get_attenuation(uint8_t response[12], uint8_t band_mask)
     response[1] = attenuation_value;
 }
 
-void USB_Handler::set_lna_enable(uint8_t response[12], uint8_t data[3])
+void USB_Handler::set_lna_enable(uint8_t response[20], uint8_t data[3])
 {
     uint8_t lna_enabled = data[1];
     uint8_t band_mask = data[2];
@@ -246,7 +259,7 @@ void USB_Handler::set_lna_enable(uint8_t response[12], uint8_t data[3])
     response[1] = enabled_lna;
 }
 
-void USB_Handler::get_lna_enable(uint8_t response[12])
+void USB_Handler::get_lna_enable(uint8_t response[20])
 {
     uint8_t lna_status = 0;
     bool value;
@@ -275,7 +288,7 @@ void USB_Handler::get_lna_enable(uint8_t response[12])
     response[1] = lna_status;
 }
 
-void USB_Handler::set_attenuator_enable(uint8_t response[12], uint8_t data[3])
+void USB_Handler::set_attenuator_enable(uint8_t response[20], uint8_t data[3])
 {
     uint8_t attenuator_enabled = data[1];
     uint8_t band_mask = data[2];
@@ -305,7 +318,7 @@ void USB_Handler::set_attenuator_enable(uint8_t response[12], uint8_t data[3])
     response[1] = enabled_attenuators;
 }
 
-void USB_Handler::get_attenuator_enable(uint8_t response[12])
+void USB_Handler::get_attenuator_enable(uint8_t response[20])
 {
     uint8_t attenuators_enabled = 0;
     bool value;
@@ -334,7 +347,7 @@ void USB_Handler::get_attenuator_enable(uint8_t response[12])
     response[1] = attenuators_enabled;
 }
 
-void USB_Handler::set_clock_state(uint8_t response[12], uint8_t data[3])
+void USB_Handler::set_clock_state(uint8_t response[20], uint8_t data[3])
 {
     if (data[1] == 0x01)
     {
@@ -349,7 +362,7 @@ void USB_Handler::set_clock_state(uint8_t response[12], uint8_t data[3])
 
 }
 
-void USB_Handler::get_clock_state(uint8_t response[12])
+void USB_Handler::get_clock_state(uint8_t response[20])
 {
     response[1] = m_si53361.get_clock_state();
 }
@@ -360,12 +373,12 @@ void USB_Handler::set_calibration(uint8_t data[3])
     uint8_t band_mask = data[2];
 }
 
-void USB_Handler::get_calibration(uint8_t response[12])
+void USB_Handler::get_calibration(uint8_t response[20])
 {
     // unknown return
 }
 
-void USB_Handler::get_bits(uint8_t response[12])
+void USB_Handler::get_bits(uint8_t response[20])
 {
     uint32_t timestamp;
     uint16_t counter;
@@ -383,9 +396,9 @@ void USB_Handler::get_bits(uint8_t response[12])
     // Get timestamp from DS1682
     if (m_ds1682.getEventCounter(counter))
     {
-        response[5] = timestamp >> 8;
+        response[5] = counter >> 8;
         // Extract lower 8 bits
-        response[6] = timestamp & 0xFF;
+        response[6] = counter & 0xFF;
     }
 
     // Get temperature from MAX31725
@@ -396,31 +409,60 @@ void USB_Handler::get_bits(uint8_t response[12])
 
     m_adc.read_all();
     
-    response[8] = m_adc.voltage_INTERNAL;
-    response[9] = m_adc.voltage_OCXO_PGOOD;
-    response[10] = m_adc.voltage_P12V;
-    response[11] = m_adc.voltage_P5V5;
-    response[12] = m_adc.voltage_P3V3;
+    response[8] = m_adc.voltage_P5V5_PGOOD << 8;
+    response[9] = m_adc.voltage_P5V5_PGOOD;
+
+    response[10] = m_adc.voltage_P3V3_PGOOD << 8;
+    response[11] = m_adc.voltage_P3V3_PGOOD;
+
+    response[12] = m_adc.voltage_OCXO_PGOOD << 8;
+    response[13] = m_adc.voltage_OCXO_PGOOD;
+
+    response[14] = m_adc.voltage_P12V << 8;
+    response[15] = m_adc.voltage_P12V;
+
+    response[16] = m_adc.voltage_P5V5 << 8;
+    response[17] = m_adc.voltage_P5V5;
+
+    response[18] = m_adc.voltage_P3V3 << 8;
+    response[19] = m_adc.voltage_P3V3;  
 }
 
-void USB_Handler::get_hardware_numbers(uint8_t response[12])
+void USB_Handler::get_hardware_numbers(uint8_t response[20])
 {
-    uint32_t device_id;
+    uint32_t hardware_id;
 
-    // ETR Hardware Number
-    if (!m_ds1682.getUniqueID(device_id))
+    // EEPROM Hardware Number
+    if (!m_m24m02.get_hardware_id(hardware_id))
     {
-        // printf("Unable to retrieve the hardware numbers.");
+        // printf("Unable to retrieve the Software numbers.");
     }
-    response[1] = device_id;
+    response[1] = hardware_id;
 
-    // EEPROM (?)
 }
 
-void USB_Handler::get_software_numbers(uint8_t response[12])
+void USB_Handler::get_software_numbers(uint8_t response[20])
 {
-    // Pi Pico Software Number
-    response[1] = 1;
+    uint32_t software_id;
+
+    // EEPROM Software Number
+    if (!m_m24m02.get_software_id(software_id))
+    {
+        // printf("Unable to retrieve the Software numbers.");
+    }
+    response[1] = software_id;
+}
+
+void USB_Handler::set_hardware_numbers(uint8_t response[20], uint8_t mutable_message[3])
+{
+    uint32_t hardware_id = (mutable_message[4] << 24) + (mutable_message[3] << 16) + (mutable_message[2] << 8) + (mutable_message[1]);
+    m_m24m02.set_hardware_id(hardware_id);
+}
+
+void USB_Handler::set_software_numbers(uint8_t response[20], uint8_t mutable_message[3])
+{
+    uint32_t software_id = (mutable_message[4] << 24) + (mutable_message[3] << 16) + (mutable_message[2] << 8) + (mutable_message[1]);
+    m_m24m02.set_software_id(software_id);
 }
 
 void USB_Handler::reset_etc()
@@ -431,15 +473,23 @@ void USB_Handler::reset_etc()
 void USB_Handler::set_p3v3_oxco_pin(uint8_t mutable_message[3])
 {
     if (mutable_message[1])
+    {
         m_adc.set_p3v3_oxco_enable_pin();
+    }
     else
+    {
         m_adc.set_p3v3_oxco_disable();
+    }
 }
 
 void USB_Handler::set_p5v5_pin(uint8_t mutable_message[3])
 {
     if (mutable_message[1])
+    {
         m_adc.set_p5v5_enable_pin();
+    }
     else
+    {
         m_adc.set_p5v5_disable();
+    }
 }

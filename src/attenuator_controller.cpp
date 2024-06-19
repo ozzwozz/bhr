@@ -67,7 +67,6 @@ int main()
 
     // 0x7fffff is roughly 8.3 seconds and the maximum
     watchdog_enable(0x7fffff, 1);
-    // printf("watchdog setup");
 
     // Configure onboard LED pin
     const uint LED_PIN = PICO_DEFAULT_LED_PIN;
@@ -97,30 +96,28 @@ int main()
     sleep_ms(2000);
 
     MAX31725 max31725 = MAX31725(i2c0, MAX31725_ADDR);
-    // printf("max31725 set up\n");
     M24M02 m24m02 = M24M02(i2c0, EEPROM_ADDR);
-    // printf("m24m02 set up\n");
     SI53361 si53361 = SI53361();
-    // printf("si53361 set up\n");
     DS1682 ds1682 = DS1682(i2c0, DS1682_ADDR);
-    // printf("ds1682 set up\n");
 
     PCA9554 pca9554_1 = PCA9554(i2c1, ATTENUATOR_1, ATTENUATOR_1_POWER);
     PCA9554 pca9554_2 = PCA9554(i2c1, ATTENUATOR_2, ATTENUATOR_2_POWER);
     PCA9554 pca9554_3 = PCA9554(i2c1, ATTENUATOR_3, ATTENUATOR_3_POWER);
     PCA9554 pca9554_4 = PCA9554(i2c1, ATTENUATOR_4, ATTENUATOR_4_POWER);
     PCA9554 pca9554_5 = PCA9554(i2c1, ATTENUATOR_5, ATTENUATOR_5_POWER);
-    // printf("All pca9554's set up\n");
 
     ADC adc = ADC();
-    // printf("adc set up\n");
 
     USB_Handler usb_handler = USB_Handler(max31725, m24m02, si53361, pca9554_1,
                     pca9554_2, pca9554_3, pca9554_4, pca9554_5, adc, ds1682);
-    // printf("usb_handler set up\n");
     
+    // Turn off LED outside of main loop
+    gpio_put(LED_PIN, 0); // Turn LED off
+    sleep_ms(50);
+
     while (true)
     {
+        // LED Flashing while developing so I know the board doesn't hang
         gpio_put(LED_PIN, 0); // Turn LED off
         sleep_ms(50);
 

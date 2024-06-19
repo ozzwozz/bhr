@@ -87,43 +87,13 @@ bool DS1682::getTime(uint32_t &timestamp)
     return true;
 }
 
-bool DS1682::getUniqueID(uint32_t &device_id)
-{
-    uint8_t buffer[8]; // 8 bytes needed for unique ID data
-
-    // Register address for reading unique ID
-    buffer[0] = unique_id_address_low;
-    buffer[1] = unique_id_address_low_mid;
-    buffer[2] = unique_id_address_high_mid;
-    buffer[3] = unique_id_address_high;
-
-    // request time data
-    // using a special i2c_write because we want to keep master control
-    int ret = i2c_write_blocking(m_i2c, m_address, buffer, sizeof(buffer), true);
-    if (ret == PICO_ERROR_GENERIC)
-    {
-        device_id = 0; // Error in writing register address
-        return false;
-    }
-
-    if (I2CDevice::read(buffer, sizeof(buffer)) == PICO_ERROR_GENERIC)
-    {
-        device_id = 0; // Error in reading unique ID data
-        return false;
-    }
-
-    // Convert the received data to a unique ID (assumes little-endian byte order)
-    device_id = ( buffer[3] << 24) + (buffer[2] << 16) + (buffer[1] << 8) + buffer[0];
-    return true;
-}
-
 bool DS1682::getEventCounter(uint16_t &counter)
 {
     uint8_t buffer[2]; // 8 bytes needed for unique ID data
 
-    // Register address for reading unique ID
-    buffer[0] = unique_id_address_low;
-    buffer[1] = unique_id_address_low_mid;
+    // Register address for reading the event counter
+    buffer[0] = event_counter_address_low;
+    buffer[1] = event_counter_address_high;
 
     // request time data
     // using a special i2c_write because we want to keep master control
