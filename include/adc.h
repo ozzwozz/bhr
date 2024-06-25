@@ -44,9 +44,9 @@ public:
     uint16_t voltage_OCXO_PGOOD;
     /// @param voltage_P12V member variable to store the P12V voltage
     uint16_t voltage_P12V;
-    /// @param voltage_P3V3_PGOOD member variable to store the INTERNAL voltage
+    /// @param voltage_P3V3_PGOOD member variable to store the p3v3 voltage
     uint16_t voltage_P3V3_PGOOD;
-    /// @param voltage_P5V5_PGOOD member variable to store the INTERNAL voltage
+    /// @param voltage_P5V5_PGOOD member variable to store the p5v5 voltage
     uint16_t voltage_P5V5_PGOOD;
 
     /// @brief read the raw value of the given adc pin

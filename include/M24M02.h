@@ -51,20 +51,20 @@ public:
 
 private:
     /// @param software_id_address_low address for the lowest byte of the ID
-    const uint8_t software_id_address_low = 0x0B;
+    const uint8_t software_id_address_low = 0x0000;
     /// @param software_id_address_low_mid address for the lower middle byte of the ID
-    const uint8_t software_id_address_low_mid = 0x0C;
+    const uint8_t software_id_address_low_mid = 0x0001;
     /// @param software_id_address_high_mid address for the upper middle byte of the ID
-    const uint8_t software_id_address_high_mid = 0x0D;
+    const uint8_t software_id_address_high_mid = 0x0002;
     /// @param software_id_address_high address for the upmost byte of the ID
-    const uint8_t software_id_address_high = 0x0E;
+    const uint8_t software_id_address_high = 0x0003;
 
     /// @param hardware_id_address_low address for the lowest byte of the ID
-    const uint8_t hardware_id_address_low = 0x0B;
+    const uint8_t hardware_id_address_low = 0x0004;
     /// @param hardware_id_address_low_mid address for the lower middle byte of the ID
-    const uint8_t hardware_id_address_low_mid = 0x0C;
+    const uint8_t hardware_id_address_low_mid = 0x0005;
     /// @param hardware_id_address_high_mid address for the upper middle byte of the ID
-    const uint8_t hardware_id_address_high_mid = 0x0D;
+    const uint8_t hardware_id_address_high_mid = 0x0006;
     /// @param hardware_id_address_high address for the upmost byte of the ID
-    const uint8_t hardware_id_address_high = 0x0E;
+    const uint8_t hardware_id_address_high = 0x0007;
 };

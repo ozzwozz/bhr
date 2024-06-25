@@ -37,6 +37,7 @@ public:
         SET_HARDWARE_NUMBERS = 0X23,
         SET_SOFTWARE_NUMBERS = 0X24,
         EXTERNAL_INTERRUPT = 0x30,
+        OVERTEMP_INTERRUPT = 0x31,
         RESET_ETC = 0x50,
         SET_P3V3_OXCO_PIN = 0x40,
         SET_P5V5_PIN = 0x41
@@ -61,10 +62,17 @@ public:
     ~USB_Handler();
 
     /// @brief Parse the received message
-    void decode_message(const uint8_t message[3]);
+    void decode_message(const uint8_t message[5]);
+
+    bool get_ext_trig_flag();
+    
+    bool get_overtemp_flag();
+
+    void resolve_ext_trig_flag();
+    
+    void resolve_overtemp_flag();
 
 private:
-
     /// @param m_max31725 MAX31725 object
     MAX31725 &m_max31725;
 
@@ -90,17 +98,29 @@ private:
     ADC &m_adc;
 
     /// @param m_ext_trig_pin External trigger pin
-    uint m_ext_trig_pin = 15;
+    static const uint m_ext_trig_pin = 15;
+
+    /// @param m_overtemp_pin External temperture interrupt trigger pin
+    static const uint m_overtemp_pin = 6;
+
+    /// @param m_ext_trig_flag Flag set high when external trigger interrupt triggered
+    bool m_ext_trig_flag = false;
+
+    /// @param m_overtemp_flag Flag set high when temperature interrupt is triggered
+    bool m_overtemp_flag = false;
 
     /// @brief Handler for the EXT_TRIG/GPIO15 interrupt
     /// @param gpio 
     /// @param events 
-    static void ext_trig_irq_handler(uint gpio, uint32_t events);
+    static void gpio_callback(void *context);
+
+    void ext_trig_irq_handler();
+    void overtemp_irq_handler();
 
     /// @brief Set the attenuation level
     /// @param response  
     /// @param data 
-    void set_attenuation(uint8_t response[20], uint8_t data[3]);
+    void set_attenuation(uint8_t response[20], uint8_t data[5]);
 
     /// @brief Get the current attenuation level
     /// @param response 
@@ -110,7 +130,7 @@ private:
     /// @brief Set the bands for which LNA is enabled/disabled
     /// @param response 
     /// @param data  
-    void set_lna_enable(uint8_t response[20], uint8_t data[3]);
+    void set_lna_enable(uint8_t response[20], uint8_t data[5]);
     
     /// @brief Get te bands on which LNA is enabled
     /// @param response 
@@ -119,7 +139,7 @@ private:
     /// @brief Set the bands for which the attenuators should be enabled/disabled
     /// @param response  
     /// @param data 
-    void set_attenuator_enable(uint8_t response[20], uint8_t data[3]);
+    void set_attenuator_enable(uint8_t response[20], uint8_t data[5]);
 
     /// @brief Get the current attenuator enabled/disabled status for each band
     /// @param response 
@@ -128,7 +148,7 @@ private:
     /// @brief Set the clock to use
     /// @param response
     /// @param data the clock that should be used
-    void set_clock_state(uint8_t response[20], uint8_t data[3]);
+    void set_clock_state(uint8_t response[20], uint8_t data[5]);
 
     /// @brief Get the current clock in use
     /// @param response 
@@ -136,7 +156,7 @@ private:
 
     /// @brief Set the Calibration table on the EEPROM 
     /// @param data 
-    void set_calibration(uint8_t data[3]);
+    void set_calibration(uint8_t data[5]);
 
     /// @brief Get the current calibration table on the EEPROM
     /// @param response 
@@ -157,19 +177,19 @@ private:
     /// @brief Set hardware numbers
     /// @param response 
     /// @param mutable_message 
-    void set_hardware_numbers(uint8_t response[20], uint8_t mutable_message[3]);
+    void set_hardware_numbers(uint8_t response[20], uint8_t mutable_message[5]);
 
     /// @brief Set software numbers
     /// @param response 
     /// @param mutable_message 
-    void set_software_numbers(uint8_t response[20], uint8_t mutable_message[3]);
+    void set_software_numbers(uint8_t response[20], uint8_t mutable_message[5]);
 
     /// @brief Call the ETC reset command
     void reset_etc();
 
     /// @brief Set the p3v3 OXCO pin
     /// @param mutable_message 
-    void set_p3v3_oxco_pin(uint8_t mutable_message[3]);
+    void set_p3v3_oxco_pin(uint8_t mutable_message[5]);
 
     /// @brief Set the p5v5 pin
     /// @param mutable_message 
