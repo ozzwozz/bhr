@@ -64,12 +64,18 @@ public:
     /// @brief Parse the received message
     void decode_message(const uint8_t message[5]);
 
+    /// @brief get the external trigger flag state
+    /// @return external trigger flag state
     bool get_ext_trig_flag();
     
+    /// @brief get the overtemp flag state
+    /// @return overtemp flag state
     bool get_overtemp_flag();
 
+    /// @brief Send message stating the external trigger interrupt has been triggered
     void resolve_ext_trig_flag();
     
+    /// @brief Send message stating the overtemp interrupt has been triggered
     void resolve_overtemp_flag();
 
 private:
@@ -104,18 +110,15 @@ private:
     static const uint m_overtemp_pin = 6;
 
     /// @param m_ext_trig_flag Flag set high when external trigger interrupt triggered
-    bool m_ext_trig_flag = false;
+    volatile bool m_ext_trig_flag = false;
 
     /// @param m_overtemp_flag Flag set high when temperature interrupt is triggered
-    bool m_overtemp_flag = false;
+    volatile bool m_overtemp_flag = false;
 
     /// @brief Handler for the EXT_TRIG/GPIO15 interrupt
     /// @param gpio 
     /// @param events 
     static void gpio_callback(void *context);
-
-    void ext_trig_irq_handler();
-    void overtemp_irq_handler();
 
     /// @brief Set the attenuation level
     /// @param response  
