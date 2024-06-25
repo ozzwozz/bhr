@@ -48,7 +48,7 @@ bool M24M02::write(const uint32_t address, const uint8_t *data, size_t len)
 
 bool M24M02::get_software_id(uint32_t &software_id)
 {
-    uint8_t buffer[8]; // 8 bytes needed for unique ID data
+    uint8_t buffer[4]; // 4 bytes needed for unique ID data
 
     // Register address for reading unique ID
     buffer[0] = (software_id_address_low >> 8);
@@ -77,7 +77,7 @@ bool M24M02::get_software_id(uint32_t &software_id)
 
 bool M24M02::get_hardware_id(uint32_t &hardware_id)
 {
-    uint8_t buffer[4]; // 8 bytes needed for unique ID data
+    uint8_t buffer[4]; // 4 bytes needed for unique ID data
 
     // Register address for reading unique ID
     buffer[0] = (hardware_id_address_low >> 8);
@@ -105,7 +105,7 @@ bool M24M02::get_hardware_id(uint32_t &hardware_id)
 
 bool M24M02::set_software_id(uint32_t &software_id)
 {
-    uint8_t buffer[6]; // 8 bytes needed for unique ID data
+    uint8_t buffer[6]; // 6 bytes needed for unique ID data
 
     // Register address for reading unique ID
     buffer[0] = (software_id_address_low >> 8);
@@ -129,7 +129,7 @@ bool M24M02::set_software_id(uint32_t &software_id)
 
 bool M24M02::set_hardware_id(uint32_t &hardware_id)
 {
-    uint8_t buffer[6]; // 8 bytes needed for unique ID data
+    uint8_t buffer[6]; // 6 bytes needed for unique ID data
 
     // Register address for reading unique ID
     buffer[0] = (hardware_id_address_low >> 8);

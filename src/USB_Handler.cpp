@@ -38,24 +38,14 @@ USB_Handler::USB_Handler(MAX31725 &max31725
 void USB_Handler::gpio_callback(void *context)
 {
     USB_Handler* instance = static_cast<USB_Handler*>(context);
-    if (gpio_get(m_overtemp_pin))
+    if (gpio_get(instance->m_overtemp_pin))
     {
         instance->m_overtemp_flag = true;       
     }
-    if (gpio_get(m_ext_trig_pin))
+    if (gpio_get(instance->m_overtemp_pin))
     {
         instance->m_ext_trig_flag = true;
     }
-}
-
-void USB_Handler::ext_trig_irq_handler()
-{
-    m_overtemp_flag = true;
-}
-
-void USB_Handler::overtemp_irq_handler()
-{
-    m_overtemp_flag = true;
 }
 
 bool USB_Handler::get_ext_trig_flag()
