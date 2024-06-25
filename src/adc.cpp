@@ -6,10 +6,22 @@ ADC::ADC()
     adc_gpio_init(P5V5_PIN);
     adc_gpio_init(P3V3_OCXO_PIN);
     adc_gpio_init(P12V_PIN);
+    gpio_set_input_enabled(P5V5_PIN, true);
+    gpio_set_input_enabled(P3V3_OCXO_PIN, true);
+    gpio_set_input_enabled(P12V_PIN, true);
+  
+    gpio_init(ADC1_CTRL_PIN);
+    gpio_set_dir(ADC1_CTRL_PIN, GPIO_OUT);
 
-    adc_gpio_init(ADC1_CTRL_PIN);
+    gpio_init(P5V5_PGOOD_PIN);
+    gpio_init(P3V3_OCXO_PGOOD_PIN);
+    gpio_set_dir(P5V5_PGOOD_PIN, GPIO_IN);
+    gpio_set_dir(P3V3_OCXO_PGOOD_PIN, GPIO_IN);
+    
     gpio_init(P5V5_ENABLE_PIN);
     gpio_init(P3V3_OCXO_ENABLE_PIN);
+    gpio_set_dir(P5V5_ENABLE_PIN, GPIO_OUT);
+    gpio_set_dir(P3V3_OCXO_ENABLE_PIN, GPIO_OUT);
 
     set_p5v5_enable_pin();
     set_p3v3_oxco_enable_pin();
@@ -29,7 +41,6 @@ uint16_t ADC::read_raw_adc(uint pin)
 
 float ADC::read_voltage_adc(uint pin)
 {
-    adc_select_input(pin);
     uint16_t adc_value = read_raw_adc(pin);
     return (3.3 * adc_value) / (1 << 12);
 }
@@ -39,9 +50,8 @@ void ADC::read_all()
     voltage_P5V5 = read_raw_adc(P5V5_PIN);
     voltage_P3V3 = read_raw_adc(P3V3_OCXO_PIN);
     voltage_P12V = read_raw_adc(P12V_PIN);
-    // voltage_INTERNAL = read_raw_adc(INTERNAL_PIN);
-    voltage_P5V5_PGOOD= read_raw_adc(P5V5_PGOOD_PIN);
-    voltage_P3V3_PGOOD= read_raw_adc(P3V3_OCXO_PGOOD_PIN);
+    voltage_P5V5_PGOOD= gpio_get(P5V5_PGOOD_PIN);
+    voltage_P3V3_PGOOD= gpio_get(P3V3_OCXO_PGOOD_PIN);
 
     gpio_put(ADC1_CTRL_value, 1);
     voltage_OCXO_PGOOD = read_raw_adc(P3V3_OCXO_PIN);

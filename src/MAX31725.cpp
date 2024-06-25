@@ -2,15 +2,7 @@
 
 MAX31725::MAX31725(i2c_inst_t *i2c, uint8_t address) : I2CDevice(i2c, address)
 {
-    // Initialize External interrupt trigger
-    gpio_init(m_overtemp_pin);
-    gpio_set_dir(m_overtemp_pin, GPIO_IN);
-    gpio_pull_up(m_overtemp_pin); // Set External interrupt trigger as input with pull-down resistor
-
     set_over_temp_limit();
-    
-    // Set up interrupt for GPIO 6
-    gpio_set_irq_enabled_with_callback(6, GPIO_IRQ_EDGE_FALL, true, over_temp_irq_handler); 
 }
 
 MAX31725::~MAX31725()
@@ -51,9 +43,4 @@ bool MAX31725::read_temperature(float &temperature)
     temperature = rx_data[0] + (rx_data[1] / 256.0);
 
     return true;
-}
-
-void MAX31725::over_temp_irq_handler(uint gpio, uint32_t events)
-{
-    // TODO: Issue #2 Implement flag set or add message to the UART Tx buffer
 }

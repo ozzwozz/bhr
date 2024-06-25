@@ -51,68 +51,102 @@ bool M24M02::get_software_id(uint32_t &software_id)
     uint8_t buffer[8]; // 8 bytes needed for unique ID data
 
     // Register address for reading unique ID
-    buffer[0] = software_id_address_low;
-    buffer[1] = software_id_address_low_mid;
-    buffer[2] = software_id_address_high_mid;
-    buffer[3] = software_id_address_high;
+    buffer[0] = (software_id_address_low >> 8);
+    buffer[1] = software_id_address_low & 0xFF;
 
     // request time data
     // using a special i2c_write because we want to keep master control
-    int ret = i2c_write_blocking(m_i2c, m_address, buffer, sizeof(buffer), true);
+    int ret = i2c_write_blocking(m_i2c, m_address, buffer, 2, true);
     if (ret == PICO_ERROR_GENERIC)
     {
         software_id = 0; // Error in writing register address
         return false;
     }
 
-    if (I2CDevice::read(buffer, sizeof(buffer)) == PICO_ERROR_GENERIC)
+    if (I2CDevice::read(buffer, 4) == PICO_ERROR_GENERIC)
     {
         software_id = 0; // Error in reading unique ID data
         return false;
     }
 
     // Convert the received data to a unique ID (assumes little-endian byte order)
-    software_id = ( buffer[3] << 24) + (buffer[2] << 16) + (buffer[1] << 8) + buffer[0];
+    software_id = ( buffer[0] << 24) | (buffer[1] << 16) | (buffer[2] << 8) | buffer[3];
     return true;
 }
 
 
 bool M24M02::get_hardware_id(uint32_t &hardware_id)
 {
-    uint8_t buffer[8]; // 8 bytes needed for unique ID data
+    uint8_t buffer[4]; // 8 bytes needed for unique ID data
 
     // Register address for reading unique ID
-    buffer[0] = hardware_id_address_low;
-    buffer[1] = hardware_id_address_low_mid;
-    buffer[2] = hardware_id_address_high_mid;
-    buffer[3] = hardware_id_address_high;
+    buffer[0] = (hardware_id_address_low >> 8);
+    buffer[1] = hardware_id_address_low & 0xFF;
 
     // request time data
     // using a special i2c_write because we want to keep master control
-    int ret = i2c_write_blocking(m_i2c, m_address, buffer, sizeof(buffer), true);
+    int ret = i2c_write_blocking(m_i2c, m_address, buffer, 2, true);
     if (ret == PICO_ERROR_GENERIC)
     {
         hardware_id = 0; // Error in writing register address
         return false;
     }
 
-    if (I2CDevice::read(buffer, sizeof(buffer)) == PICO_ERROR_GENERIC)
+    if (I2CDevice::read(buffer, 4) == PICO_ERROR_GENERIC)
     {
         hardware_id = 0; // Error in reading unique ID data
         return false;
     }
 
     // Convert the received data to a unique ID (assumes little-endian byte order)
-    hardware_id = ( buffer[3] << 24) + (buffer[2] << 16) + (buffer[1] << 8) + buffer[0];
+    hardware_id = ( buffer[0] << 24) + (buffer[1] << 16) + (buffer[2] << 8) + (buffer[3] & 0xFF);
     return true;
 }
 
 bool M24M02::set_software_id(uint32_t &software_id)
 {
-    return 1;
+    uint8_t buffer[6]; // 8 bytes needed for unique ID data
+
+    // Register address for reading unique ID
+    buffer[0] = (software_id_address_low >> 8);
+    buffer[1] = software_id_address_low & 0xFF;
+
+    buffer[2] = (software_id >> 24);
+    buffer[3] = (software_id >> 16);
+    buffer[4] = (software_id >> 8);
+    buffer[5] = software_id & 0xFF;
+    
+    // using a special i2c_write because we want to keep master control
+    int ret = i2c_write_blocking(m_i2c, m_address, buffer, sizeof(buffer), false);
+    if (ret == PICO_ERROR_GENERIC)
+    {
+        software_id = 0; // Error in writing register address
+        return false;
+    }
+
+    return true;
 }
 
 bool M24M02::set_hardware_id(uint32_t &hardware_id)
 {
-    return 1;
+    uint8_t buffer[6]; // 8 bytes needed for unique ID data
+
+    // Register address for reading unique ID
+    buffer[0] = (hardware_id_address_low >> 8);
+    buffer[1] = hardware_id_address_low & 0xFF;
+
+    buffer[2] = (hardware_id >> 24);
+    buffer[3] = (hardware_id >> 16);
+    buffer[4] = (hardware_id >> 8);
+    buffer[5] = hardware_id & 0xFF;
+    
+    // using a special i2c_write because we want to keep master control
+    int ret = i2c_write_blocking(m_i2c, m_address, buffer, sizeof(buffer), false);
+    if (ret == PICO_ERROR_GENERIC)
+    {
+        hardware_id = 0; // Error in writing register address
+        return false;
+    }
+
+    return true;
 }

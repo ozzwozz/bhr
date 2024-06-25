@@ -37,14 +37,14 @@
 #define I2C0_SCL 5
 
 #define I2C1_PORT i2c1
-#define I2C1_SDA 14
-#define I2C1_SCL 15
+#define I2C1_SDA 2
+#define I2C1_SCL 3
 
-#define ATTENUATOR_1 0X40
-#define ATTENUATOR_2 0X42
-#define ATTENUATOR_3 0X44
-#define ATTENUATOR_4 0X46
-#define ATTENUATOR_5 0X48
+#define ATTENUATOR_1 0X20
+#define ATTENUATOR_2 0X21
+#define ATTENUATOR_3 0X22
+#define ATTENUATOR_4 0X23
+#define ATTENUATOR_5 0X24
 
 #define ATTENUATOR_1_POWER 7
 #define ATTENUATOR_2_POWER 8
@@ -74,14 +74,14 @@ int main()
     gpio_set_dir(LED_PIN, GPIO_OUT);
     gpio_put(LED_PIN, 1); // Turn LED on
     
-    // I2C Initialisation. Using it at 400Khz.
-    i2c_init(I2C0_PORT, 1'000'000);
+    // I2C Initialisation. Using it at 100Khz.
+    i2c_init(I2C0_PORT, 100'000);
     gpio_set_function(I2C0_SDA, GPIO_FUNC_I2C);
     gpio_set_function(I2C0_SCL, GPIO_FUNC_I2C);
     gpio_pull_up(I2C0_SDA);
     gpio_pull_up(I2C0_SCL);
 
-    i2c_init(I2C1_PORT, 400*1000);
+    i2c_init(I2C1_PORT, 100'000);
     gpio_set_function(I2C1_SDA, GPIO_FUNC_I2C);
     gpio_set_function(I2C1_SCL, GPIO_FUNC_I2C);
     gpio_pull_up(I2C1_SDA);
@@ -123,10 +123,12 @@ int main()
 
         watchdog_update();
 
-        uint8_t input[3];
-        input[0] = getchar_timeout_us(0);
-        input[1] = getchar_timeout_us(10);
-        input[2] = getchar_timeout_us(10);
+        uint8_t input[5];
+
+        for(int i = 0; i < sizeof(input); i++)
+        {   
+            input[i] = getchar_timeout_us(10);
+        }
 
         for (int x = 0; x < sizeof(input); x++)
         {
@@ -134,6 +136,16 @@ int main()
             {
                 usb_handler.decode_message(input);
             }
+        }
+        
+        if (usb_handler.get_ext_trig_flag() == true)
+        {
+            usb_handler.resolve_ext_trig_flag(); 
+        }
+
+        if (usb_handler.get_overtemp_flag() == true)
+        {
+            usb_handler.resolve_overtemp_flag();
         }
 
         gpio_put(LED_PIN, 1); // Turn LED on

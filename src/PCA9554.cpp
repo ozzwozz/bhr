@@ -2,6 +2,9 @@
 
 PCA9554::PCA9554(i2c_inst_t *i2c, uint8_t address, uint power_enable_pin) : I2CDevice(i2c, address), m_power_enable_pin(power_enable_pin)
 {
+    gpio_init(m_power_enable_pin);
+    gpio_set_dir(m_power_enable_pin, GPIO_OUT);
+    
     set_power_enable();
 }
 
@@ -39,6 +42,9 @@ bool PCA9554::read_inputs(uint8_t &value)
 bool PCA9554::set_lna(const bool value)
 {
     uint8_t current_value = 0;
+
+    set_attenuator_enable(0);
+    
     if (!I2CDevice::read(&current_value, 1))
     {
         return false;
@@ -81,6 +87,9 @@ bool PCA9554::get_lna(bool &value)
 bool PCA9554::set_attenuator_enable(bool value)
 {
     uint8_t current_value = 0;
+
+    set_lna(0);
+
     if (!I2CDevice::read(&current_value, 1))
     {
         return false;
