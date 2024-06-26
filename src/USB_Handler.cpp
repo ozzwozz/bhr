@@ -436,9 +436,10 @@ void USB_Handler::get_bits(uint8_t response[20])
     // Get timestamp from DS1682
     if (m_ds1682.getTime(timestamp))
     {
-        response[1] = timestamp >> 24;
-        response[2] = timestamp >> 16;
-        response[3] = timestamp >> 8;
+        printf("from pico %ld", timestamp);
+        response[1] = (timestamp >> 24);
+        response[2] = (timestamp >> 16);
+        response[3] = (timestamp >> 8);
         response[4] = timestamp & 0xFF;
     }
 

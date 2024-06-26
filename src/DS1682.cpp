@@ -2,7 +2,9 @@
 
 DS1682::DS1682(i2c_inst_t* i2c_inst, uint8_t address) : I2CDevice(i2c_inst, address)
 {
+    stdio_init_all();
     configuration.i = 0xFF;
+    configuration.b.alarm_flag = 0;
     configuration.b.alarm_polarity = 0;
     configuration.b.write_disabled_flag = 0;
     configuration.b.write_memory_disabled_flag = 0;
@@ -10,14 +12,6 @@ DS1682::DS1682(i2c_inst_t* i2c_inst, uint8_t address) : I2CDevice(i2c_inst, addr
     // write configuration twice to set
     write(&configuration.i, 1);
     write(&configuration.i, 1);
-
-    // write alarm
-    // write user memory
-
-    // write-protect alarm
-
-    // write-protect ETC
-    // write-protect Event counter
 }
 
 DS1682::~DS1682()
@@ -29,12 +23,14 @@ void DS1682::reset()
 {
     configuration.b.write_disabled_flag = 0;
     configuration.b.reset_enable = 1;
-    write(reset_command, 2);
-    write(reset_command, 2);
-    configuration.b.write_disabled_flag = 1;
+    write(&configuration.i, 1);
+    write(reset_command, 1);
+    write(reset_command, 1);
+    configuration.b.write_disabled_flag = 0;
     configuration.b.reset_enable = 0;
-    write(reset_command, 2);
-    write(reset_command, 2);
+    write(&configuration.i, 1);
+    write(reset_command, 1);
+    write(reset_command, 1);
 }
 
 void DS1682::writeConfigRegister(uint8_t config)
@@ -45,7 +41,7 @@ void DS1682::writeConfigRegister(uint8_t config)
 
 bool DS1682::getTime(uint32_t &timestamp)
 {
-    uint8_t buffer[7]; // 4 bytes needed for timestamp data
+    uint8_t buffer[4]; // 4 bytes needed for timestamp data
     buffer[0] = etc_low_byte; // Register address for reading time
     buffer[1] = etc_low_mid_byte;
     buffer[2] = etc_high_mid_byte;
@@ -68,7 +64,7 @@ bool DS1682::getTime(uint32_t &timestamp)
     }
 
     // Convert the received data to a timestamp (assumes little-endian byte order)
-    timestamp = ( buffer[3] << 24) + (buffer[2] << 16) + (buffer[1] << 8) + buffer[0];
+    timestamp = ( buffer[3] << 24) | (buffer[2] << 16) | (buffer[1] << 8) | buffer[0];
 
     return true;
 }
