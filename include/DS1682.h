@@ -49,6 +49,8 @@ private:
     const uint8_t event_counter_address_low = 0x09;
     const uint8_t event_counter_address_high = 0x0A;
 
+    const uint8_t configuration_register = 0x00;
+
     union configuration_t
     {
         struct configuration_bits_t

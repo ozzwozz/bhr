@@ -72,12 +72,6 @@ public:
     /// @return overtemp flag state
     bool get_overtemp_flag();
 
-    /// @brief Send message stating the external trigger interrupt has been triggered
-    void resolve_ext_trig_flag();
-    
-    /// @brief Send message stating the overtemp interrupt has been triggered
-    void resolve_overtemp_flag();
-
 private:
     /// @param m_max31725 MAX31725 object
     MAX31725 &m_max31725;
@@ -118,7 +112,7 @@ private:
     /// @brief Handler for the EXT_TRIG/GPIO15 interrupt
     /// @param gpio 
     /// @param events 
-    static void gpio_callback(void *context);
+    static void gpio_callback(uint gpio, uint32_t event);//void* context);
 
     /// @brief Set the attenuation level
     /// @param response  
