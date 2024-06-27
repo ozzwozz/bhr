@@ -9,7 +9,7 @@ ADC::ADC()
     gpio_set_input_enabled(P5V5_PIN, true);
     gpio_set_input_enabled(P3V3_OCXO_PIN, true);
     gpio_set_input_enabled(P12V_PIN, true);
-  
+
     gpio_init(ADC1_CTRL_PIN);
     gpio_set_dir(ADC1_CTRL_PIN, GPIO_OUT);
 

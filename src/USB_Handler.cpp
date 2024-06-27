@@ -35,42 +35,21 @@ USB_Handler::USB_Handler(MAX31725 &max31725
 
 }
 
-void USB_Handler::gpio_callback(void *context)
+USB_Handler::~USB_Handler()
 {
-    USB_Handler* instance = static_cast<USB_Handler*>(context);
-    if (gpio_get(instance->m_overtemp_pin))
+    
+}
+
+void USB_Handler::gpio_callback(uint gpio, uint32_t event)
+{
+    if (gpio == m_overtemp_pin)
     {
-        instance->m_overtemp_flag = true;       
+        printf("%x \n", OVERTEMP_INTERRUPT);
     }
-    if (gpio_get(instance->m_overtemp_pin))
+    if (gpio == m_ext_trig_pin)
     {
-        instance->m_ext_trig_flag = true;
-    }
-}
-
-bool USB_Handler::get_ext_trig_flag()
-{
-    return m_ext_trig_flag;
-}
-
-bool USB_Handler::get_overtemp_flag()
-{
-    return m_overtemp_flag;
-}
-
-void USB_Handler::resolve_ext_trig_flag()
-{
-    if (printf("%x \n", EXTERNAL_INTERRUPT) > 0)
-    {
-        m_ext_trig_flag = 0;
-    }
-}
-
-void USB_Handler::resolve_overtemp_flag()
-{
-    if (printf("%x \n", OVERTEMP_INTERRUPT) > 0)
-    {
-        m_overtemp_flag = 0;
+        printf("%x \n", EXTERNAL_INTERRUPT);
+        gpio_put(PICO_DEFAULT_LED_PIN, !gpio_get(PICO_DEFAULT_LED_PIN));
     }
 }
 
@@ -436,7 +415,6 @@ void USB_Handler::get_bits(uint8_t response[20])
     // Get timestamp from DS1682
     if (m_ds1682.getTime(timestamp))
     {
-        printf("from pico %ld", timestamp);
         response[1] = (timestamp >> 24);
         response[2] = (timestamp >> 16);
         response[3] = (timestamp >> 8);

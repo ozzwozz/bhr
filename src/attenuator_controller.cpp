@@ -25,7 +25,7 @@
 #define PIN_SCK  18
 #define PIN_MOSI 19
 
-#define DS1682_ADDR 0xD6
+#define DS1682_ADDR 0x6B
 #define EEPROM_ADDR 0x50
 
 #define CMD_READ_TEMP 0x00
@@ -136,16 +136,6 @@ int main()
             {
                 usb_handler.decode_message(input);
             }
-        }
-        
-        if (usb_handler.get_ext_trig_flag() == true)
-        {
-            usb_handler.resolve_ext_trig_flag(); 
-        }
-
-        if (usb_handler.get_overtemp_flag() == true)
-        {
-            usb_handler.resolve_overtemp_flag();
         }
 
         gpio_put(LED_PIN, 1); // Turn LED on
