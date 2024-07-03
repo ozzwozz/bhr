@@ -46,9 +46,12 @@ private:
     /// @param etc_high_byte address for the upmost byte of the timestamp
     const uint8_t etc_high_byte = 0x08;
 
+    /// @param event_counter_address_low address for the lower byte of the event counter
     const uint8_t event_counter_address_low = 0x09;
+    /// @param event_counter_address_high address for the upper byte of the event counter
     const uint8_t event_counter_address_high = 0x0A;
 
+    /// @param configuration_register address for the configuration register
     const uint8_t configuration_register = 0x00;
 
     union configuration_t

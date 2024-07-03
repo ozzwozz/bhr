@@ -57,7 +57,6 @@ public:
     /// @brief read the converted voltage value of the given adc pin
     /// @param pin 
     /// @return float the voltage value at the pin
-    // float read_voltage_adc(uint pin);
     float read_voltage_adc(uint pin);
 
     /// @brief read the voltage on all of the pins

@@ -51,9 +51,8 @@ public:
     /// @return success is true
     bool get_attenuator_enable(bool &value);
     
-    /// @brief Enable the corresponding power line
-    void set_power_enable();
+    /// @brief Set the corresponding power line
+    void set_power_state(bool value);
 
-    /// @brief Disable the corresponding power line
-    void set_power_disable();
+    bool get_power_state(bool &value);
 };

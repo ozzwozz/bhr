@@ -29,6 +29,8 @@ public:
         GET_ATTENUATOR_ENABLE = 0x05,
         SET_10MHZ_REFERENCE_SOURCE = 0x06,
         GET_10MHZ_REFERENCE_SOURCE = 0x07,
+        SET_PCA_POWER = 0x08,
+        GET_PCA_POWER = 0x09,
         SET_CALIBRATION = 0x10,
         GET_CALIBRATION = 0x11,
         GET_BITS = 0X20,
@@ -109,10 +111,10 @@ private:
     /// @param m_overtemp_flag Flag set high when temperature interrupt is triggered
     volatile bool m_overtemp_flag = false;
 
-    /// @brief Handler for the EXT_TRIG/GPIO15 interrupt
+    /// @brief Handler for the EXT_TRIG/Overtemp interrupts
     /// @param gpio 
     /// @param events 
-    static void gpio_callback(uint gpio, uint32_t event);//void* context);
+    static void gpio_callback(uint gpio, uint32_t event);
 
     /// @brief Set the attenuation level
     /// @param response  
@@ -150,6 +152,15 @@ private:
     /// @brief Get the current clock in use
     /// @param response 
     void get_clock_state(uint8_t response[20]);
+
+    /// @brief set the PCA power
+    /// @param response 
+    /// @param mutable_message PA power state and PA select mask 
+    void set_pca_power(uint8_t response[20], uint8_t mutable_message[5]);
+
+    /// @brief Get the current state of the PCAs
+    /// @param response 
+    void get_pca_power(uint8_t response[20]);
 
     /// @brief Set the Calibration table on the EEPROM 
     /// @param data 
