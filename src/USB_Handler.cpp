@@ -28,7 +28,7 @@ USB_Handler::USB_Handler(MAX31725 &max31725
     // Initialize External interrupt trigger
     gpio_init(m_overtemp_pin);
     gpio_set_dir(m_overtemp_pin, GPIO_IN);
-    gpio_pull_up(m_overtemp_pin); // Set External interrupt trigger as input with pull-down resistor
+    gpio_pull_up(m_overtemp_pin); // Set External interrupt trigger as input with pull-up resistor
 
     // Set up interrupt for m_overtemp_pin
     gpio_set_irq_enabled_with_callback(m_overtemp_pin, GPIO_IRQ_EDGE_FALL, true, (gpio_irq_callback_t)gpio_callback);
@@ -111,6 +111,13 @@ void USB_Handler::decode_message(const uint8_t message[5])
             printf("%x ", response[0]);
             printf("%x \n", response[1]);
             break;
+        case message_headers::SET_PCA_POWER:
+            set_pca_power(response, mutable_message);
+            printf("%x \n", response[0]);
+        case message_headers::GET_PCA_POWER:
+            get_pca_power(response);
+            printf("%x ", response[0]);
+            printf("%d \n", response[1]);
         case message_headers::SET_CALIBRATION:
             set_calibration(mutable_message);
             printf("%x ", response[0]);
@@ -161,12 +168,10 @@ void USB_Handler::decode_message(const uint8_t message[5])
         case message_headers::SET_HARDWARE_NUMBERS:
             set_hardware_numbers(response, mutable_message);
             printf("%x \n", response[0]);
-            // printf("%d \n", response[1]);
             break;
         case message_headers::SET_SOFTWARE_NUMBERS:
             set_software_numbers(response, mutable_message);
             printf("%x \n", response[0]);
-            // printf("%d \n", response[1]);
             break;
         case message_headers::RESET_ETC:
             reset_etc();
@@ -393,6 +398,62 @@ void USB_Handler::set_clock_state(uint8_t response[20], uint8_t data[5])
 void USB_Handler::get_clock_state(uint8_t response[20])
 {
     response[1] = m_si53361.get_clock_state();
+}
+
+void USB_Handler::set_pca_power(uint8_t response[20], uint8_t data[5])
+{
+    uint8_t pa_power = data[1];
+    uint8_t band_mask = data[2];
+
+    if ((band_mask & (1 << 1)) != 0)
+    {
+        m_pca9554_1.set_power_state(pa_power);
+    }
+    if ((band_mask & (1 << 2)) != 0)
+    {
+        m_pca9554_2.set_power_state(pa_power);
+    }
+    if ((band_mask & (1 << 3)) != 0)
+    {
+        m_pca9554_3.set_power_state(pa_power);
+    }
+    if ((band_mask & (1 << 4)) != 0)
+    {
+        m_pca9554_4.set_power_state(pa_power);
+    }
+    if ((band_mask & (1 << 5)) != 0)
+    {
+        m_pca9554_5.set_power_state(pa_power);
+    }
+}
+
+void USB_Handler::get_pca_power(uint8_t response[20])
+{
+    uint8_t powered_pa = 0;
+    bool value;
+
+    if (m_pca9554_1.get_power_state(value))
+    {
+        powered_pa |= (value << 1);
+    }
+    if (m_pca9554_2.get_power_state(value))
+    {
+        powered_pa |= (value << 2);
+    }
+    if (m_pca9554_3.get_power_state(value))
+    {
+        powered_pa |= (value << 3);
+    }
+    if (m_pca9554_4.get_power_state(value))
+    {
+        powered_pa |= (value << 4);
+    }
+    if (m_pca9554_5.get_power_state(value))
+    {
+        powered_pa |= (value << 5);
+    }
+    
+    response[1] = powered_pa;
 }
 
 void USB_Handler::set_calibration(uint8_t data[5])

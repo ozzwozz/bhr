@@ -5,12 +5,12 @@ PCA9554::PCA9554(i2c_inst_t *i2c, uint8_t address, uint power_enable_pin) : I2CD
     gpio_init(m_power_enable_pin);
     gpio_set_dir(m_power_enable_pin, GPIO_OUT);
     
-    set_power_enable();
+    set_power_state(1);
 }
 
 PCA9554::~PCA9554()
 {
-    set_power_disable();
+    set_power_state(0);
 }
 
 bool PCA9554::set_outputs(const uint8_t value)
@@ -127,12 +127,12 @@ bool PCA9554::get_attenuator_enable(bool &value)
     return true;
 }
 
-void PCA9554::set_power_enable()
+void PCA9554::set_power_state(bool value)
 {
-    gpio_put(m_power_enable_pin, 1);
+    gpio_put(m_power_enable_pin, value);
 }
 
-void PCA9554::set_power_disable()
+bool PCA9554::get_power_state(bool &value)
 {
-    gpio_put(m_power_enable_pin, 0);
+    return gpio_get(m_power_enable_pin);
 }

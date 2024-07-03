@@ -9,7 +9,7 @@ DS1682::DS1682(i2c_inst_t* i2c_inst, uint8_t address) : I2CDevice(i2c_inst, addr
     configuration.i = 0;
 
     uint8_t config_command[2] = {configuration_register, configuration.i};
-    // write configuration twice to set
+    // write configuration to set
     write(config_command, 2);
 }
 
@@ -29,7 +29,7 @@ void DS1682::reset()
     config_command[2] = configuration.i;
     write(config_command, 2);
     write(reset_command, 2);
-    write(reset_command, 2 );
+    write(reset_command, 2);
 }
 
 void DS1682::writeConfigRegister(uint8_t config)
@@ -40,7 +40,7 @@ void DS1682::writeConfigRegister(uint8_t config)
 
 bool DS1682::getTime(uint32_t &timestamp)
 {
-    uint8_t register_address[4]; // 4 bytes needed for timestamp data
+    uint8_t register_address[4]; // 4 bytes needed for timestamp addressing
     uint8_t buffer[4]; // 4 bytes needed for timestamp data
 
     register_address[0] = etc_low_byte; // Register address for reading time

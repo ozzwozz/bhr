@@ -65,14 +65,13 @@ bool M24M02::get_software_id(uint32_t &software_id)
 
     ret = i2c_read_blocking(m_i2c, m_address, buffer, 4, false);
     if (ret == PICO_ERROR_GENERIC)
-    // if (I2CDevice::read(buffer, sizeof(buffer)))
     {
         software_id = 0; // Error in reading unique ID data
         return false;
     }
 
     // Convert the received data to a unique ID (assumes little-endian byte order)
-    software_id = ( buffer[0] << 24) | (buffer[1] << 16) | (buffer[2] << 8) | buffer[3];
+    software_id = ( buffer[0] << 24) | (buffer[1] << 16) | (buffer[2] << 8) | (buffer[3] & 0xFF);
     return true;
 }
 
@@ -94,14 +93,12 @@ bool M24M02::get_hardware_id(uint32_t &hardware_id)
         return false;
     }
 
-    // if (I2CDevice::read(buffer, 4) == PICO_ERROR_GENERIC)
     ret = i2c_read_blocking(m_i2c, m_address, buffer, 4, false);
     if (ret == PICO_ERROR_GENERIC)
     {
         hardware_id = 0; // Error in reading unique ID data
         return false;
     }
-    // if (I2CDevice::read(buffer, sizeof(buffer)))
 
     // Convert the received data to a unique ID (assumes little-endian byte order)
     hardware_id = ( buffer[0] << 24) | (buffer[1] << 16) | (buffer[2] << 8) | (buffer[3] & 0xFF);
