@@ -6,6 +6,7 @@ PCA9554::PCA9554(i2c_inst_t *i2c, uint8_t address, uint power_enable_pin) : I2CD
     gpio_set_dir(m_power_enable_pin, GPIO_OUT);
     
     set_power_state(1);
+    configuration();
     set_outputs(0x7F);
 }
 
