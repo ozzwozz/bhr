@@ -8,9 +8,12 @@
 class PCA9554 : public I2CDevice
 {
 private:
+    /// @param output_port_register register address for the output register
     const uint8_t output_port_register = 0x01;
+    /// @param config_register register address for the config register
     const uint8_t config_register = 0x03;
 
+    /// @brief Default 
     void configuration();
     
 protected:
