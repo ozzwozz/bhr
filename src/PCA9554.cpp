@@ -19,7 +19,7 @@ void PCA9554::configuration()
     // All pins as outputs
     uint8_t config = 0x00;
     uint8_t command[2] {config_register, config}; 
-    I2CDevice::write(command, sizeof(command));
+    int ret = i2c_write_blocking(m_i2c, m_address, command, 2, true);
 }
 
 bool PCA9554::set_outputs(const uint8_t value)
@@ -34,11 +34,13 @@ bool PCA9554::set_outputs(const uint8_t value)
 
         uint8_t command[2] {output_port_register, current_value};
 
-        if(!I2CDevice::write(command, 2))
+        int ret = i2c_write_blocking(m_i2c, m_address, command, 2, true);
+        if (ret == PICO_ERROR_GENERIC)
         {
             return false;
         }
     }
+
     return true;
 }
 
@@ -63,9 +65,12 @@ bool PCA9554::set_lna(const bool value)
 
     if (read_inputs(current_value))
     {
-        uint8_t new_value = current_value ^ (value << 6); 
+        uint8_t new_value = current_value ^ (value << 6);
 
-        if (!I2CDevice::write(&current_value, 1))
+        uint8_t command[2] {output_port_register, new_value};
+
+        int ret = i2c_write_blocking(m_i2c, m_address, command, 2, true);
+        if (ret == PICO_ERROR_GENERIC)
         {
             return false;
         }
@@ -94,8 +99,10 @@ bool PCA9554::set_attenuator_enable(bool value)
     read_inputs(current_value);
 
     uint8_t new_value = current_value ^ (value << 6); 
+    uint8_t command[2] {output_port_register, new_value};
 
-    if (!I2CDevice::write(&current_value, 1))
+    int ret = i2c_write_blocking(m_i2c, m_address, command, 2, true);
+    if (ret == PICO_ERROR_GENERIC)
     {
         return false;
     }
