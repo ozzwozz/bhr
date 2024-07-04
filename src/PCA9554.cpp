@@ -6,8 +6,6 @@ PCA9554::PCA9554(i2c_inst_t *i2c, uint8_t address, uint power_enable_pin) : I2CD
     gpio_set_dir(m_power_enable_pin, GPIO_OUT);
     
     set_power_state(1);
-    configuration();
-    set_outputs(0x7F);
 }
 
 PCA9554::~PCA9554()
@@ -99,7 +97,7 @@ bool PCA9554::set_attenuator_enable(bool value)
 
     read_inputs(current_value);
 
-    uint8_t new_value = current_value ^ (value << 6); 
+    uint8_t new_value = current_value ^ (value << 7); 
     uint8_t command[2] {output_port_register, new_value};
 
     int ret = i2c_write_blocking(m_i2c, m_address, command, 2, true);
@@ -124,6 +122,14 @@ bool PCA9554::get_attenuator_enable(bool &value)
 void PCA9554::set_power_state(bool value)
 {
     gpio_put(m_power_enable_pin, value);
+ 
+    if (value == 1)
+    {
+        sleep_us(10);
+        configuration();
+        set_attenuator_enable(1);
+        set_outputs(0x3C);
+    }
 }
 
 bool PCA9554::get_power_state(bool &value)
