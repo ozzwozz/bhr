@@ -27,9 +27,10 @@ bool PCA9554::set_outputs(const uint8_t value)
 
     if (read_inputs(current_value))
     {
+
         // Masking currently set values so that only explicit changes are made
         uint8_t current_value_shifted = (current_value >> 6);
-        uint8_t new_value = (current_value_shifted << 6) | (value & 0xFF);
+        uint8_t new_value = (current_value_shifted << 6) | value;
 
         uint8_t command[2] {output_port_register, current_value};
 
@@ -64,9 +65,14 @@ bool PCA9554::set_lna(const bool value)
 
     if (read_inputs(current_value))
     {
-        uint8_t new_value = current_value ^ (value << 6);
+        unsigned char clear_mask = ~(1 << 7);
+        unsigned char set_mask = value << 6;
 
-        uint8_t command[2] {output_port_register, new_value};
+        current_value &= clear_mask;
+
+        current_value |= set_mask;
+
+        uint8_t command[2] {output_port_register, current_value};
 
         int ret = i2c_write_blocking(m_i2c, m_address, command, 2, true);
         if (ret == PICO_ERROR_GENERIC)
@@ -92,13 +98,18 @@ bool PCA9554::get_lna(bool &value)
 
 bool PCA9554::set_attenuator_enable(bool value)
 {
-
     uint8_t current_value = 0;
 
     read_inputs(current_value);
 
-    uint8_t new_value = current_value ^ (value << 7); 
-    uint8_t command[2] {output_port_register, new_value};
+    unsigned char clear_mask = ~(1 << 6);
+    unsigned char set_mask = value << 7;
+
+    current_value &= clear_mask;
+
+    current_value |= set_mask;
+    
+    uint8_t command[2] {output_port_register, current_value};
 
     int ret = i2c_write_blocking(m_i2c, m_address, command, 2, true);
     if (ret == PICO_ERROR_GENERIC)

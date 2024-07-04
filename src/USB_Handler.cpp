@@ -195,23 +195,23 @@ void USB_Handler::set_attenuation(uint8_t response[20], uint8_t data[5])
 
     if ((band_mask & (1 << 1)) != 0)
     {
-        set_attenuators |= (m_pca9554_1.set_outputs(attenuation_value) << 1);
+        set_attenuators |= (m_pca9554_1.set_outputs(attenuation_value));
     }
     if ((band_mask & (1 << 2)) != 0)
     {
-        set_attenuators |= (m_pca9554_2.set_outputs(attenuation_value) << 2);
+        set_attenuators |= (m_pca9554_2.set_outputs(attenuation_value) << 1);
     }
     if ((band_mask & (1 << 3)) != 0)
     {
-        set_attenuators |= (m_pca9554_3.set_outputs(attenuation_value) << 3);
+        set_attenuators |= (m_pca9554_3.set_outputs(attenuation_value) << 2);
     }
     if ((band_mask & (1 << 4)) != 0)
     {
-        set_attenuators |= (m_pca9554_4.set_outputs(attenuation_value) << 4);
+        set_attenuators |= (m_pca9554_4.set_outputs(attenuation_value) << 3);
     }
     if ((band_mask & (1 << 5)) != 0)
     {
-        set_attenuators |= (m_pca9554_5.set_outputs(attenuation_value) << 5);
+        set_attenuators |= (m_pca9554_5.set_outputs(attenuation_value) << 4);
     }
 
     response[1] = set_attenuators;
@@ -270,23 +270,38 @@ void USB_Handler::set_lna_enable(uint8_t response[20], uint8_t data[5])
 
     if ((band_mask & (1)) != 0)
     {
-        enabled_lna |= (m_pca9554_1.set_lna(lna_enabled) << 1);
+        if (lna_enabled == 1)
+        {
+            enabled_lna |= (m_pca9554_1.set_lna(1)); //< turn on LNA
+        }
     }
     if ((band_mask & (1 << 1)) != 0)
     {
-        enabled_lna |= (m_pca9554_2.set_lna(lna_enabled) << 2);
+        if (lna_enabled == 1)
+        {
+            enabled_lna |= (m_pca9554_2.set_lna(1) << 1); //< turn on LNA
+        }
     }
     if ((band_mask & (1 << 2)) != 0)
     {
-        enabled_lna |= (m_pca9554_3.set_lna(lna_enabled) << 3);
+        if (lna_enabled == 1)
+        {
+            enabled_lna |= (m_pca9554_3.set_lna(1) << 2); //< turn on LNA
+        }
     }
     if ((band_mask & (1 << 3)) != 0)
     {
-        enabled_lna |= (m_pca9554_4.set_lna(lna_enabled) << 4);
+        if (lna_enabled == 1)
+        {
+            enabled_lna |= (m_pca9554_4.set_lna(1) << 3); //< turn on LNA
+        }
     }
     if ((band_mask & (1 << 4)) != 0)
     {
-        enabled_lna |= (m_pca9554_5.set_lna(lna_enabled) << 5);
+        if (lna_enabled == 1)
+        {
+            enabled_lna |= (m_pca9554_5.set_lna(1) << 4); //< turn on LNA
+        }
     }
     
     response[1] = enabled_lna;
@@ -329,23 +344,38 @@ void USB_Handler::set_attenuator_enable(uint8_t response[20], uint8_t data[5])
 
     if ((band_mask & (1 << 1)) != 0)
     {
-        enabled_attenuators |= (m_pca9554_1.set_attenuator_enable(attenuator_enabled) << 1);
+        if (attenuator_enabled == 1)
+        {
+            enabled_attenuators |= (m_pca9554_1.set_attenuator_enable(1)); //< turn on Attenuator
+        }
     }
     if ((band_mask & (1 << 2)) != 0)
     {
-        enabled_attenuators |= (m_pca9554_2.set_attenuator_enable(attenuator_enabled) << 2);
+        if (attenuator_enabled == 1)
+        {
+            enabled_attenuators |= (m_pca9554_2.set_attenuator_enable(1) << 1); //< turn on Attenuator
+        }
     }
     if ((band_mask & (1 << 3)) != 0)
     {
-        enabled_attenuators |= (m_pca9554_3.set_attenuator_enable(attenuator_enabled) << 3);
+        if (attenuator_enabled == 1)
+        {
+            enabled_attenuators |= (m_pca9554_3.set_attenuator_enable(1) << 2); //< turn on Attenuator
+        }
     }
     if ((band_mask & (1 << 4)) != 0)
     {
-        enabled_attenuators |= (m_pca9554_4.set_attenuator_enable(attenuator_enabled) << 4);
+        if (attenuator_enabled == 1)
+        {
+            enabled_attenuators |= (m_pca9554_4.set_attenuator_enable(1) << 3); //< turn on Attenuator
+        }
     }
     if ((band_mask & (1 << 5)) != 0)
     {
-        enabled_attenuators |= (m_pca9554_5.set_attenuator_enable(attenuator_enabled) << 5);
+        if (attenuator_enabled == 1)
+        {
+            enabled_attenuators |= (m_pca9554_5.set_attenuator_enable(1) << 4); //< turn on Attenuator
+        }
     }
 
     response[1] = enabled_attenuators;
