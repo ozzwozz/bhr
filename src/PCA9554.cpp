@@ -14,25 +14,41 @@ PCA9554::~PCA9554()
     set_power_state(0);
 }
 
+void PCA9554::configuration()
+{
+    // All pins as outputs
+    uint8_t config = 0x00;
+    uint8_t command[2] {config_register, config}; 
+    I2CDevice::write(command, sizeof(command));
+}
+
 bool PCA9554::set_outputs(const uint8_t value)
 {
     uint8_t current_value = 0;
-    I2CDevice::read(&current_value, 1);
 
-    // Masking currently set values so that only explicit changes are made
-    uint8_t current_value_shifted = (current_value >> 6);
-    uint8_t new_value = (current_value_shifted << 6) | (value & 0xFF);
-
-    if(!I2CDevice::write(&new_value, 1))
+    if (read_inputs(current_value))
     {
-        return false;
-    }
+        // Masking currently set values so that only explicit changes are made
+        uint8_t current_value_shifted = (current_value >> 6);
+        uint8_t new_value = (current_value_shifted << 6) | (value & 0xFF);
 
+        uint8_t command[2] {output_port_register, current_value};
+
+        if(!I2CDevice::write(command, 2))
+        {
+            return false;
+        }
+    }
     return true;
 }
 
 bool PCA9554::read_inputs(uint8_t &value)
 {
+    if (!I2CDevice::write(&output_port_register, 1))
+    {
+        return false;
+    }
+
     if (!I2CDevice::read(&value, 1))
     {
         return false;
@@ -44,17 +60,15 @@ bool PCA9554::read_inputs(uint8_t &value)
 bool PCA9554::set_lna(const bool value)
 {
     uint8_t current_value = 0;
-    
-    if (!I2CDevice::read(&current_value, 1))
-    {
-        return false;
-    }
 
-    uint8_t new_value = current_value ^ (value << 6); 
-
-    if (!I2CDevice::write(&current_value, 1))
+    if (read_inputs(current_value))
     {
-        return false;
+        uint8_t new_value = current_value ^ (value << 6); 
+
+        if (!I2CDevice::write(&current_value, 1))
+        {
+            return false;
+        }
     }
 
     return true;
@@ -63,10 +77,8 @@ bool PCA9554::set_lna(const bool value)
 bool PCA9554::get_lna(bool &value)
 {
     uint8_t current_value = 0;
-    if (!I2CDevice::read(&current_value, 1))
-    {
-        return false;
-    }
+
+    read_inputs(current_value);
 
     // Mask to clear the 7th bit
     value = current_value >> 6;
@@ -78,11 +90,8 @@ bool PCA9554::set_attenuator_enable(bool value)
 {
 
     uint8_t current_value = 0;
-    
-    if (!I2CDevice::read(&current_value, 1))
-    {
-        return false;
-    }
+
+    read_inputs(current_value);
 
     uint8_t new_value = current_value ^ (value << 6); 
 
@@ -97,10 +106,8 @@ bool PCA9554::set_attenuator_enable(bool value)
 bool PCA9554::get_attenuator_enable(bool &value)
 {
     uint8_t current_value = 0;
-    if (!I2CDevice::read(&current_value, 1))
-    {
-        return false;
-    }
+
+    read_inputs(current_value);
 
     value = (current_value >> 7);
     return true;

@@ -268,23 +268,23 @@ void USB_Handler::set_lna_enable(uint8_t response[20], uint8_t data[5])
     uint8_t band_mask = data[2];
     uint8_t enabled_lna = 0;
 
-    if ((band_mask & (1 << 1)) != 0)
+    if ((band_mask & (1)) != 0)
     {
         enabled_lna |= (m_pca9554_1.set_lna(lna_enabled) << 1);
     }
-    if ((band_mask & (1 << 2)) != 0)
+    if ((band_mask & (1 << 1)) != 0)
     {
         enabled_lna |= (m_pca9554_2.set_lna(lna_enabled) << 2);
     }
-    if ((band_mask & (1 << 3)) != 0)
+    if ((band_mask & (1 << 2)) != 0)
     {
         enabled_lna |= (m_pca9554_3.set_lna(lna_enabled) << 3);
     }
-    if ((band_mask & (1 << 4)) != 0)
+    if ((band_mask & (1 << 3)) != 0)
     {
         enabled_lna |= (m_pca9554_4.set_lna(lna_enabled) << 4);
     }
-    if ((band_mask & (1 << 5)) != 0)
+    if ((band_mask & (1 << 4)) != 0)
     {
         enabled_lna |= (m_pca9554_5.set_lna(lna_enabled) << 5);
     }
