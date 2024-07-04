@@ -7,6 +7,12 @@
 /// @brief Driver for the PCA9554
 class PCA9554 : public I2CDevice
 {
+private:
+    const uint8_t output_port_register = 0x01;
+    const uint8_t config_register = 0x03;
+
+    void configuration();
+    
 protected:
     /// @param m_power_enable_pin Pin to control power to the attenuator card
     uint m_power_enable_pin;
