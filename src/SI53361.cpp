@@ -6,6 +6,10 @@ SI53361::SI53361()
     gpio_init(m_output_enable_pin);
     gpio_init(m_ext_clock_detect);
 
+    gpio_set_dir(m_clock_select_pin, GPIO_OUT);
+    gpio_set_dir(m_output_enable_pin, GPIO_OUT);
+    gpio_set_dir(m_ext_clock_detect, GPIO_IN);
+
     // Default to using internal clock
     enable_internal_clock();
 }
