@@ -193,23 +193,23 @@ void USB_Handler::set_attenuation(uint8_t response[20], uint8_t data[5])
     uint8_t band_mask = data[2];
     uint8_t set_attenuators = 0;
 
-    if ((band_mask & (1 << 1)) != 0)
+    if ((band_mask & (1)) != 0)
     {
         set_attenuators |= (m_pca9554_1.set_outputs(attenuation_value));
     }
-    if ((band_mask & (1 << 2)) != 0)
+    if ((band_mask & (1 << 1)) != 0)
     {
         set_attenuators |= (m_pca9554_2.set_outputs(attenuation_value) << 1);
     }
-    if ((band_mask & (1 << 3)) != 0)
+    if ((band_mask & (1 << 2)) != 0)
     {
         set_attenuators |= (m_pca9554_3.set_outputs(attenuation_value) << 2);
     }
-    if ((band_mask & (1 << 4)) != 0)
+    if ((band_mask & (1 << 3)) != 0)
     {
         set_attenuators |= (m_pca9554_4.set_outputs(attenuation_value) << 3);
     }
-    if ((band_mask & (1 << 5)) != 0)
+    if ((band_mask & (1 << 4)) != 0)
     {
         set_attenuators |= (m_pca9554_5.set_outputs(attenuation_value) << 4);
     }
@@ -223,35 +223,35 @@ void USB_Handler::get_attenuation(uint8_t response[20], uint8_t band_mask)
     uint8_t temp;
 
 
-    if ((band_mask & (1 << 1)) != 0)
+    if ((band_mask & (1)) != 0)
     {
         if (m_pca9554_1.read_inputs(temp))
         {
             attenuation_value |= temp;
         }    
     }
-    else if ((band_mask & (1 << 2)) != 0)
+    else if ((band_mask & (1 << 1)) != 0)
     {
         if (m_pca9554_2.read_inputs(temp))
         {
             attenuation_value |= temp;
         }
     }
-    else if ((band_mask & (1 << 3)) != 0)
+    else if ((band_mask & (1 << 2)) != 0)
     {
         if (m_pca9554_3.read_inputs(temp))
         {
             attenuation_value |= temp;
         }
     }
-    else if ((band_mask & (1 << 4)) != 0)
+    else if ((band_mask & (1 << 3)) != 0)
     {
         if (m_pca9554_4.read_inputs(temp))
         {
             attenuation_value |= temp;
         }
     }
-    else if ((band_mask & (1 << 5)) != 0)
+    else if ((band_mask & (1 << 4)) != 0)
     {
         if (m_pca9554_5.read_inputs(temp))
         {
@@ -342,35 +342,35 @@ void USB_Handler::set_attenuator_enable(uint8_t response[20], uint8_t data[5])
     uint8_t band_mask = data[2];
     uint8_t enabled_attenuators = 0;
 
-    if ((band_mask & (1 << 1)) != 0)
+    if ((band_mask & (1)) != 0)
     {
         if (attenuator_enabled == 1)
         {
             enabled_attenuators |= (m_pca9554_1.set_attenuator_enable(1)); //< turn on Attenuator
         }
     }
-    if ((band_mask & (1 << 2)) != 0)
+    if ((band_mask & (1 << 1)) != 0)
     {
         if (attenuator_enabled == 1)
         {
             enabled_attenuators |= (m_pca9554_2.set_attenuator_enable(1) << 1); //< turn on Attenuator
         }
     }
-    if ((band_mask & (1 << 3)) != 0)
+    if ((band_mask & (1 << 2)) != 0)
     {
         if (attenuator_enabled == 1)
         {
             enabled_attenuators |= (m_pca9554_3.set_attenuator_enable(1) << 2); //< turn on Attenuator
         }
     }
-    if ((band_mask & (1 << 4)) != 0)
+    if ((band_mask & (1 << 3)) != 0)
     {
         if (attenuator_enabled == 1)
         {
             enabled_attenuators |= (m_pca9554_4.set_attenuator_enable(1) << 3); //< turn on Attenuator
         }
     }
-    if ((band_mask & (1 << 5)) != 0)
+    if ((band_mask & (1 << 4)) != 0)
     {
         if (attenuator_enabled == 1)
         {
@@ -435,23 +435,23 @@ void USB_Handler::set_pca_power(uint8_t response[20], uint8_t data[5])
     uint8_t pa_power = data[1];
     uint8_t band_mask = data[2];
 
-    if ((band_mask & (1 << 1)) != 0)
+    if ((band_mask & (1)) != 0)
     {
         m_pca9554_1.set_power_state(pa_power);
     }
-    if ((band_mask & (1 << 2)) != 0)
+    if ((band_mask & (1 << 1)) != 0)
     {
         m_pca9554_2.set_power_state(pa_power);
     }
-    if ((band_mask & (1 << 3)) != 0)
+    if ((band_mask & (1 << 2)) != 0)
     {
         m_pca9554_3.set_power_state(pa_power);
     }
-    if ((band_mask & (1 << 4)) != 0)
+    if ((band_mask & (1 << 3)) != 0)
     {
         m_pca9554_4.set_power_state(pa_power);
     }
-    if ((band_mask & (1 << 5)) != 0)
+    if ((band_mask & (1 << 4)) != 0)
     {
         m_pca9554_5.set_power_state(pa_power);
     }
