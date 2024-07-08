@@ -270,35 +270,35 @@ void USB_Handler::set_lna_enable(uint8_t response[20], uint8_t data[5])
 
     if ((band_mask & (1)) != 0)
     {
-        if (lna_enabled == 1)
+        if (lna_enabled)
         {
             enabled_lna |= (m_pca9554_1.set_lna(1)); //< turn on LNA
         }
     }
     if ((band_mask & (1 << 1)) != 0)
     {
-        if (lna_enabled == 1)
+        if (lna_enabled)
         {
             enabled_lna |= (m_pca9554_2.set_lna(1) << 1); //< turn on LNA
         }
     }
     if ((band_mask & (1 << 2)) != 0)
     {
-        if (lna_enabled == 1)
+        if (lna_enabled)
         {
             enabled_lna |= (m_pca9554_3.set_lna(1) << 2); //< turn on LNA
         }
     }
     if ((band_mask & (1 << 3)) != 0)
     {
-        if (lna_enabled == 1)
+        if (lna_enabled)
         {
             enabled_lna |= (m_pca9554_4.set_lna(1) << 3); //< turn on LNA
         }
     }
     if ((band_mask & (1 << 4)) != 0)
     {
-        if (lna_enabled == 1)
+        if (lna_enabled)
         {
             enabled_lna |= (m_pca9554_5.set_lna(1) << 4); //< turn on LNA
         }
@@ -344,35 +344,35 @@ void USB_Handler::set_attenuator_enable(uint8_t response[20], uint8_t data[5])
 
     if ((band_mask & (1)) != 0)
     {
-        if (attenuator_enabled == 1)
+        if (attenuator_enabled)
         {
             enabled_attenuators |= (m_pca9554_1.set_attenuator_enable(1)); //< turn on Attenuator
         }
     }
     if ((band_mask & (1 << 1)) != 0)
     {
-        if (attenuator_enabled == 1)
+        if (attenuator_enabled)
         {
             enabled_attenuators |= (m_pca9554_2.set_attenuator_enable(1) << 1); //< turn on Attenuator
         }
     }
     if ((band_mask & (1 << 2)) != 0)
     {
-        if (attenuator_enabled == 1)
+        if (attenuator_enabled)
         {
             enabled_attenuators |= (m_pca9554_3.set_attenuator_enable(1) << 2); //< turn on Attenuator
         }
     }
     if ((band_mask & (1 << 3)) != 0)
     {
-        if (attenuator_enabled == 1)
+        if (attenuator_enabled)
         {
             enabled_attenuators |= (m_pca9554_4.set_attenuator_enable(1) << 3); //< turn on Attenuator
         }
     }
     if ((band_mask & (1 << 4)) != 0)
     {
-        if (attenuator_enabled == 1)
+        if (attenuator_enabled)
         {
             enabled_attenuators |= (m_pca9554_5.set_attenuator_enable(1) << 4); //< turn on Attenuator
         }
