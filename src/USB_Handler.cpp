@@ -49,17 +49,16 @@ void USB_Handler::gpio_callback(uint gpio, uint32_t event)
     if (gpio == m_ext_trig_pin)
     {
         printf("%x \n", EXTERNAL_INTERRUPT);
-        gpio_put(PICO_DEFAULT_LED_PIN, !gpio_get(PICO_DEFAULT_LED_PIN));
     }
 }
 
 void USB_Handler::decode_message(const uint8_t message[5])
 {
     uint8_t mutable_message[5];
+    uint8_t response[20];
+
     uint8_t header = message[0];
     uint8_t band_mask = message[1];
-
-    uint8_t response[20];
 
     mutable_message[0] = message[0];
     mutable_message[1] = message[1];
@@ -114,10 +113,12 @@ void USB_Handler::decode_message(const uint8_t message[5])
         case message_headers::SET_PCA_POWER:
             set_pca_power(response, mutable_message);
             printf("%x \n", response[0]);
+            break;
         case message_headers::GET_PCA_POWER:
             get_pca_power(response);
             printf("%x ", response[0]);
             printf("%d \n", response[1]);
+            break;
         case message_headers::SET_CALIBRATION:
             set_calibration(mutable_message);
             printf("%x ", response[0]);
@@ -176,12 +177,15 @@ void USB_Handler::decode_message(const uint8_t message[5])
         case message_headers::RESET_ETC:
             reset_etc();
             printf("%x \n", header);
+            break;
         case message_headers::SET_P3V3_OXCO_PIN:
             set_p3v3_oxco_pin(mutable_message);
             printf("%x \n", header);
+            break;
         case message_headers::SET_P5V5_PIN:
             set_p5v5_pin(mutable_message);
             printf("%x \n", header);
+            break;
         default:
             break;
     }
@@ -412,7 +416,12 @@ void USB_Handler::get_attenuator_enable(uint8_t response[20])
 
 void USB_Handler::set_clock_state(uint8_t response[20], uint8_t data[5])
 {
-    if (data[1] == 0x01)
+    if (data[1] == 0x02)
+    {
+        m_si53361.disable_clock();
+        response[1] = 0x02;
+    }
+    else if (data[1] == 0x01)
     {
         m_si53361.enable_external_clock();
         response[1] = 0x01;
@@ -422,7 +431,6 @@ void USB_Handler::set_clock_state(uint8_t response[20], uint8_t data[5])
         m_si53361.enable_internal_clock();
         response[1] = 0x00;
     }
-
 }
 
 void USB_Handler::get_clock_state(uint8_t response[20])
@@ -528,22 +536,22 @@ void USB_Handler::get_bits(uint8_t response[20])
 
     m_adc.read_all();
     
-    response[8] = (m_adc.voltage_P5V5_PGOOD >> 8);
+    response[8] = (m_adc.voltage_P5V5_PGOOD >> 8) & 0x0F;
     response[9] = m_adc.voltage_P5V5_PGOOD & 0xFF;
 
-    response[10] = (m_adc.voltage_P3V3_PGOOD >> 8);
+    response[10] = (m_adc.voltage_P3V3_PGOOD >> 8) & 0x0F;
     response[11] = m_adc.voltage_P3V3_PGOOD & 0xFF;
 
-    response[12] = (m_adc.voltage_OCXO_PGOOD >> 8);
+    response[12] = (m_adc.voltage_OCXO_PGOOD >> 8) & 0x0F;
     response[13] = m_adc.voltage_OCXO_PGOOD & 0xFF;
 
-    response[14] = (m_adc.voltage_P12V >> 8);
+    response[14] = (m_adc.voltage_P12V >> 8) & 0x0F;
     response[15] = m_adc.voltage_P12V & 0xFF;
 
-    response[16] = (m_adc.voltage_P5V5 >> 8);
+    response[16] = (m_adc.voltage_P5V5 >> 8) & 0x0F;
     response[17] = m_adc.voltage_P5V5 & 0xFF;
 
-    response[18] = (m_adc.voltage_P3V3 >> 8);
+    response[18] = (m_adc.voltage_P3V3 >> 8) & 0x0F;
     response[19] = m_adc.voltage_P3V3 & 0xFF;  
 }
 

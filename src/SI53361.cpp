@@ -16,12 +16,13 @@ SI53361::SI53361()
 
 SI53361::~SI53361()
 {
-
+    disable_clock();
 }
 
 void SI53361::disable_clock()
 {
     gpio_put(m_output_enable_pin, 0); // Disable Clock
+    gpio_put(m_clock_select_pin, 0); // Disable Clock
 }
 
 void SI53361::enable_external_clock()
