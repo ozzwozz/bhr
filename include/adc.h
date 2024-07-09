@@ -23,10 +23,13 @@ private:
 
     /// @param P5V5_PIN P5V5 voltage Pin
     const uint P5V5_PIN = 26;
+    const uint P5V5_PIN_CHANNEL = 0;
     /// @param P3V3_OCXO_PIN P3V3 and OCXO voltage Pin
     const uint P3V3_OCXO_PIN = 27;
+    const uint P3V3_OCXO_PIN_CHANNEL = 1;
     /// @param P12V_PIN P12V voltage Pin
     const uint P12V_PIN = 28;
+    const uint P12V_PIN_CHANNEL = 2;
 
 public:
     /// @brief Construct a new ADC object
