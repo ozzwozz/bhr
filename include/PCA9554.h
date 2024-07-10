@@ -32,7 +32,8 @@ private:
 
     /// @brief Default 
     void configuration();
-    
+
+
 protected:
     /// @param m_power_enable_pin Pin to control power to the attenuator card
     uint m_power_enable_pin;
@@ -47,6 +48,8 @@ public:
     /// @brief Destroy the PCA9554 object
     ~PCA9554();
 
+    bool set_rf_path_value(uint8_t value);
+    
     bool set_attenuator_value(uint8_t attenuator_id, uint8_t value);
 
     /// @brief Write data to the attenuator cards
