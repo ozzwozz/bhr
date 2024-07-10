@@ -31,6 +31,7 @@ public:
         GET_10MHZ_REFERENCE_SOURCE = 0x07,
         SET_PCA_POWER = 0x08,
         GET_PCA_POWER = 0x09,
+        SET_ATTENUATOR = 0x0A,
         SET_CALIBRATION = 0x10,
         GET_CALIBRATION = 0x11,
         GET_BITS = 0X20,
@@ -161,6 +162,10 @@ private:
     /// @brief Get the current state of the PCAs
     /// @param response 
     void get_pca_power(uint8_t response[20]);
+
+    /// @brief Set individual attenuators in the rf path
+    /// @param response 
+    void set_attenuator_value(uint8_t response[20], uint8_t mutable_message[5]);
 
     /// @brief Set the Calibration table on the EEPROM 
     /// @param data 

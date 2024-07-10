@@ -7,6 +7,23 @@
 /// @brief Driver for the PCA9554
 class PCA9554 : public I2CDevice
 {
+    union output_register_t
+    {
+        struct output_bits_t
+        {
+            bool clock : 1;
+            bool data : 1;
+            bool attenuator_1 : 1;
+            bool attenuator_2 : 1;
+            bool attenuator_3 : 1;
+            bool attenuator_4 : 1;
+            bool LNA : 1;
+            bool PAD : 1;
+        } b;
+        uint8_t i;
+        
+    } output_register;
+    
 private:
     /// @param output_port_register register address for the output register
     const uint8_t output_port_register = 0x01;
@@ -29,6 +46,8 @@ public:
 
     /// @brief Destroy the PCA9554 object
     ~PCA9554();
+
+    bool set_attenuator_value(uint8_t attenuator_id, uint8_t value);
 
     /// @brief Write data to the attenuator cards
     /// @param value Value to set the attenuator output to
