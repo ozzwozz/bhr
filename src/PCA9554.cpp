@@ -21,6 +21,12 @@ void PCA9554::configuration()
     int ret = i2c_write_blocking(m_i2c, m_address, command, 2, true);
 }
 
+bool PCA9554::set_rf_path_value(uint8_t value)
+{
+    value;
+    return true;
+}
+
 bool PCA9554::set_attenuator_value(uint8_t attenuator_id, uint8_t value)
 {
     output_register.i = 0;
@@ -32,25 +38,25 @@ bool PCA9554::set_attenuator_value(uint8_t attenuator_id, uint8_t value)
 
     switch (attenuator_id)
     {
-        case 1:
+        case (1 << 0):
             output_register.b.attenuator_1 = 1;
             output_register.b.attenuator_2 = 0;
             output_register.b.attenuator_3 = 0;
             output_register.b.attenuator_4 = 0;
             break;
-        case 2:
+        case (1 << 1):
             output_register.b.attenuator_1 = 0;
             output_register.b.attenuator_2 = 1;
             output_register.b.attenuator_3 = 0;
             output_register.b.attenuator_4 = 0;
             break;
-        case 3:
+        case (1 << 2):
             output_register.b.attenuator_1 = 0;
             output_register.b.attenuator_2 = 0;
             output_register.b.attenuator_3 = 1;
             output_register.b.attenuator_4 = 0;
             break;
-        case 4:
+        case (1 << 3):
             output_register.b.attenuator_1 = 0;
             output_register.b.attenuator_2 = 0;
             output_register.b.attenuator_3 = 0;

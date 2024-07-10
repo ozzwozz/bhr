@@ -500,30 +500,29 @@ void USB_Handler::get_pca_power(uint8_t response[20])
 
 void USB_Handler::set_attenuator_value(uint8_t response[20], uint8_t mutable_message[5])
 {
-    uint8_t rf_path = mutable_message[1];
+    uint8_t band_mask = mutable_message[1];
     uint8_t attenuator_id = mutable_message[2];
     uint8_t value = mutable_message[3];
 
-    switch (rf_path)
+    if ((band_mask & 1) != 0)
     {
-    case 1:
         m_pca9554_1.set_attenuator_value(attenuator_id, value);
-        break;
-    case 2:
+    }
+    if ((band_mask & (1 << 1)) != 0)
+    {
         m_pca9554_2.set_attenuator_value(attenuator_id, value);
-        break;
-    case 3:
+    }
+    if ((band_mask & (1 << 2)) != 0)
+    {
         m_pca9554_3.set_attenuator_value(attenuator_id, value);
-        break;
-    case 4:
+    }
+    if ((band_mask & (1 << 3)) != 0)
+    {
         m_pca9554_4.set_attenuator_value(attenuator_id, value);
-        break;
-    case 5:
+    }
+    if ((band_mask & (1 << 4)) != 0)
+    {
         m_pca9554_5.set_attenuator_value(attenuator_id, value);
-        break;
-    
-    default:
-        break;
     }
 }
 
