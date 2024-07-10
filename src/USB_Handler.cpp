@@ -199,30 +199,30 @@ void USB_Handler::set_attenuation(uint8_t response[20], uint8_t data[5])
 {
     uint8_t attenuation_value = data[1];
     uint8_t band_mask = data[2];
-    uint8_t set_attenuators = 0;
+    uint8_t set_rf_paths = 0;
 
     if ((band_mask & (1)) != 0)
     {
-        set_attenuators |= (m_pca9554_1.set_outputs(attenuation_value));
+        set_rf_paths |= (m_pca9554_1.set_rf_path_value(attenuation_value));
     }
     if ((band_mask & (1 << 1)) != 0)
     {
-        set_attenuators |= (m_pca9554_2.set_outputs(attenuation_value) << 1);
+        set_rf_paths |= (m_pca9554_2.set_rf_path_value(attenuation_value) << 1);
     }
     if ((band_mask & (1 << 2)) != 0)
     {
-        set_attenuators |= (m_pca9554_3.set_outputs(attenuation_value) << 2);
+        set_rf_paths |= (m_pca9554_3.set_rf_path_value(attenuation_value) << 2);
     }
     if ((band_mask & (1 << 3)) != 0)
     {
-        set_attenuators |= (m_pca9554_4.set_outputs(attenuation_value) << 3);
+        set_rf_paths |= (m_pca9554_4.set_rf_path_value(attenuation_value) << 3);
     }
     if ((band_mask & (1 << 4)) != 0)
     {
-        set_attenuators |= (m_pca9554_5.set_outputs(attenuation_value) << 4);
+        set_rf_paths |= (m_pca9554_5.set_rf_path_value(attenuation_value) << 4);
     }
 
-    response[1] = set_attenuators;
+    response[1] = set_rf_paths;
 }
 
 void USB_Handler::get_attenuation(uint8_t response[20], uint8_t band_mask)

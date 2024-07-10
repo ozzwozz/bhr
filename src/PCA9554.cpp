@@ -23,7 +23,15 @@ void PCA9554::configuration()
 
 bool PCA9554::set_rf_path_value(uint8_t value)
 {
-    value;
+    if (value < 0 || value > 120)
+    {
+        return false;
+    }
+
+    uint8_t value_per_attenuator = value / 4;
+
+    set_attenuator_value(0b1111, value_per_attenuator);
+
     return true;
 }
 
@@ -35,33 +43,27 @@ bool PCA9554::set_attenuator_value(uint8_t attenuator_id, uint8_t value)
     {
         return false;
     }
-
-    switch (attenuator_id)
+    
+    output_register.b.attenuator_1 = 1;
+    output_register.b.attenuator_2 = 1;
+    output_register.b.attenuator_3 = 1;
+    output_register.b.attenuator_4 = 1;
+    
+    if (attenuator_id & (1 << 0))
     {
-        case (1 << 0):
-            output_register.b.attenuator_1 = 1;
-            output_register.b.attenuator_2 = 0;
-            output_register.b.attenuator_3 = 0;
-            output_register.b.attenuator_4 = 0;
-            break;
-        case (1 << 1):
-            output_register.b.attenuator_1 = 0;
-            output_register.b.attenuator_2 = 1;
-            output_register.b.attenuator_3 = 0;
-            output_register.b.attenuator_4 = 0;
-            break;
-        case (1 << 2):
-            output_register.b.attenuator_1 = 0;
-            output_register.b.attenuator_2 = 0;
-            output_register.b.attenuator_3 = 1;
-            output_register.b.attenuator_4 = 0;
-            break;
-        case (1 << 3):
-            output_register.b.attenuator_1 = 0;
-            output_register.b.attenuator_2 = 0;
-            output_register.b.attenuator_3 = 0;
-            output_register.b.attenuator_4 = 1;
-            break;
+        output_register.b.attenuator_1 = 0;
+    }
+    if (attenuator_id & (1 << 1))
+    {
+        output_register.b.attenuator_2 = 0;
+    }
+    if (attenuator_id & (1 << 2))
+    {
+        output_register.b.attenuator_3 = 0;
+    }
+    if (attenuator_id & (1 << 3))
+    {
+        output_register.b.attenuator_4 = 0;
     }
 
     uint8_t command[2] {output_port_register, output_register.i};
@@ -76,7 +78,7 @@ bool PCA9554::set_attenuator_value(uint8_t attenuator_id, uint8_t value)
         
         output_register.b.data = 0x00;
         output_register.b.clock = 0x00;
-        
+
         command[1] = output_register.i;
         ret = i2c_write_blocking(m_i2c, m_address, command, 2, true);
     }
@@ -195,9 +197,9 @@ void PCA9554::set_power_state(bool value)
 {
     gpio_put(m_power_enable_pin, value);
  
-    if (value == 1)
+    if (value)
     {
-        sleep_us(10);
+        sleep_us(20);
         configuration();
         set_attenuator_enable(1);
         set_outputs(0x3C);
