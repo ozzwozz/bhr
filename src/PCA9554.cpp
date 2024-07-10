@@ -21,6 +21,61 @@ void PCA9554::configuration()
     int ret = i2c_write_blocking(m_i2c, m_address, command, 2, true);
 }
 
+bool PCA9554::set_attenuator_value(uint8_t attenuator_id, uint8_t value)
+{
+    output_register.i = 0;
+
+    if (!read_inputs(output_register.i))
+    {
+        return false;
+    }
+
+    switch (attenuator_id)
+    {
+        case 1:
+            output_register.b.attenuator_1 = 1;
+            output_register.b.attenuator_2 = 0;
+            output_register.b.attenuator_3 = 0;
+            output_register.b.attenuator_4 = 0;
+            break;
+        case 2:
+            output_register.b.attenuator_1 = 0;
+            output_register.b.attenuator_2 = 1;
+            output_register.b.attenuator_3 = 0;
+            output_register.b.attenuator_4 = 0;
+            break;
+        case 3:
+            output_register.b.attenuator_1 = 0;
+            output_register.b.attenuator_2 = 0;
+            output_register.b.attenuator_3 = 1;
+            output_register.b.attenuator_4 = 0;
+            break;
+        case 4:
+            output_register.b.attenuator_1 = 0;
+            output_register.b.attenuator_2 = 0;
+            output_register.b.attenuator_3 = 0;
+            output_register.b.attenuator_4 = 1;
+            break;
+    }
+
+    uint8_t command[2] {output_port_register, output_register.i};
+
+    for (uint8_t x = 7; x >= 0; x--)
+    {
+        output_register.b.data = (value >> x) & 0x01;
+        output_register.b.clock = (value >> x) & 0x01;
+
+        command[1] = output_register.i;
+        int ret = i2c_write_blocking(m_i2c, m_address, command, 2, true);
+        
+        output_register.b.data = 0x00;
+        output_register.b.clock = 0x00;
+        
+        command[1] = output_register.i;
+        ret = i2c_write_blocking(m_i2c, m_address, command, 2, true);
+    }
+}
+
 bool PCA9554::set_outputs(const uint8_t value)
 {
     uint8_t current_value = 0;

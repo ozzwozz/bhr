@@ -119,6 +119,10 @@ void USB_Handler::decode_message(const uint8_t message[5])
             printf("%x ", response[0]);
             printf("%d \n", response[1]);
             break;
+        case message_headers::SET_ATTENUATOR:
+            set_attenuator_value(response, mutable_message);
+            printf("%x \n", response[0]);
+            break;
         case message_headers::SET_CALIBRATION:
             set_calibration(mutable_message);
             printf("%x ", response[0]);
@@ -492,6 +496,35 @@ void USB_Handler::get_pca_power(uint8_t response[20])
     }
     
     response[1] = powered_pa;
+}
+
+void USB_Handler::set_attenuator_value(uint8_t response[20], uint8_t mutable_message[5])
+{
+    uint8_t rf_path = mutable_message[1];
+    uint8_t attenuator_id = mutable_message[2];
+    uint8_t value = mutable_message[3];
+
+    switch (rf_path)
+    {
+    case 1:
+        m_pca9554_1.set_attenuator_value(attenuator_id, value);
+        break;
+    case 2:
+        m_pca9554_2.set_attenuator_value(attenuator_id, value);
+        break;
+    case 3:
+        m_pca9554_3.set_attenuator_value(attenuator_id, value);
+        break;
+    case 4:
+        m_pca9554_4.set_attenuator_value(attenuator_id, value);
+        break;
+    case 5:
+        m_pca9554_5.set_attenuator_value(attenuator_id, value);
+        break;
+    
+    default:
+        break;
+    }
 }
 
 void USB_Handler::set_calibration(uint8_t data[5])
