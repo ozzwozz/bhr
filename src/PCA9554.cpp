@@ -68,13 +68,21 @@ bool PCA9554::set_attenuator_value(uint8_t attenuator_id, uint8_t value)
 
     uint8_t command[2] {output_port_register, output_register.i};
 
+    int ret = i2c_write_blocking(m_i2c, m_address, command, 2, true);
+
+    output_register.b.attenuator_1 = 0;
+    output_register.b.attenuator_2 = 0;
+    output_register.b.attenuator_3 = 0;
+    output_register.b.attenuator_4 = 0;
+    ret = i2c_write_blocking(m_i2c, m_address, command, 2, true);
+
     for (uint8_t x = 7; x >= 0; x--)
     {
         output_register.b.data = (value >> x) & 0x01;
         output_register.b.clock = (value >> x) & 0x01;
 
         command[1] = output_register.i;
-        int ret = i2c_write_blocking(m_i2c, m_address, command, 2, true);
+        ret = i2c_write_blocking(m_i2c, m_address, command, 2, true);
         
         output_register.b.data = 0x00;
         output_register.b.clock = 0x00;
