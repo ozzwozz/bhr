@@ -33,7 +33,6 @@ private:
     /// @brief Default 
     void configuration();
 
-
 protected:
     /// @param m_power_enable_pin Pin to control power to the attenuator card
     uint m_power_enable_pin;
