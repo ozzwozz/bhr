@@ -201,7 +201,7 @@ void USB_Handler::set_attenuation(uint8_t response[20], uint8_t data[5])
     uint8_t band_mask = data[2];
     uint8_t set_rf_paths = 0;
 
-    if ((band_mask & (1)) != 0)
+    if ((band_mask & 1) != 0)
     {
         set_rf_paths |= (m_pca9554_1.set_rf_path_value(attenuation_value));
     }
@@ -231,7 +231,7 @@ void USB_Handler::get_attenuation(uint8_t response[20], uint8_t band_mask)
     uint8_t temp;
 
 
-    if ((band_mask & (1)) != 0)
+    if ((band_mask & 1) != 0)
     {
         if (m_pca9554_1.read_inputs(temp))
         {
@@ -276,7 +276,7 @@ void USB_Handler::set_lna_enable(uint8_t response[20], uint8_t data[5])
     uint8_t band_mask = data[2];
     uint8_t enabled_lna = 0;
 
-    if ((band_mask & (1)) != 0)
+    if ((band_mask & 1) != 0)
     {
         if (lna_enabled)
         {
@@ -350,7 +350,7 @@ void USB_Handler::set_attenuator_enable(uint8_t response[20], uint8_t data[5])
     uint8_t band_mask = data[2];
     uint8_t enabled_attenuators = 0;
 
-    if ((band_mask & (1)) != 0)
+    if ((band_mask & 1) != 0)
     {
         if (attenuator_enabled)
         {
@@ -447,7 +447,7 @@ void USB_Handler::set_pca_power(uint8_t response[20], uint8_t data[5])
     uint8_t pa_power = data[1];
     uint8_t band_mask = data[2];
 
-    if ((band_mask & (1)) != 0)
+    if ((band_mask & 1) != 0)
     {
         m_pca9554_1.set_power_state(pa_power);
     }

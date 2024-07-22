@@ -100,13 +100,13 @@ int main()
     SI53361 si53361 = SI53361();
     DS1682 ds1682 = DS1682(i2c0, DS1682_ADDR);
 
+    ADC adc = ADC();
+
     PCA9554 pca9554_1 = PCA9554(i2c1, ATTENUATOR_1, ATTENUATOR_1_POWER);
     PCA9554 pca9554_2 = PCA9554(i2c1, ATTENUATOR_2, ATTENUATOR_2_POWER);
     PCA9554 pca9554_3 = PCA9554(i2c1, ATTENUATOR_3, ATTENUATOR_3_POWER);
     PCA9554 pca9554_4 = PCA9554(i2c1, ATTENUATOR_4, ATTENUATOR_4_POWER);
     PCA9554 pca9554_5 = PCA9554(i2c1, ATTENUATOR_5, ATTENUATOR_5_POWER);
-
-    ADC adc = ADC();
 
     USB_Handler usb_handler = USB_Handler(max31725, m24m02, si53361, pca9554_1,
                     pca9554_2, pca9554_3, pca9554_4, pca9554_5, adc, ds1682);
@@ -118,12 +118,12 @@ int main()
     while (true)
     {
         // LED Flashing while developing so I know the board doesn't hang
-        gpio_put(LED_PIN, 0); // Turn LED off
+        // gpio_put(LED_PIN, 0); // Turn LED off
         sleep_ms(50);
 
         watchdog_update();
 
-        uint8_t input[5];
+        uint8_t input[5] = {0, 0, 0, 0, 0};
 
         for(int i = 0; i < sizeof(input); i++)
         {   
@@ -138,7 +138,7 @@ int main()
             }
         }
 
-        gpio_put(LED_PIN, 1); // Turn LED on
+        // gpio_put(LED_PIN, 1); // Turn LED on
         sleep_ms(50);
     }
 

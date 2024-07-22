@@ -23,21 +23,51 @@ void PCA9554::configuration()
 
 bool PCA9554::set_rf_path_value(uint8_t value)
 {
-    if (value < 0 || value > 120)
+    uint8_t value_per_attenuator;
+
+    if (value & 0b11)
     {
-        return false;
+        uint8_t integer_value = value & 0b11111100;
+        value_per_attenuator = integer_value / 4;
+        set_attenuator_value((1 << 0), (value_per_attenuator | 0b11));
+        set_attenuator_value((1 << 1), value_per_attenuator);
+        set_attenuator_value((1 << 2), value_per_attenuator);
+        set_attenuator_value((1 << 3), value_per_attenuator);
     }
+    else if (value & 0b10)
+    {
+        uint8_t integer_value = value & 0b11111100;
+        value_per_attenuator = integer_value / 4;
+        set_attenuator_value((1 << 0), (value_per_attenuator | 0b10));
+        set_attenuator_value((1 << 1), value_per_attenuator);
+        set_attenuator_value((1 << 2), value_per_attenuator);
+        set_attenuator_value((1 << 3), value_per_attenuator);
+    }
+    else if (value & 0b01)
+    {
+        uint8_t integer_value = value & 0b11111100;
+        value_per_attenuator = integer_value / 4;
+        set_attenuator_value((1 << 0), (value_per_attenuator | 0b01));
+        set_attenuator_value((1 << 1), value_per_attenuator);
+        set_attenuator_value((1 << 2), value_per_attenuator);
+        set_attenuator_value((1 << 3), value_per_attenuator);
+    }
+    else
+    {
+        value_per_attenuator = value / 4;
 
-    uint8_t value_per_attenuator = value / 4;
-
-    set_attenuator_value(0b1111, value_per_attenuator);
-
+        for (int8_t x=0; x < 4; x++)
+        {
+            set_attenuator_value((1 << x), value_per_attenuator);
+        }
+    }
+    
     return true;
 }
 
 bool PCA9554::set_attenuator_value(uint8_t attenuator_id, uint8_t value)
 {
-    output_register.i = 0;
+    output_register.i = 0x00;
 
     if (!read_inputs(output_register.i))
     {
@@ -68,28 +98,57 @@ bool PCA9554::set_attenuator_value(uint8_t attenuator_id, uint8_t value)
 
     uint8_t command[2] {output_port_register, output_register.i};
 
+    // value = 0x0E;
     int ret = i2c_write_blocking(m_i2c, m_address, command, 2, true);
-
-    output_register.b.attenuator_1 = 0;
-    output_register.b.attenuator_2 = 0;
-    output_register.b.attenuator_3 = 0;
-    output_register.b.attenuator_4 = 0;
-    ret = i2c_write_blocking(m_i2c, m_address, command, 2, true);
-
-    for (uint8_t x = 7; x >= 0; x--)
+    if (ret != PICO_ERROR_GENERIC)
     {
-        output_register.b.data = (value >> x) & 0x01;
-        output_register.b.clock = (value >> x) & 0x01;
+        for (int8_t x = 0; x < 8; x++)
+        {
+            output_register.b.data = (value & (1 << x));
 
-        command[1] = output_register.i;
-        ret = i2c_write_blocking(m_i2c, m_address, command, 2, true);
-        
-        output_register.b.data = 0x00;
-        output_register.b.clock = 0x00;
+            output_register.b.clock = 0x00;
 
-        command[1] = output_register.i;
-        ret = i2c_write_blocking(m_i2c, m_address, command, 2, true);
+            command[1] = output_register.i;
+            ret = i2c_write_blocking(m_i2c, m_address, command, 2, true);
+            if (ret == PICO_ERROR_GENERIC)
+            {
+                break;
+            }
+            output_register.b.clock = 1;
+            // and here
+
+            command[1] = output_register.i;
+            ret = i2c_write_blocking(m_i2c, m_address, command, 2, true);
+            if (ret == PICO_ERROR_GENERIC)
+            {
+                break;
+            }
+        }
     }
+
+    output_register.b.clock = 0;
+    output_register.b.data = 0;
+    command[1] = output_register.i;
+
+    ret = i2c_write_blocking(m_i2c, m_address, command, 2, true);
+    if (ret == PICO_ERROR_GENERIC)
+    {
+        return false;
+    }
+
+    output_register.b.attenuator_1 = 1;
+    output_register.b.attenuator_2 = 1;
+    output_register.b.attenuator_3 = 1;
+    output_register.b.attenuator_4 = 1;
+    command[1] = output_register.i;
+
+    ret = i2c_write_blocking(m_i2c, m_address, command, 2, true);
+    if (ret == PICO_ERROR_GENERIC)
+    {
+        return false;
+    }
+
+    return true;
 }
 
 bool PCA9554::set_outputs(const uint8_t value)
@@ -207,7 +266,7 @@ void PCA9554::set_power_state(bool value)
  
     if (value)
     {
-        sleep_us(20);
+        sleep_ms(100);
         configuration();
         set_attenuator_enable(1);
         set_outputs(0x3C);
