@@ -118,7 +118,6 @@ int main()
     while (true)
     {
         // LED Flashing while developing so I know the board doesn't hang
-        // gpio_put(LED_PIN, 0); // Turn LED off
         sleep_ms(50);
 
         watchdog_update();
@@ -130,15 +129,12 @@ int main()
             input[i] = getchar_timeout_us(10);
         }
 
-        for (int x = 0; x < sizeof(input); x++)
+        // if command byte is populated
+        if (input[0] != PICO_ERROR_TIMEOUT)
         {
-            if (input[x] != PICO_ERROR_TIMEOUT)
-            {
-                usb_handler.decode_message(input);
-            }
+            usb_handler.decode_message(input);
         }
 
-        // gpio_put(LED_PIN, 1); // Turn LED on
         sleep_ms(50);
     }
 
