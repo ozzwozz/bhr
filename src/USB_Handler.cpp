@@ -195,10 +195,10 @@ void USB_Handler::decode_message(const uint8_t message[5])
     }
 }
 
-void USB_Handler::set_attenuation(uint8_t response[20], uint8_t data[5])
+void USB_Handler:: set_attenuation(uint8_t response[20], uint8_t data[5])
 {
-    uint8_t attenuation_value = data[1];
-    uint8_t band_mask = data[2];
+    uint16_t attenuation_value = data[1] << 8 | data[2];
+    uint8_t band_mask = data[3];
     uint8_t set_rf_paths = 0;
 
     if ((band_mask & 1) != 0)
@@ -472,27 +472,26 @@ void USB_Handler::set_pca_power(uint8_t response[20], uint8_t data[5])
 void USB_Handler::get_pca_power(uint8_t response[20])
 {
     uint8_t powered_pa = 0;
-    bool value;
 
-    if (m_pca9554_1.get_power_state(value))
+    if (m_pca9554_1.get_power_state())
     {
-        powered_pa |= (value << 1);
+        powered_pa |= (1 << 1);
     }
-    if (m_pca9554_2.get_power_state(value))
+    if (m_pca9554_2.get_power_state())
     {
-        powered_pa |= (value << 2);
+        powered_pa |= (1 << 2);
     }
-    if (m_pca9554_3.get_power_state(value))
+    if (m_pca9554_3.get_power_state())
     {
-        powered_pa |= (value << 3);
+        powered_pa |= (1 << 3);
     }
-    if (m_pca9554_4.get_power_state(value))
+    if (m_pca9554_4.get_power_state())
     {
-        powered_pa |= (value << 4);
+        powered_pa |= (1 << 4);
     }
-    if (m_pca9554_5.get_power_state(value))
+    if (m_pca9554_5.get_power_state())
     {
-        powered_pa |= (value << 5);
+        powered_pa |= (1 << 5);
     }
     
     response[1] = powered_pa;

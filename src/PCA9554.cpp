@@ -21,47 +21,26 @@ void PCA9554::configuration()
     int ret = i2c_write_blocking(m_i2c, m_address, command, 2, true);
 }
 
-bool PCA9554::set_rf_path_value(uint8_t value)
+bool PCA9554::set_rf_path_value(uint16_t value)
 {
     uint8_t value_per_attenuator;
+    value_per_attenuator = value / 4;
 
-    if (value & 0b11)
+    if (value_per_attenuator-(int)value_per_attenuator == 0
+        || value_per_attenuator-(int)value_per_attenuator == 0.75
+        || value_per_attenuator-(int)value_per_attenuator == 0.5
+        || value_per_attenuator-(int)value_per_attenuator == 0.25)
     {
-        uint8_t integer_value = value & 0b11111100;
-        value_per_attenuator = integer_value / 4;
-        set_attenuator_value((1 << 0), (value_per_attenuator | 0b11));
-        set_attenuator_value((1 << 1), value_per_attenuator);
-        set_attenuator_value((1 << 2), value_per_attenuator);
-        set_attenuator_value((1 << 3), value_per_attenuator);
-    }
-    else if (value & 0b10)
-    {
-        uint8_t integer_value = value & 0b11111100;
-        value_per_attenuator = integer_value / 4;
-        set_attenuator_value((1 << 0), (value_per_attenuator | 0b10));
-        set_attenuator_value((1 << 1), value_per_attenuator);
-        set_attenuator_value((1 << 2), value_per_attenuator);
-        set_attenuator_value((1 << 3), value_per_attenuator);
-    }
-    else if (value & 0b01)
-    {
-        uint8_t integer_value = value & 0b11111100;
-        value_per_attenuator = integer_value / 4;
-        set_attenuator_value((1 << 0), (value_per_attenuator | 0b01));
-        set_attenuator_value((1 << 1), value_per_attenuator);
-        set_attenuator_value((1 << 2), value_per_attenuator);
-        set_attenuator_value((1 << 3), value_per_attenuator);
-    }
-    else
-    {
-        value_per_attenuator = value / 4;
-
         for (int8_t x=0; x < 4; x++)
         {
             set_attenuator_value((1 << x), value_per_attenuator);
         }
     }
-    
+    else
+    {
+        return false;
+    }
+
     return true;
 }
 
@@ -260,11 +239,11 @@ bool PCA9554::get_attenuator_enable(bool &value)
     return true;
 }
 
-void PCA9554::set_power_state(bool value)
+void PCA9554::set_power_state(bool enabled)
 {
-    gpio_put(m_power_enable_pin, value);
+    gpio_put(m_power_enable_pin, enabled);
  
-    if (value)
+    if (enabled)
     {
         sleep_ms(100);
         configuration();
@@ -273,7 +252,7 @@ void PCA9554::set_power_state(bool value)
     }
 }
 
-bool PCA9554::get_power_state(bool &value)
+bool PCA9554::get_power_state()
 {
     return gpio_get(m_power_enable_pin);
 }
