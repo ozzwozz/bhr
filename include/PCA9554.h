@@ -11,8 +11,8 @@ class PCA9554 : public I2CDevice
     {
         struct output_bits_t
         {
-            bool clock : 1;
             bool data : 1;
+            bool clock : 1;
             bool attenuator_1 : 1;
             bool attenuator_2 : 1;
             bool attenuator_3 : 1;
@@ -47,7 +47,7 @@ public:
     /// @brief Destroy the PCA9554 object
     ~PCA9554();
 
-    bool set_rf_path_value(uint8_t value);
+    bool set_rf_path_value(uint16_t value);
     
     bool set_attenuator_value(uint8_t attenuator_id, uint8_t value);
 
@@ -84,5 +84,5 @@ public:
     /// @brief Set the corresponding power line
     void set_power_state(bool value);
 
-    bool get_power_state(bool &value);
+    bool get_power_state();
 };
